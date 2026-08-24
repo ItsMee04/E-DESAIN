@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Master\AgamaController;
 use App\Http\Controllers\Master\JenisKelaminController;
+use App\Http\Controllers\Master\PegawaiController;
 use App\Http\Controllers\Master\ProfesiController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,15 @@ Route::prefix('master')->group(function () {
         Route::post('/store', [JenisKelaminController::class, 'storeJenisKelamin']);
         Route::post('/update', [JenisKelaminController::class, 'updateJenisKelamin']);
         Route::delete('/delete', [JenisKelaminController::class, 'deleteJenisKelamin']);
+    });
+});
+
+Route::prefix('master')->group(function () {
+    Route::prefix('pegawai')->group(function () {
+        Route::get('/', [PegawaiController::class, 'getPegawai']);
+        Route::post('/store', [PegawaiController::class, 'storePegawai']);
+        Route::post('/update', [PegawaiController::class, 'updatePegawai']);
+        Route::delete('/delete', [PegawaiController::class, 'deletePegawai']);
     });
 });
 

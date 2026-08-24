@@ -1,11 +1,8 @@
 <template>
-    <div class="p-10">
-        <h1 class="text-3xl font-bold">
-            Laravel 12 + Vue + Tailwind CSS
-        </h1>
-    </div>
+  <router-view />
+  <ToastContainer />
 </template>
 
 <script setup>
-
+import ToastContainer from './utilities/toast/ToastContainer.vue';
 </script>

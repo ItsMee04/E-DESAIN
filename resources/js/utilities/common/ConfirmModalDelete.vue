@@ -15,7 +15,7 @@
                     <h3 class="text-base font-bold text-blue-950">{{ title }}</h3>
                     <p class="text-xs text-blue-950/60 leading-relaxed">
                         Apakah Anda yakin ingin menghapus <span class="font-semibold text-blue-950">"{{ itemName
-                            }}"</span>? {{ description }}
+                        }}"</span>? {{ description }}
                     </p>
                 </div>
 
@@ -25,11 +25,15 @@
                         class="w-full py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-blue-950/70 hover:bg-gray-50 transition cursor-pointer disabled:opacity-50">
                         Batal
                     </button>
+
                     <button type="button" @click="$emit('confirm')" :disabled="isDeleting"
                         class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition cursor-pointer shadow-sm flex items-center justify-center gap-2 disabled:opacity-50">
                         <span v-if="isDeleting"
                             class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                        <span>{{ isDeleting ? 'Menghapus...' : 'Ya, Hapus' }}</span>
+
+                        <span>
+                            {{ isDeleting ? 'Menghapus...' : 'Ya, Hapus' }}
+                        </span>
                     </button>
                 </div>
             </div>

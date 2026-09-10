@@ -1,25 +1,31 @@
+```vue
 <template>
     <div class="min-h-screen bg-gray-50 flex font-sans antialiased text-blue-950">
-        <!-- Sidebar Component -->
-        <Sidebar :is-open="isSidebarOpen" />
+
+        <!-- Sidebar -->
+        <Sidebar :is-open="isSidebarOpen" @close-sidebar="isSidebarOpen = false" />
 
         <!-- Mobile Overlay -->
-        <div v-if="isSidebarOpen" @click="isSidebarOpen = false"
-            class="fixed inset-0 bg-blue-950/20 backdrop-blur-xs z-20 lg:hidden"></div>
+        <Transition name="fade">
+            <div v-if="isSidebarOpen" @click="isSidebarOpen = false"
+                class="fixed inset-0 z-20 bg-blue-950/30 backdrop-blur-[2px] lg:hidden"></div>
+        </Transition>
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col min-w-0">
-            <!-- Header Component -->
+
+            <!-- Header -->
             <Header @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
-            <!-- Content Renderer -->
-            <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
-                <!-- Hapus max-w-7xl di sini dan gunakan w-full -->
-                <div class="w-full space-y-6">
+            <!-- Content -->
+            <main class="flex-1 min-w-0 overflow-x-hidden overflow-y-auto">
+                <div class="w-full px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
                     <router-view />
                 </div>
             </main>
+
         </div>
+
     </div>
 </template>
 
@@ -30,3 +36,15 @@ import Header from '../layouts/components/Header.vue';
 
 const isSidebarOpen = ref(false);
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

@@ -1,10 +1,9 @@
 <template>
     <aside
-        class="fixed inset-y-0 left-0 z-30 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 relative lg:static lg:translate-x-0"
+        class="fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 lg:static lg:translate-x-0"
         :class="[
             isOpen ? 'translate-x-0' : '-translate-x-full',
-            isCollapsed ? 'lg:w-20' : 'lg:w-64',
-            'w-64'
+            isCollapsed ? 'lg:w-20' : 'lg:w-64'
         ]">
         <!-- Floating Edge Toggle Button -->
         <button @click="isCollapsed = !isCollapsed"
@@ -35,17 +34,20 @@
 
             <div v-for="item in menuItems" :key="item.name">
                 <!-- Single Item Menu (Tanpa Submenu) -->
-                <router-link v-if="!item.children" :to="item.to" v-slot="{ isActive }">
+                <router-link v-if="!item.children" :to="item.to" v-slot="{ isExactActive }">
                     <div :class="[
-                        isActive
+                        isExactActive
                             ? 'bg-[#B20600]/10 text-[#B20600] font-semibold'
                             : 'text-blue-950/70 hover:bg-gray-50 hover:text-blue-950 font-medium',
                         'flex items-center gap-3.5 px-3 py-3 rounded-xl text-sm transition-all',
                         isCollapsed ? 'justify-center' : ''
                     ]" :title="isCollapsed ? item.name : ''">
                         <component :is="item.icon" :size="20"
-                            :class="isActive ? 'text-[#B20600]' : 'text-blue-950/50'" />
-                        <span v-show="!isCollapsed" class="truncate">{{ item.name }}</span>
+                            :class="isExactActive ? 'text-[#B20600]' : 'text-blue-950/50'" />
+
+                        <span v-show="!isCollapsed" class="truncate">
+                            {{ item.name }}
+                        </span>
                     </div>
                 </router-link>
 

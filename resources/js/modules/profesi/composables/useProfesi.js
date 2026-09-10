@@ -20,6 +20,9 @@ export function useProfesi() {
     const form = ref({
         profesi: '',
     });
+    const errors = ref({
+        profesi: ''
+    });
 
     // State Modal Hapus Reusable
     const isDeleteModalOpen = ref(false);
@@ -77,6 +80,7 @@ export function useProfesi() {
         isEditing.value = false;
         selectedId.value = null;
         form.value = { profesi: '' };
+        clearErrors();
         isModalOpen.value = true;
     };
 
@@ -86,6 +90,7 @@ export function useProfesi() {
         form.value = {
             profesi: item.profesi
         };
+        clearErrors();
         isModalOpen.value = true;
     };
 
@@ -93,10 +98,26 @@ export function useProfesi() {
         isModalOpen.value = false;
     };
 
+    const validateProfesi = () => {
+        if (!form.value.profesi?.trim()) {
+            errors.value.profesi = 'Nama profesi wajib diisi.';
+            return false;
+        }
+
+        errors.value.profesi = '';
+
+        return true;
+    };
+
+    const clearErrors = () => {
+        errors.value = {
+            profesi: ''
+        };
+    };
+
     const saveForm = async () => {
         // Validasi input kosong
-        if (!form.value.profesi || !form.value.profesi.trim()) {
-            toast.warning('Nama profesi tidak boleh kosong!');
+        if (!validateProfesi()) {
             return;
         }
 
@@ -182,7 +203,10 @@ export function useProfesi() {
         setPage,
         isModalOpen,
         isEditing,
+        isSubmitting,
+        validateProfesi,
         form,
+        errors,
         openAddModal,
         openEditModal,
         closeModal,

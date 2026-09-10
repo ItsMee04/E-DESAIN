@@ -7,12 +7,12 @@
             @open-delete="openDeleteModal" @change-page="setPage" @refresh="refreshData" />
 
         <!-- Modal Form (Tambah / Edit) -->
-        <ProfesiModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" @close="closeModal"
-            @save="saveForm" />
+        <ProfesiModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors" :is-submitting="isSubmitting" @close="closeModal"
+            @save="saveForm" @validate-profesi="validateProfesi" />
 
         <!-- Reusable Confirm Delete Modal -->
         <ConfirmDeleteModal :is-open="isDeleteModalOpen" title="Hapus Data Profesi?"
-            :item-name="selectedDeleteItem?.nama" :is-deleting="isDeleting" @close="closeDeleteModal"
+            :item-name="selectedDeleteItem?.profesi" :is-deleting="isDeleting" @close="closeDeleteModal"
             @confirm="confirmDelete" />
     </div>
 </template>
@@ -36,7 +36,10 @@ const {
     setPage,
     isModalOpen,
     isEditing,
+    isSubmitting,
     form,
+    errors,
+    validateProfesi,
     openAddModal,
     openEditModal,
     closeModal,

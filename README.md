@@ -2,7 +2,7 @@
 
 [![Laravel Version](https://shields.io)](https://laravel.com)
 [![PHP Version](https://shields.io)](https://php.net)
-[![Target-User](https://shields.io)](https://wiradadihusada.co.id)
+[![Target-User](https://shields.io)](https://www.rsuwiradadihusada.co.id)
 
 **E-Desain** adalah platform internal berbasis web yang dirancang khusus untuk pegawai **RSU Wiradadi Husada**. Aplikasi ini berfungsi untuk mempermudah, mempercepat, dan mendokumentasikan proses **pengajuan pembuatan serta pencetakan desain media promosi** rumah sakit secara digital dan terintegrasi.
 
@@ -10,19 +10,13 @@
 
 ## 📷 Screenshots / Alur Aplikasi
 
-| 1. Halaman Login / Dashboard                                                | 2. Formulir Pengajuan Desain                                                 |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| <img src="screenshots/dashboard.png" width="100%" alt="Dashboard E-Desain"> | <img src="screenshots/form-pengajuan.png" width="100%" alt="Form Pengajuan"> |
-| _Tampilan awal pegawai masuk ke sistem._                                    | _Formulir detail kebutuhan promosi & cetak._                                 |
-
-| 3. Status & Tracking Pengajuan                                                 | 4. Validasi / Approval Desain                                           |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| <img src="screenshots/status-tracking.png" width="100%" alt="Tracking Status"> | <img src="screenshots/approval.png" width="100%" alt="Approval Desain"> |
-| _Pegawai bisa melihat progres pengerjaan desain._                              | _Persetujuan hasil desain sebelum masuk cetak._                         |
-
-> _Tips: Ambil screenshot sistem Anda, buat folder `screenshots` di root project, lalu simpan dengan nama-nama di atas._
+| 1. Halaman Login | 2. Dashboard Utama |
+|---|---|
+| <img src="screenshots/login.png" width="100%" alt="Halaman Login"> | <img src="screenshots/dashboard.png" width="100%" alt="Dashboard Utama"> |
+| *Pintu masuk pegawai RSU Wiradadi Husada ke dalam sistem.* | *Pusat kendali dan ringkasan pengajuan desain.* |
 
 ---
+
 
 ## ✨ Fitur Utama
 
@@ -75,9 +69,9 @@ Buka file `.env`, lalu sesuaikan konfigurasi database Anda:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=db_edesain_rsuwh
-DB_USERNAME=root
-DB_PASSWORD=
+DB_DATABASE=namadatabase
+DB_USERNAME=user
+DB_PASSWORD=password
 ```
 
 ### 4. Generate Key & Migrasi Database

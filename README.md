@@ -30,7 +30,7 @@
 
 ## 🛠️ Teknologi & Spesifikasi
 
-- **Framework:** Laravel 11.x
+- **Framework:** Laravel 12.x
 - **Database:** MySQL
 - **Frontend UI:** Tailwind CSS / Bootstrap (Sesuaikan dengan yang Anda pakai)
 - **Kebutuhan Server:** PHP >= 8.2, Composer
@@ -95,5 +95,5 @@ Akses aplikasi melalui browser di: `http://127.0.0.1:8000`
 
 ## 👥 Tim Pengembang / Kontak
 
-- **Nama Anda** - _Full Stack Developer_ - [GitHub](https://github.com)
-- **Bagian Teknologi Informasi / Humas RSU Wiradadi Husada**
+- **Indra Kusuma** - _Full Stack Developer_ - [GitHub](https://github.com)
+- **Bagian Teknologi Informasi RSU Wiradadi Husada**

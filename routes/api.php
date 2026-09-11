@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Master\AgamaController;
 use App\Http\Controllers\Master\JenisKelaminController;
+use App\Http\Controllers\Master\JenisMediaController;
 use App\Http\Controllers\Master\PegawaiController;
 use App\Http\Controllers\Master\ProfesiController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,15 @@ Route::prefix('master')->group(function () {
         Route::post('/store', [JenisKelaminController::class, 'storeJenisKelamin']);
         Route::post('/update', [JenisKelaminController::class, 'updateJenisKelamin']);
         Route::delete('/delete', [JenisKelaminController::class, 'deleteJenisKelamin']);
+    });
+});
+
+Route::prefix('master')->group(function () {
+    Route::prefix('jenismedia')->group(function () {
+        Route::get('/', [JenisMediaController::class, 'getJenisMedia']);
+        Route::post('/store', [JenisMediaController::class, 'storeJenisMedia']);
+        Route::post('/update', [JenisMediaController::class, 'updateJenisMedia']);
+        Route::delete('/delete', [JenisMediaController::class, 'deleteJenisMedia']);
     });
 });
 

@@ -1,27 +1,29 @@
 <template>
     <div class="space-y-6">
-        <!-- Tabel Profesi -->
-        <ProfesiTable v-model:searchQuery="searchQuery" :paginated-items="paginatedItems"
+        <!-- Tabel Pegawai -->
+        <PegawaiTable v-model:searchQuery="searchQuery" :paginated-items="paginatedItems"
             :filtered-items="filteredItems" :is-loading="isLoading" :current-page="currentPage"
             :total-pages="totalPages" :items-per-page="itemsPerPage" @open-add="openAddModal" @open-edit="openEditModal"
             @open-delete="openDeleteModal" @change-page="setPage" @refresh="refreshData" />
 
         <!-- Modal Form (Tambah / Edit) -->
-        <ProfesiModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors" :is-submitting="isSubmitting" @close="closeModal"
-            @save="saveForm" @validate-profesi="validateProfesi" />
+        <PegawaiModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
+            :is-submitting="isSubmitting" :agama-options="agamaOptions" :profesi-options="profesiOptions"
+            :jeniskelamin-options="jeniskelaminOptions" :image-preview="imagePreview" @close="closeModal"
+            @save="saveForm" @validate-pegawai="validatePegawai" @image-change="handleImageChange" />
 
         <!-- Reusable Confirm Delete Modal -->
-        <ConfirmDeleteModal :is-open="isDeleteModalOpen" title="Hapus Data Profesi?"
-            :item-name="selectedDeleteItem?.profesi" :is-deleting="isDeleting" @close="closeDeleteModal"
+        <ConfirmDeleteModal :is-open="isDeleteModalOpen" title="Hapus Data Pegawai?"
+            :item-name="selectedDeleteItem?.nama" :is-deleting="isDeleting" @close="closeDeleteModal"
             @confirm="confirmDelete" />
     </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
-import { useProfesi } from '../composables/useProfesi';
-import ProfesiTable from '../components/ProfesiTable.vue';
-import ProfesiModal from '../components/ProfesiModal.vue';
+import { usePegawai } from '../composables/usePegawai';
+import PegawaiTable from '../components/PegawaiTable.vue';
+import PegawaiModal from '../components/PegawaiModal.vue';
 import ConfirmDeleteModal from '../../../utilities/common/ConfirmModalDelete.vue';
 
 const {
@@ -39,7 +41,7 @@ const {
     isSubmitting,
     form,
     errors,
-    validateProfesi,
+    validatePegawai,
     openAddModal,
     openEditModal,
     closeModal,
@@ -50,6 +52,12 @@ const {
     selectedDeleteItem,
     openDeleteModal,
     closeDeleteModal,
-    confirmDelete
-} = useProfesi();
+    confirmDelete,
+
+    agamaOptions,
+    profesiOptions,
+    jeniskelaminOptions,
+    imagePreview,
+    handleImageChange
+} = usePegawai();
 </script>

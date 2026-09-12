@@ -3,7 +3,7 @@ import api from '../../../utilities/api/apiClient';
 export const pegawaiService = {
     async getPegawai() {
         try {
-            const response = await api.get('/master/pegawai');
+            const response = await api.get('/management-user/pegawai');
             return response.data;
         } catch (error) {
             throw error;
@@ -12,7 +12,7 @@ export const pegawaiService = {
 
     async storePegawai(payload) {
         try {
-            const response = await api.post('/master/pegawai/store', payload);
+            const response = await api.post('/management-user/pegawai/store', payload);
             return response.data;
         } catch (error) {
             throw error;
@@ -21,7 +21,7 @@ export const pegawaiService = {
 
     async updatePegawai(payload) {
         try {
-            const response = await api.post('/master/pegawai/update', payload);
+            const response = await api.post('/management-user/pegawai/update', payload);
             return response.data;
         } catch (error) {
             throw error;
@@ -31,7 +31,7 @@ export const pegawaiService = {
     async deletePegawai(payload) {
         try {
             // Axios delete butuh opsi { data: ... } untuk mengirim request body
-            const response = await api.delete('/master/pegawai/delete', { data: payload });
+            const response = await api.delete('/management-user/pegawai/delete', { data: payload });
             return response.data;
         } catch (error) {
             throw error;

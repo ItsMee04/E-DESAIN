@@ -7,6 +7,7 @@ import AgamaView from '../modules/agama/views/AgamaPage.vue'
 import JenisKelaminView from '../modules/jeniskelamin/views/JenisKelaminPage.vue'
 import JenisMediaView from '../modules/jenismedia/views/JenisMediaPage.vue'
 import PegawaiView from '../modules/pegawai/views/PegawaiPage.vue'
+import PenggunaView from '../modules/pengguna/views/PenggunaPage.vue'
 
 const routes = [
     {
@@ -51,6 +52,11 @@ const routes = [
                 path: '/master/pegawai',
                 name: 'pegawai',
                 component: PegawaiView
+            },
+            {
+                path: '/master/pengguna',
+                name: 'pengguna',
+                component: PenggunaView
             }
         ]
     }

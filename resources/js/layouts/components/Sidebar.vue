@@ -161,7 +161,7 @@ const menuItems = [
         icon: Users,
         children: [
             { name: 'Pegawai', to: '/master/pegawai' },
-            { name: 'Pengguna', to: '/master/users' }
+            { name: 'Pengguna', to: '/master/pengguna' }
         ]
     },
     { name: 'Kanvas Desain', to: '/kanvas', icon: Palette },

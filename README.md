@@ -95,5 +95,5 @@ Akses aplikasi melalui browser di: `http://127.0.0.1:8000`
 
 ## 👥 Tim Pengembang / Kontak
 
-- **Indra Kusuma** - _Full Stack Developer_ - [GitHub](https://github.com)
+- **Indra Kusuma** - _Full Stack Developer_ - [GitHub](https://github.com/ItsMee04)
 - **Bagian Teknologi Informasi RSU Wiradadi Husada**

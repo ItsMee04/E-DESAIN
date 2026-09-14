@@ -49,12 +49,12 @@ const routes = [
                 component: JenisMediaView
             },
             {
-                path: '/master/pegawai',
+                path: '/management-user/pegawai',
                 name: 'pegawai',
                 component: PegawaiView
             },
             {
-                path: '/master/pengguna',
+                path: '/management-user/pengguna',
                 name: 'pengguna',
                 component: PenggunaView
             }

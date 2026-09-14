@@ -2,7 +2,10 @@
 
 namespace App\Services\Master;
 
+use App\Models\Master\Pegawai;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -24,32 +27,63 @@ class UserService
         return $data;
     }
 
-    // Tambahkan int pada $id agar Intelephense tahu ini adalah angka
+    /**
+     * Service: Update Data User (Aman & Terfiltrasi)
+     */
     public function updateUser(int $id, array $data): ?User
     {
-        $user = User::find($id);
+        return DB::transaction(function () use ($id, $data) {
+            $user = User::find($id);
+            if (!$user) {
+                return null;
+            }
 
-        if (!$user) {
-            return null;
-        }
+            // Siapkan data yang akan diupdate
+            $updateData = [];
 
-        $user->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-        ]);
+            if (isset($data['email'])) {
+                $updateData['email'] = $data['email'];
+            }
 
-        return $user;
+            if (isset($data['username'])) {
+                $updateData['username'] = $data['username'];
+            }
+
+            if (!empty($data['password'])) {
+                $updateData['password'] = Hash::make($data['password']);
+            }
+
+            // Eksekusi update jika ada data yang diubah
+            if (!empty($updateData)) {
+                $updateData['status'] = 1;
+                $user->update($updateData);
+            }
+
+            return $user;
+        });
     }
 
+    /**
+     * Service: Soft Delete User beserta Pegawai terkait
+     */
     public function deleteUser(int $id): bool
     {
-        $user = User::find($id);
+        return DB::transaction(function () use ($id) {
+            $user = User::find($id);
+            if (!$user) {
+                return false;
+            }
 
-        if (!$user) {
-            return false;
-        }
+            // Nonaktifkan user
+            $user->status = 0;
+            $user->save();
 
-        $user->status = 0;
-        return $user->save();
+            // Otomatis nonaktifkan pegawai terkait jika ada hubungan
+            if ($user->pegawai_id) {
+                Pegawai::where('id', $user->pegawai_id)->update(['status' => 0]);
+            }
+
+            return true;
+        });
     }
 }

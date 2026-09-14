@@ -69,10 +69,13 @@
                     </button>
 
                     <!-- List Submenu dengan Animasi Collapse Smooth (JavaScript Hooks) -->
-                    <transition @enter="enter" @leave="leave">
-                        <div v-show="!isCollapsed && isSubMenuOpen(item.name)"
-                            class="overflow-hidden transition-all duration-300 ease-in-out">
+                    <transition enter-active-class="transition-all duration-300 ease-in-out"
+                        enter-from-class="opacity-0 max-h-0" enter-to-class="opacity-100 max-h-96"
+                        leave-active-class="transition-all duration-300 ease-in-out"
+                        leave-from-class="opacity-100 max-h-96" leave-to-class="opacity-0 max-h-0">
+                        <div v-show="!isCollapsed && isSubMenuOpen(item.name)" class="overflow-hidden">
                             <div class="mt-1 ml-4 pl-3.5 border-l-2 border-gray-100 space-y-1 py-1">
+
                                 <router-link v-for="sub in item.children" :key="sub.name" :to="sub.to"
                                     v-slot="{ isActive }">
                                     <div :class="[
@@ -81,11 +84,16 @@
                                             : 'text-blue-950/60 hover:text-blue-950 hover:bg-gray-50 font-medium',
                                         'px-3 py-2 rounded-lg text-xs transition-all flex items-center gap-2'
                                     ]">
-                                        <span class="w-1.5 h-1.5 rounded-full"
-                                            :class="isActive ? 'bg-[#B20600]' : 'bg-gray-300'"></span>
-                                        <span class="truncate">{{ sub.name }}</span>
+                                        <span class="w-1.5 h-1.5 rounded-full" :class="isActive
+                                            ? 'bg-[#B20600]'
+                                            : 'bg-gray-300'"></span>
+
+                                        <span class="truncate">
+                                            {{ sub.name }}
+                                        </span>
                                     </div>
                                 </router-link>
+
                             </div>
                         </div>
                     </transition>
@@ -121,7 +129,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
 import {
     LayoutDashboard,
     Palette,
@@ -140,85 +150,164 @@ defineProps({
     isOpen: Boolean
 });
 
+const route = useRoute();
+
 const isCollapsed = ref(false);
 
-const openSubMenus = ref(['Data Master']);
+/*
+|--------------------------------------------------------------------------
+| Menu
+|--------------------------------------------------------------------------
+*/
 
 const menuItems = [
-    { name: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
     {
-        name: 'Data Master',
+        name: 'Dashboard',
+        to: '/dashboard',
+        icon: LayoutDashboard
+    },
+
+    {
+        name: 'Master Data',
         icon: Database,
         children: [
-            { name: 'Profesi', to: '/master/profesi' },
-            { name: 'Jenis Kelamin', to: '/master/jeniskelamin' },
-            { name: 'Agama', to: '/master/agama' },
-            { name: 'Jenis Media', to: '/master/jenismedia' },
+            {
+                name: 'Profesi',
+                to: '/master/profesi'
+            },
+            {
+                name: 'Jenis Kelamin',
+                to: '/master/jeniskelamin'
+            },
+            {
+                name: 'Agama',
+                to: '/master/agama'
+            },
+            {
+                name: 'Jenis Media',
+                to: '/master/jenismedia'
+            }
         ]
     },
+
     {
         name: 'Management User',
         icon: Users,
         children: [
-            { name: 'Pegawai', to: '/master/pegawai' },
-            { name: 'Pengguna', to: '/master/pengguna' }
+            {
+                name: 'Pegawai',
+                to: '/management-user/pegawai'
+            },
+            {
+                name: 'Pengguna',
+                to: '/management-user/pengguna'
+            }
         ]
     },
-    { name: 'Kanvas Desain', to: '/kanvas', icon: Palette },
-    { name: 'Proyek Saya', to: '/proyek', icon: FolderKanban },
-    { name: 'Template Resep', to: '/template', icon: FileText },
-    { name: 'Pengguna', to: '/pengguna', icon: Users },
-    { name: 'Pengaturan', to: '/pengaturan', icon: Settings }
+
+    {
+        name: 'Kanvas Desain',
+        to: '/kanvas',
+        icon: Palette
+    },
+
+    {
+        name: 'Proyek Saya',
+        to: '/proyek',
+        icon: FolderKanban
+    },
+
+    {
+        name: 'Template Resep',
+        to: '/template',
+        icon: FileText
+    },
+
+    {
+        name: 'Pengaturan',
+        to: '/pengaturan',
+        icon: Settings
+    }
 ];
 
-const toggleSubMenu = (menuName) => {
-    if (openSubMenus.value.includes(menuName)) {
-        openSubMenus.value = openSubMenus.value.filter(name => name !== menuName);
-    } else {
-        openSubMenus.value.push(menuName);
-    }
+/*
+|--------------------------------------------------------------------------
+| Cari submenu berdasarkan URL aktif
+|--------------------------------------------------------------------------
+*/
+
+const getActiveSubMenu = () => {
+    const activeParent = menuItems.find(item => {
+        if (!item.children) {
+            return false;
+        }
+
+        return item.children.some(child => {
+            return (
+                route.path === child.to ||
+                route.path.startsWith(`${child.to}/`)
+            );
+        });
+    });
+
+    return activeParent?.name ?? null;
 };
+
+/*
+|--------------------------------------------------------------------------
+| Submenu yang sedang terbuka
+|--------------------------------------------------------------------------
+*/
+
+const openSubMenu = ref(getActiveSubMenu());
+
+/*
+|--------------------------------------------------------------------------
+| Ketika URL berubah
+|--------------------------------------------------------------------------
+|
+| Contoh:
+| /master/profesi
+|      ↓
+| /management-user/pegawai
+|
+| Maka Master Data otomatis tertutup
+| dan Management User otomatis terbuka.
+|--------------------------------------------------------------------------
+*/
+
+watch(
+    () => route.path,
+    () => {
+        openSubMenu.value = getActiveSubMenu();
+    },
+    {
+        immediate: true
+    }
+);
+
+/*
+|--------------------------------------------------------------------------
+| Toggle submenu
+|--------------------------------------------------------------------------
+*/
+
+const toggleSubMenu = (menuName) => {
+    if (openSubMenu.value === menuName) {
+        openSubMenu.value = null;
+        return;
+    }
+
+    openSubMenu.value = menuName;
+};
+
+/*
+|--------------------------------------------------------------------------
+| Cek apakah submenu terbuka
+|--------------------------------------------------------------------------
+*/
 
 const isSubMenuOpen = (menuName) => {
-    return openSubMenus.value.includes(menuName);
-};
-
-// Fungsi JavaScript Hooks untuk Animasi Buka-Tutup (Accordion) yang Smooth
-const enter = (element) => {
-    const width = getComputedStyle(element).width;
-    element.style.width = width;
-    element.style.position = 'absolute';
-    element.style.visibility = 'hidden';
-    element.style.height = 'auto';
-
-    const height = element.offsetHeight;
-
-    element.style.width = null;
-    element.style.position = null;
-    element.style.visibility = null;
-    element.style.height = 0;
-
-    // Paksa reflow
-    getComputedStyle(element).height;
-
-    setTimeout(() => {
-        element.style.height = `${height}px`;
-    });
-};
-
-const leave = (element) => {
-    const height = element.offsetHeight;
-    element.style.height = `${height}px`;
-
-    // Paksa reflow
-    getComputedStyle(element).height;
-
-    setTimeout(() => {
-        element.style.height = 0;
-    });
-};
-
-const handleLogout = () => {
-    console.log('Logging out from Sidebar...');
+    return openSubMenu.value === menuName;
 };
 </script>

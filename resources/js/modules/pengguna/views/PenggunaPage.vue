@@ -12,7 +12,7 @@
 
         <!-- Reusable Confirm Delete Modal -->
         <ConfirmDeleteModal :is-open="isDeleteModalOpen" title="Hapus Data Pengguna?"
-            :item-name="selectedDeleteItem?.nama" :is-deleting="isDeleting" @close="closeDeleteModal"
+            :item-name="selectedDeleteItem?.pegawai?.nama" :is-deleting="isDeleting" @close="closeDeleteModal"
             @confirm="confirmDelete" />
     </div>
 </template>

@@ -69,8 +69,27 @@
                             {{ (currentPage - 1) * itemsPerPage + index + 1 }}
                         </td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.pegawai?.nama }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.email }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.username }}</td>
+                        <td class="px-4 py-3.5 font-medium text-blue-950">
+                            <span v-if="item.email">
+                                {{ item.email }}
+                            </span>
+
+                            <span v-else
+                                class="inline-flex items-center px-2.5 py-1 rounded-lg bg-red-50 text-red-600 text-[10px] font-medium">
+                                Belum diatur
+                            </span>
+                        </td>
+
+                        <td class="px-4 py-3.5 font-medium text-blue-950">
+                            <span v-if="item.username">
+                                {{ item.username }}
+                            </span>
+
+                            <span v-else
+                                class="inline-flex items-center px-2.5 py-1 rounded-lg bg-red-50 text-red-600 text-[10px] font-medium">
+                                Belum diatur
+                            </span>
+                        </td>
                         <td class="px-4 py-3.5">
                             <span :class="[
                                 item.status === 1

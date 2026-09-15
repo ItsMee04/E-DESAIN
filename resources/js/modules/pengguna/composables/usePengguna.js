@@ -1,6 +1,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useToast } from '../../../utilities/toast/useToast';
 import { penggunaService } from '../services/penggunaService';
+import { userPermissionService } from '../services/userPermissionService';
 
 export function usePengguna() {
     const items = ref([]);
@@ -33,6 +34,11 @@ export function usePengguna() {
     // State Modal Hapus Reusable
     const isDeleteModalOpen = ref(false);
     const selectedDeleteItem = ref(null);
+
+    const isAccessModalOpen = ref(false);
+    const selectedAccessUser = ref(null);
+    const isAccessSubmitting = ref(false);
+    const accessPermissions = ref([]);
 
     const { toast } = useToast();
 
@@ -222,6 +228,71 @@ export function usePengguna() {
         }
     };
 
+    const openAccessModal = async (user) => {
+
+        selectedAccessUser.value = user;
+        isAccessModalOpen.value = true;
+
+        try {
+
+            const response =
+                await userPermissionService.getPermissionsByUserId(user.id);
+
+            accessPermissions.value = response?.data || [];
+
+        } catch (error) {
+
+            console.error(
+                'Gagal mengambil hak akses pengguna:',
+                error
+            );
+
+            accessPermissions.value = [];
+
+            toast.error(
+                'Gagal mengambil hak akses pengguna.'
+            );
+        }
+    };
+
+    const closeAccessModal = () => {
+        if (isAccessSubmitting.value) {
+            return;
+        }
+
+        isAccessModalOpen.value = false;
+        selectedAccessUser.value = null;
+    };
+
+    const saveAccessPermission = async (payload) => {
+
+        if (!selectedAccessUser.value) {
+            return;
+        }
+        isAccessSubmitting.value = true;
+        try {
+            const data = await userPermissionService.storePermissions({
+                user_id: selectedAccessUser.value.id,
+                module_ids: payload.module_ids
+            });
+            toast.success(
+                data.message || 'Hak akses pengguna berhasil disimpan!'
+            );
+            closeAccessModal();
+        } catch (error) {
+            console.error(
+                'Gagal menyimpan hak akses:',
+                error
+            );
+            const errorMessage =
+                error.response?.data?.message ||
+                'Gagal menyimpan hak akses pengguna.';
+            toast.error(errorMessage);
+        } finally {
+            isAccessSubmitting.value = false;
+        }
+    };
+
     // Panggil fetch data pertama kali saat composable dipasang
     onMounted(() => {
         fetchData();
@@ -254,6 +325,13 @@ export function usePengguna() {
         selectedDeleteItem,
         openDeleteModal,
         closeDeleteModal,
-        confirmDelete
+        confirmDelete,
+        isAccessModalOpen,
+        selectedAccessUser,
+        isAccessSubmitting,
+        openAccessModal,
+        closeAccessModal,
+        saveAccessPermission,
+        accessPermissions
     };
 }

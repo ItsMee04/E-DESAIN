@@ -103,6 +103,13 @@
                         <!-- Action Buttons: Edit & Delete -->
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex items-center justify-end gap-1.5">
+                                <!-- Hak Akses -->
+                                <button @click="$emit('open-access', item)"
+                                    class="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 rounded-lg border border-blue-200/60 transition cursor-pointer"
+                                    title="Hak Akses">
+                                    <ShieldCheck :size="16" />
+                                </button>
+
                                 <!-- Tombol Edit -->
                                 <button @click="$emit('open-edit', item)"
                                     class="p-1.5 text-amber-600 bg-amber-50 hover:bg-amber-100 hover:text-amber-700 rounded-lg border border-amber-200/60 transition cursor-pointer"
@@ -159,7 +166,7 @@
 </template>
 
 <script setup>
-import { Search, Plus, RotateCw, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { ShieldCheck, Search, Plus, RotateCw, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
 defineProps({
     paginatedItems: Array,
@@ -172,5 +179,5 @@ defineProps({
 
 const searchQuery = defineModel('searchQuery');
 
-defineEmits(['open-add', 'open-edit', 'open-delete', 'change-page', 'refresh']);
+defineEmits(['open-add', 'open-edit', 'open-delete', 'change-page', 'refresh', 'open-access']);
 </script>

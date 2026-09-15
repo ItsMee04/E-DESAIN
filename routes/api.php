@@ -3,9 +3,11 @@
 use App\Http\Controllers\Master\AgamaController;
 use App\Http\Controllers\Master\JenisKelaminController;
 use App\Http\Controllers\Master\JenisMediaController;
+use App\Http\Controllers\Master\ModuleController;
 use App\Http\Controllers\Master\PegawaiController;
 use App\Http\Controllers\Master\ProfesiController;
 use App\Http\Controllers\Master\UserController;
+use App\Http\Controllers\Master\UserPermission;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('master')->group(function () {
@@ -15,32 +17,40 @@ Route::prefix('master')->group(function () {
         Route::post('/update', [ProfesiController::class, 'updateProfesi']);
         Route::delete('/delete', [ProfesiController::class, 'deleteProfesi']);
     });
-});
 
-Route::prefix('master')->group(function () {
     Route::prefix('agama')->group(function () {
         Route::get('/', [AgamaController::class, 'getAgama']);
         Route::post('/store', [AgamaController::class, 'storeAgama']);
         Route::post('/update', [AgamaController::class, 'updateAgama']);
         Route::delete('/delete', [AgamaController::class, 'deleteAgama']);
     });
-});
 
-Route::prefix('master')->group(function () {
     Route::prefix('jeniskelamin')->group(function () {
         Route::get('/', [JenisKelaminController::class, 'getJenisKelamin']);
         Route::post('/store', [JenisKelaminController::class, 'storeJenisKelamin']);
         Route::post('/update', [JenisKelaminController::class, 'updateJenisKelamin']);
         Route::delete('/delete', [JenisKelaminController::class, 'deleteJenisKelamin']);
     });
-});
 
-Route::prefix('master')->group(function () {
     Route::prefix('jenismedia')->group(function () {
         Route::get('/', [JenisMediaController::class, 'getJenisMedia']);
         Route::post('/store', [JenisMediaController::class, 'storeJenisMedia']);
         Route::post('/update', [JenisMediaController::class, 'updateJenisMedia']);
         Route::delete('/delete', [JenisMediaController::class, 'deleteJenisMedia']);
+    });
+
+    Route::prefix('modules')->group(function () {
+        Route::get('/', [ModuleController::class, 'getModules']);
+        Route::post('/store', [ModuleController::class, 'storeModule']);
+        Route::post('/update', [ModuleController::class, 'updateModule']);
+        Route::delete('/delete', [ModuleController::class, 'deleteModule']);
+    });
+
+    Route::prefix('user-permissions')->group(function () {
+        Route::get('/{userId}', [UserPermission::class, 'getPermissions']);
+        Route::post('/store', [UserPermission::class, 'storePermissions']);
+        Route::get('/{userId}',[UserPermission::class, 'getPermissionsByUserId']
+        );
     });
 });
 

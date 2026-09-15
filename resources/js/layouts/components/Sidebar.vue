@@ -113,8 +113,12 @@
                         AD
                     </div>
                     <div v-show="!isCollapsed" class="flex flex-col min-w-0">
-                        <span class="text-xs font-bold text-blue-950 truncate">Administrator</span>
-                        <span class="text-[10px] text-blue-950/50 truncate">it@wiradadihusada.co.id</span>
+                        <span class="text-xs font-bold text-blue-950 truncate">
+                            {{ user?.username || '-' }}
+                        </span>
+                        <span class="text-[10px] text-blue-950/50 truncate">
+                            {{ user?.email || '-' }}
+                        </span>
                     </div>
                 </div>
 
@@ -129,9 +133,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-
+import { computed, ref, watch, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
     LayoutDashboard,
     Palette,
@@ -146,151 +149,142 @@ import {
     LogOut,
 } from 'lucide-vue-next';
 
+import { useModule } from '../../modules/pengguna/composables/useModule';
+import { userPermissionService } from '../../modules/pengguna/services/userPermissionService';
+import { authenticationService } from '../../modules/authentication/services/authenticationService';
+
 defineProps({
     isOpen: Boolean
 });
 
 const route = useRoute();
+const router = useRouter();
 
 const isCollapsed = ref(false);
+const openSubMenu = ref(null);
+const permissionIds = ref([]);
 
-/*
-|--------------------------------------------------------------------------
-| Menu
-|--------------------------------------------------------------------------
-*/
+const iconMap = {
+    LayoutDashboard,
+    Palette,
+    FolderKanban,
+    Users,
+    FileText,
+    Settings,
+    Database
+};
 
-const menuItems = [
-    {
-        name: 'Dashboard',
-        to: '/dashboard',
-        icon: LayoutDashboard
-    },
+const { modules, getModules } = useModule();
 
-    {
-        name: 'Master Data',
-        icon: Database,
-        children: [
-            {
-                name: 'Profesi',
-                to: '/master/profesi'
-            },
-            {
-                name: 'Jenis Kelamin',
-                to: '/master/jeniskelamin'
-            },
-            {
-                name: 'Agama',
-                to: '/master/agama'
-            },
-            {
-                name: 'Jenis Media',
-                to: '/master/jenismedia'
+const user = ref(null);
+
+const menuItems = computed(() => {
+    return modules.value
+        .map((module) => {
+            const children = (module.children || [])
+                .filter((child) => permissionIds.value.includes(child.id))
+                .map((child) => ({
+                    ...child,
+                    to: child.route,
+                    icon: iconMap[child.icon] || FileText,
+                }));
+
+            if (module.children && module.children.length > 0) {
+                if (children.length === 0) {
+                    return null;
+                }
+
+                return {
+                    id: module.id,
+                    name: module.name,
+                    key: module.key,
+                    icon: iconMap[module.icon] || Database,
+                    children,
+                };
             }
-        ]
-    },
 
-    {
-        name: 'Management User',
-        icon: Users,
-        children: [
-            {
-                name: 'Pegawai',
-                to: '/management-user/pegawai'
-            },
-            {
-                name: 'Pengguna',
-                to: '/management-user/pengguna'
+            if (!permissionIds.value.includes(module.id)) {
+                return null;
             }
-        ]
-    },
 
-    {
-        name: 'Kanvas Desain',
-        to: '/kanvas',
-        icon: Palette
-    },
+            return {
+                id: module.id,
+                name: module.name,
+                key: module.key,
+                route: module.route,
+                to: module.route,
+                icon: iconMap[module.icon] || FileText,
+            };
+        })
+        .filter(Boolean);
+});
 
-    {
-        name: 'Proyek Saya',
-        to: '/proyek',
-        icon: FolderKanban
-    },
+const getUserPermissions = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
 
-    {
-        name: 'Template Resep',
-        to: '/template',
-        icon: FileText
-    },
+        if (!user?.id) {
+            return;
+        }
 
-    {
-        name: 'Pengaturan',
-        to: '/pengaturan',
-        icon: Settings
+        const response = await userPermissionService.getPermissionsByUserId(
+            user.id,
+        );
+
+        permissionIds.value = response?.data || [];
+    } catch (error) {
+        console.error('Gagal mengambil permission user:', error);
+        permissionIds.value = [];
     }
-];
+};
 
-/*
-|--------------------------------------------------------------------------
-| Cari submenu berdasarkan URL aktif
-|--------------------------------------------------------------------------
-*/
+const getUserData = () => {
+    try {
+        const storedUser = localStorage.getItem('user');
+
+        if (storedUser) {
+            user.value = JSON.parse(storedUser);
+        }
+    } catch (error) {
+        console.error('Gagal mengambil data user:', error);
+        user.value = null;
+    }
+};
 
 const getActiveSubMenu = () => {
-    const activeParent = menuItems.find(item => {
+    const activeParent = menuItems.value.find(item => {
         if (!item.children) {
             return false;
         }
 
         return item.children.some(child => {
-            return (
-                route.path === child.to ||
-                route.path.startsWith(`${child.to}/`)
-            );
+            return route.path === child.to || route.path.startsWith(`${child.to}/`);
         });
     });
 
     return activeParent?.name ?? null;
 };
 
-/*
-|--------------------------------------------------------------------------
-| Submenu yang sedang terbuka
-|--------------------------------------------------------------------------
-*/
+const handleLogout = async () => {
+    try {
+        await authenticationService.logout();
+    } catch (error) {
+        console.error('Gagal melakukan logout:', error);
+    } finally {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
 
-const openSubMenu = ref(getActiveSubMenu());
-
-/*
-|--------------------------------------------------------------------------
-| Ketika URL berubah
-|--------------------------------------------------------------------------
-|
-| Contoh:
-| /master/profesi
-|      ↓
-| /management-user/pegawai
-|
-| Maka Master Data otomatis tertutup
-| dan Management User otomatis terbuka.
-|--------------------------------------------------------------------------
-*/
+        router.push('/login');
+    }
+};
 
 watch(
     () => route.path,
     () => {
         openSubMenu.value = getActiveSubMenu();
     },
-    {
-        immediate: true
-    }
+    { immediate: true }
 );
-
-/*
-|--------------------------------------------------------------------------
-| Toggle submenu
-|--------------------------------------------------------------------------
-*/
 
 const toggleSubMenu = (menuName) => {
     if (openSubMenu.value === menuName) {
@@ -301,13 +295,18 @@ const toggleSubMenu = (menuName) => {
     openSubMenu.value = menuName;
 };
 
-/*
-|--------------------------------------------------------------------------
-| Cek apakah submenu terbuka
-|--------------------------------------------------------------------------
-*/
-
 const isSubMenuOpen = (menuName) => {
     return openSubMenu.value === menuName;
 };
+
+onMounted(async () => {
+    getUserData();
+
+    await Promise.all([
+        getModules(),
+        getUserPermissions()
+    ]);
+
+    openSubMenu.value = getActiveSubMenu();
+});
 </script>

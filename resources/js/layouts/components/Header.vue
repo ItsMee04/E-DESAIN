@@ -43,7 +43,9 @@
                 <div v-if="isNotificationOpen"
                     class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 transition-all">
                     <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
-                        <h3 class="text-sm font-bold text-blue-950">Notifikasi</h3>
+                        <h3 class="text-sm font-bold text-blue-950">
+                            Notifikasi
+                        </h3>
                         <button @click="markAllAsRead"
                             class="text-[11px] text-[#B20600] font-semibold hover:underline cursor-pointer">
                             Tandai Dibaca
@@ -55,8 +57,12 @@
                             class="p-3.5 hover:bg-gray-50 transition cursor-pointer flex gap-3">
                             <div class="w-2 h-2 rounded-full bg-[#B20600] mt-1.5 shrink-0" v-if="!notif.read"></div>
                             <div :class="{ 'pl-3.5': notif.read }" class="flex-1">
-                                <p class="text-xs font-semibold text-blue-950">{{ notif.title }}</p>
-                                <p class="text-xs text-blue-950/60 mt-0.5">{{ notif.message }}</p>
+                                <p class="text-xs font-semibold text-blue-950">
+                                    {{ notif.title }}
+                                </p>
+                                <p class="text-xs text-blue-950/60 mt-0.5">
+                                    {{ notif.message }}
+                                </p>
                                 <span class="text-[10px] text-blue-950/40 mt-1 block">{{ notif.time }}</span>
                             </div>
                         </div>
@@ -72,7 +78,7 @@
                     class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition cursor-pointer">
                     <div
                         class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs">
-                        IT
+                        {{ user?.username?.substring(0, 2).toUpperCase() || 'US' }}
                     </div>
                     <ChevronDown :size="16" class="text-blue-950/50 transition-transform duration-200"
                         :class="{ 'rotate-180': isProfileOpen }" />
@@ -82,8 +88,12 @@
                 <div v-if="isProfileOpen"
                     class="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 transition-all">
                     <div class="px-3 py-2 border-b border-gray-100 mb-1">
-                        <p class="text-xs font-bold text-blue-950">Tim IT RSU</p>
-                        <p class="text-[11px] text-blue-950/50 truncate">it@wiradadihusada.co.id</p>
+                        <p class="text-xs font-bold text-blue-950">
+                            {{ user?.username || '-' }}
+                        </p>
+                        <p class="text-[11px] text-blue-950/50 truncate">
+                            {{ user?.email || '-' }}
+                        </p>
                     </div>
 
                     <a href="#"
@@ -111,7 +121,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRouter } from 'vue-router';
+import { authenticationService } from '../../modules/authentication/services/authenticationService';
 import {
     Menu,
     Bell,
@@ -120,31 +132,33 @@ import {
     User,
     Settings,
     Clock,
-    MapPin
-} from 'lucide-vue-next';
+    MapPin,
+} from "lucide-vue-next";
 
-defineEmits(['toggle-sidebar']);
+defineEmits(["toggle-sidebar"]);
 
 // Real-time Clock Logic
-const currentTime = ref('');
-const currentDate = ref('');
+const currentTime = ref("");
+const currentDate = ref("");
 let timer = null;
 
 const updateDateTime = () => {
     const now = new Date();
 
-    currentTime.value = `${now.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    }).replace(/\./g, ':')} WIB`;
+    currentTime.value = `${now
+        .toLocaleTimeString("id-ID", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+        })
+        .replace(/\./g, ":")} WIB`;
 
-    currentDate.value = now.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
+    currentDate.value = now.toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
     });
 };
 
@@ -153,11 +167,25 @@ const isNotificationOpen = ref(false);
 const isProfileOpen = ref(false);
 const notificationRef = ref(null);
 const profileRef = ref(null);
+const user = ref(null);
+const router = useRouter();
 
 const hasUnread = ref(true);
 const notifications = ref([
-    { id: 1, title: 'Desain Baru Diunggah', message: 'Desain Banner Pamflet 17 Agustus telah ditambahkan', time: '10 menit lalu', read: false },
-    { id: 2, title: 'Revisi Selesai', message: 'Template Resep Dokter V2 disetujui', time: '1 jam lalu', read: false },
+    {
+        id: 1,
+        title: "Desain Baru Diunggah",
+        message: "Desain Banner Pamflet 17 Agustus telah ditambahkan",
+        time: "10 menit lalu",
+        read: false,
+    },
+    {
+        id: 2,
+        title: "Revisi Selesai",
+        message: "Template Resep Dokter V2 disetujui",
+        time: "1 jam lalu",
+        read: false,
+    },
 ]);
 
 const toggleNotification = () => {
@@ -171,16 +199,28 @@ const toggleProfile = () => {
 };
 
 const markAllAsRead = () => {
-    notifications.value.forEach(n => n.read = true);
+    notifications.value.forEach((n) => (n.read = true));
     hasUnread.value = false;
 };
 
-const handleLogout = () => {
-    console.log('Logging out from Header dropdown...');
+const handleLogout = async () => {
+    try {
+        await authenticationService.logout();
+    } catch (error) {
+        console.error('Gagal melakukan logout:', error);
+    } finally {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        router.push('/login');
+    }
 };
 
 const handleClickOutside = (event) => {
-    if (notificationRef.value && !notificationRef.value.contains(event.target)) {
+    if (
+        notificationRef.value &&
+        !notificationRef.value.contains(event.target)
+    ) {
         isNotificationOpen.value = false;
     }
     if (profileRef.value && !profileRef.value.contains(event.target)) {
@@ -188,7 +228,22 @@ const handleClickOutside = (event) => {
     }
 };
 
+const getUserData = () => {
+    try {
+        const storedUser = localStorage.getItem('user');
+
+        if (storedUser) {
+            user.value = JSON.parse(storedUser);
+        }
+    } catch (error) {
+        console.error('Gagal mengambil data user:', error);
+        user.value = null;
+    }
+};
+
 onMounted(() => {
+    getUserData();
+
     updateDateTime();
     timer = setInterval(updateDateTime, 1000);
     document.addEventListener('click', handleClickOutside);
@@ -196,6 +251,6 @@ onMounted(() => {
 
 onUnmounted(() => {
     if (timer) clearInterval(timer);
-    document.removeEventListener('click', handleClickOutside);
+    document.removeEventListener("click", handleClickOutside);
 });
 </script>

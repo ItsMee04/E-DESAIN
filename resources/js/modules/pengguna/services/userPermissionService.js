@@ -1,12 +1,11 @@
-import api from '../../../utilities/api/apiClient';
+import api from "../../../utilities/api/apiClient";
 
 export const userPermissionService = {
-
     async storePermissions(payload) {
         try {
             const response = await api.post(
-                '/master/user-permissions/store',
-                payload
+                "/master/user-permissions/store",
+                payload,
             );
             return response.data;
         } catch (error) {
@@ -17,7 +16,7 @@ export const userPermissionService = {
     async getPermissionsByUserId(userId) {
         try {
             const response = await api.get(
-                `/master/user-permissions/${userId}`
+                `/master/user-permissions/${userId}`,
             );
 
             return response.data;
@@ -25,5 +24,4 @@ export const userPermissionService = {
             throw error;
         }
     },
-
 };

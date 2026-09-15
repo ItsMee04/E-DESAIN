@@ -1,70 +1,99 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../modules/authentication/views/LoginPage.vue'
-import MainLayout from '../layouts/MainLayout.vue'
-import DashboardView from '../modules/dashboard/views/DashboardPage.vue'
-import ProfesiView from '../modules/profesi/views/ProfesiPage.vue'
-import AgamaView from '../modules/agama/views/AgamaPage.vue'
-import JenisKelaminView from '../modules/jeniskelamin/views/JenisKelaminPage.vue'
-import JenisMediaView from '../modules/jenismedia/views/JenisMediaPage.vue'
-import PegawaiView from '../modules/pegawai/views/PegawaiPage.vue'
-import PenggunaView from '../modules/pengguna/views/PenggunaPage.vue'
+import { createRouter, createWebHistory } from "vue-router";
+
+import LoginView from "../modules/authentication/views/LoginPage.vue";
+import MainLayout from "../layouts/MainLayout.vue";
+import DashboardView from "../modules/dashboard/views/DashboardPage.vue";
+import ProfesiView from "../modules/profesi/views/ProfesiPage.vue";
+import AgamaView from "../modules/agama/views/AgamaPage.vue";
+import JenisKelaminView from "../modules/jeniskelamin/views/JenisKelaminPage.vue";
+import JenisMediaView from "../modules/jenismedia/views/JenisMediaPage.vue";
+import PegawaiView from "../modules/pegawai/views/PegawaiPage.vue";
+import PenggunaView from "../modules/pengguna/views/PenggunaPage.vue";
 
 const routes = [
     {
-        path: '/',
-        redirect: '/login'
+        path: "/",
+        redirect: "/login",
     },
+
     {
-        path: '/login',
-        name: 'login',
-        component: LoginView
+        path: "/login",
+        name: "login",
+        component: LoginView,
+        meta: {
+            guestOnly: true,
+        },
     },
+
     {
-        path: '/dashboard',
+        path: "/dashboard",
         component: MainLayout,
+        meta: {
+            requiresAuth: true,
+        },
         children: [
             {
-                path: '',
-                name: 'dashboard',
-                component: DashboardView
+                path: "",
+                name: "dashboard",
+                component: DashboardView,
             },
+
             {
-                path: '/master/profesi',
-                name: 'profesi',
-                component: ProfesiView
+                path: "/master/profesi",
+                name: "profesi",
+                component: ProfesiView,
             },
+
             {
-                path: '/master/agama',
-                name: 'agama',
-                component: AgamaView
+                path: "/master/agama",
+                name: "agama",
+                component: AgamaView,
             },
+
             {
-                path: '/master/jeniskelamin',
-                name: 'jeniskelamin',
-                component: JenisKelaminView
+                path: "/master/jeniskelamin",
+                name: "jeniskelamin",
+                component: JenisKelaminView,
             },
+
             {
-                path: '/master/jenismedia',
-                name: 'jenismedia',
-                component: JenisMediaView
+                path: "/master/jenismedia",
+                name: "jenismedia",
+                component: JenisMediaView,
             },
+
             {
-                path: '/management-user/pegawai',
-                name: 'pegawai',
-                component: PegawaiView
+                path: "/management-user/pegawai",
+                name: "pegawai",
+                component: PegawaiView,
             },
+
             {
-                path: '/management-user/pengguna',
-                name: 'pengguna',
-                component: PenggunaView
-            }
-        ]
-    }
-]
+                path: "/management-user/pengguna",
+                name: "pengguna",
+                component: PenggunaView,
+            },
+        ],
+    },
+];
 
 const router = createRouter({
     history: createWebHistory(),
-    routes
-})
+    routes,
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem("token");
+
+    if (to.meta.requiresAuth && !token) {
+        return next("/login");
+    }
+
+    if (to.meta.guestOnly && token) {
+        return next("/dashboard");
+    }
+
+    next();
+});
+
+export default router;

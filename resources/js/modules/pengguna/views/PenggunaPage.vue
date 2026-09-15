@@ -4,16 +4,21 @@
         <PenggunaTable v-model:searchQuery="searchQuery" :paginated-items="paginatedItems"
             :filtered-items="filteredItems" :is-loading="isLoading" :current-page="currentPage"
             :total-pages="totalPages" :items-per-page="itemsPerPage" @open-add="openAddModal" @open-edit="openEditModal"
-            @open-delete="openDeleteModal" @change-page="setPage" @refresh="refreshData" />
+            @open-delete="openDeleteModal" @open-access="openAccessModal" @change-page="setPage"
+            @refresh="refreshData" />
 
         <!-- Modal Form (Tambah / Edit) -->
-        <PenggunaModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors" :is-submitting="isSubmitting" @close="closeModal"
-            @save="saveForm" @validate-pengguna="validatePengguna" />
+        <PenggunaModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
+            :is-submitting="isSubmitting" @close="closeModal" @save="saveForm" @validate-pengguna="validatePengguna" />
 
         <!-- Reusable Confirm Delete Modal -->
         <ConfirmDeleteModal :is-open="isDeleteModalOpen" title="Hapus Data Pengguna?"
             :item-name="selectedDeleteItem?.pegawai?.nama" :is-deleting="isDeleting" @close="closeDeleteModal"
             @confirm="confirmDelete" />
+
+        <!-- Modal Hak Akses -->
+        <PenggunaAccessModal :is-open="isAccessModalOpen" :user="selectedAccessUser"  :permissions="accessPermissions" :is-submitting="isAccessSubmitting"
+            @close="closeAccessModal" @save="saveAccessPermission" />
     </div>
 </template>
 
@@ -23,6 +28,7 @@ import { usePengguna } from '../composables/usePengguna';
 import PenggunaTable from '../components/PenggunaTable.vue';
 import PenggunaModal from '../components/PenggunaModal.vue';
 import ConfirmDeleteModal from '../../../utilities/common/ConfirmModalDelete.vue';
+import PenggunaAccessModal from '../components/PenggunaAccessModal.vue';
 
 const {
     isLoading,
@@ -50,6 +56,13 @@ const {
     selectedDeleteItem,
     openDeleteModal,
     closeDeleteModal,
-    confirmDelete
+    confirmDelete,
+    isAccessModalOpen,
+    selectedAccessUser,
+    isAccessSubmitting,
+    openAccessModal,
+    closeAccessModal,
+    saveAccessPermission,
+    accessPermissions
 } = usePengguna();
 </script>

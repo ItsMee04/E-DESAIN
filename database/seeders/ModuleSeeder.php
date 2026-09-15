@@ -98,6 +98,16 @@ class ModuleSeeder extends Seeder
             'status' => 1,
         ]);
 
+        Module::create([
+            'parent_id' => $master->id,
+            'name' => 'Unit',
+            'key' => 'unit',
+            'route' => '/master/unit',
+            'icon' => null,
+            'sort_order' => 5,
+            'status' => 1,
+        ]);
+
         // =========================
         // MANAGEMENT USER
         // =========================

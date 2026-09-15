@@ -7,6 +7,7 @@ import ProfesiView from "../modules/profesi/views/ProfesiPage.vue";
 import AgamaView from "../modules/agama/views/AgamaPage.vue";
 import JenisKelaminView from "../modules/jeniskelamin/views/JenisKelaminPage.vue";
 import JenisMediaView from "../modules/jenismedia/views/JenisMediaPage.vue";
+import UnitView from "../modules/unit/views/UnitPage.vue";
 import PegawaiView from "../modules/pegawai/views/PegawaiPage.vue";
 import PenggunaView from "../modules/pengguna/views/PenggunaPage.vue";
 
@@ -60,6 +61,12 @@ const routes = [
                 path: "/master/jenismedia",
                 name: "jenismedia",
                 component: JenisMediaView,
+            },
+
+            {
+                path: "/master/unit",
+                name: "unit",
+                component: UnitView,
             },
 
             {

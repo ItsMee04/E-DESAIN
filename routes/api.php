@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\JenisMediaController;
 use App\Http\Controllers\Master\ModuleController;
 use App\Http\Controllers\Master\PegawaiController;
 use App\Http\Controllers\Master\ProfesiController;
+use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\UserPermission;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +52,13 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/store', [JenisMediaController::class, 'storeJenisMedia']);
             Route::post('/update', [JenisMediaController::class, 'updateJenisMedia']);
             Route::delete('/delete', [JenisMediaController::class, 'deleteJenisMedia']);
+        });
+
+        Route::prefix('unit')->group(function () {
+            Route::get('/', [UnitController::class, 'getUnit']);
+            Route::post('/store', [UnitController::class, 'storeUnit']);
+            Route::post('/update', [UnitController::class, 'updateUnit']);
+            Route::delete('/delete', [UnitController::class, 'deleteUnit']);
         });
 
         Route::prefix('modules')->group(function () {

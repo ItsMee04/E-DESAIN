@@ -38,9 +38,7 @@
                     <tr>
                         <th class="px-4 py-3 rounded-l-xl w-14 text-center">No.</th>
                         <th class="px-4 py-3">Name</th>
-                        <th class="px-4 py-3">Key</th>
                         <th class="px-4 py-3">Description</th>
-                        <th class="px-4 py-3">Sort Order</th>
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3 rounded-r-xl text-right">Aksi</th>
                     </tr>
@@ -49,7 +47,7 @@
                 <!-- State 1: Memuat Data (Loading) -->
                 <tbody v-if="isLoading" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="7" class="text-center py-6">
+                        <td colspan="5" class="text-center py-6">
                             <div class="flex flex-col items-center justify-center gap-2">
                                 <div
                                     class="w-6 h-6 border-2 border-[#B20600] border-t-transparent rounded-full animate-spin">
@@ -63,7 +61,7 @@
                 <!-- State 2: Tidak Ada Data -->
                 <tbody v-else-if="paginatedItems.length === 0" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="7" class="text-center py-6 text-xs text-blue-950/50">
+                        <td colspan="5" class="text-center py-6 text-xs text-blue-950/50">
                             Tidak ada data profesi yang ditemukan.
                         </td>
                     </tr>
@@ -77,9 +75,7 @@
                             {{ (currentPage - 1) * itemsPerPage + index + 1 }}
                         </td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.name }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.key }}</td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.description }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.sort_order }}</td>
                         <td class="px-4 py-3.5">
                             <span :class="[
                                 item.status === 1

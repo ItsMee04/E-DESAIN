@@ -47,12 +47,24 @@ class ModuleSeeder extends Seeder
             'status' => 1,
         ]);
 
+
+        Module::create([
+            'parent_id' => null,
+            'name' => 'Form Pengajua Desain',
+            'key' => 'pengajuan',
+            'route' => null,
+            'icon' => 'ClipboardList',
+            'sort_order' => 4,
+            'status' => 1,
+        ]);
+
         // =========================
         // AMBIL PARENT
         // =========================
 
         $master = Module::where('key', 'master')->first();
         $managementUser = Module::where('key', 'management_user')->first();
+        $formdesain = Module::where('key', 'pengajuan')->first();
 
         // =========================
         // MASTER DATA
@@ -127,6 +139,30 @@ class ModuleSeeder extends Seeder
             'name' => 'Pengguna',
             'key' => 'pengguna',
             'route' => '/management-user/pengguna',
+            'icon' => null,
+            'sort_order' => 2,
+            'status' => 1,
+        ]);
+
+        // =========================
+        // PENGAJUAN DESAIN
+        // =========================
+
+        Module::create([
+            'parent_id' => $formdesain->id,
+            'name' => 'Status Pengajuan',
+            'key' => 'statuspengajuan',
+            'route' => '/pengajuan/statuspengajuan',
+            'icon' => null,
+            'sort_order' => 1,
+            'status' => 1,
+        ]);
+
+        Module::create([
+            'parent_id' => $formdesain->id,
+            'name' => 'Pengajuan Desain',
+            'key' => 'pengajuandesain',
+            'route' => '/pengajuan/pengaujandesain',
             'icon' => null,
             'sort_order' => 2,
             'status' => 1,

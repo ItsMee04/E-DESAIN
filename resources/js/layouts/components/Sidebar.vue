@@ -110,7 +110,7 @@
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div
                         class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-                        AD
+                        {{ user?.username?.substring(0, 2).toUpperCase() || 'US' }}
                     </div>
                     <div v-show="!isCollapsed" class="flex flex-col min-w-0">
                         <span class="text-xs font-bold text-blue-950 truncate">
@@ -147,6 +147,7 @@ import {
     ChevronDown,
     Database,
     LogOut,
+    ClipboardList,
 } from 'lucide-vue-next';
 
 import { useModule } from '../../modules/pengguna/composables/useModule';
@@ -171,7 +172,8 @@ const iconMap = {
     Users,
     FileText,
     Settings,
-    Database
+    Database,
+    ClipboardList
 };
 
 const { modules, getModules } = useModule();

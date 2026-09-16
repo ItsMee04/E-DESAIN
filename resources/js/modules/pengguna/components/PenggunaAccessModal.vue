@@ -126,6 +126,46 @@
                     </div>
 
                     <!-- ========================= -->
+                    <!-- PENGAJUAN -->
+                    <!-- ========================= -->
+
+                    <div v-if="pengajuanModule" class="mt-2">
+                        <!-- PARENT -->
+                        <div class="flex items-center justify-between py-2">
+                            <div class="flex items-center gap-2">
+                                <button type="button" @click="toggleModule('pengajuan')"
+                                    class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
+                                    <ChevronDown v-if="expandedModules.pengajuan" :size="17" />
+
+                                    <ChevronRight v-else :size="17" />
+                                </button>
+
+                                <input ref="pengajuanCheckbox" type="checkbox" :checked="isPengajuanChecked"
+                                    @change="togglePengajuan"
+                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+
+                                <span class="text-sm font-medium text-gray-700">
+                                    {{ pengajuanModule.name }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- CHILDREN -->
+                        <div v-if="expandedModules.pengajuan" class="ml-6 border-l border-gray-100 pl-4">
+                            <label v-for="item in pengajuanModule.children" :key="item.id"
+                                class="flex items-center gap-3 py-1.5 cursor-pointer">
+                                <input v-model="permissions.pengajuanChildren" type="checkbox" :value="item.id"
+                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+
+                                <span class="text-sm text-gray-600">
+                                    {{ item.name }}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <!-- ========================= -->
                     <!-- MODULE LAIN -->
                     <!-- ========================= -->
 
@@ -216,8 +256,8 @@ const { modules, isLoading: isModuleLoading, getModules } = useModule();
 
 const expandedModules = reactive({
     master: false,
-
     management: false,
+    pengajuan: false,
 });
 
 // =====================================================
@@ -226,11 +266,9 @@ const expandedModules = reactive({
 
 const permissions = reactive({
     dashboard: false,
-
     masterChildren: [],
-
     managementChildren: [],
-
+    pengajuanChildren: [],
     other: [],
 });
 
@@ -240,11 +278,13 @@ const setPermissions = (moduleIds) => {
     permissions.dashboard = false;
     permissions.masterChildren = [];
     permissions.managementChildren = [];
+    permissions.pengajuanChildren = [];
     permissions.other = [];
 
     // RESET EXPAND
     expandedModules.master = false;
     expandedModules.management = false;
+    expandedModules.pengajuan = false;
 
     if (!moduleIds || !moduleIds.length) {
         return;
@@ -296,6 +336,23 @@ const setPermissions = (moduleIds) => {
     }
 
     // =====================================================
+    // PENGAJUAN
+    // =====================================================
+
+    if (pengajuanModule.value) {
+
+        permissions.pengajuanChildren =
+            (pengajuanModule.value.children || [])
+                .filter(child => moduleIds.includes(child.id))
+                .map(child => child.id);
+
+        // AUTO EXPAND
+        if (permissions.pengajuanChildren.length > 0) {
+            expandedModules.pengajuan = true;
+        }
+    }
+
+    // =====================================================
     // MODULE LAIN
     // =====================================================
 
@@ -310,8 +367,8 @@ const setPermissions = (moduleIds) => {
 // =====================================================
 
 const masterCheckbox = ref(null);
-
 const managementCheckbox = ref(null);
+const pengajuanCheckbox = ref(null);
 
 // =====================================================
 // FIND MODULE
@@ -329,6 +386,10 @@ const managementModule = computed(() => {
     return modules.value.find((module) => module.key === "management_user");
 });
 
+const pengajuanModule = computed(() => {
+    return modules.value.find((module) => module.key === "pengajuan");
+});
+
 // =====================================================
 // MODULE LAIN
 // =====================================================
@@ -338,7 +399,8 @@ const otherModules = computed(() => {
         return (
             module.key !== "dashboard" &&
             module.key !== "master" &&
-            module.key !== "management_user"
+            module.key !== "management_user" &&
+            module.key !== "pengajuan"
         );
     });
 });
@@ -374,6 +436,23 @@ const isManagementChecked = computed(() => {
     return (
         children.length > 0 &&
         permissions.managementChildren.length === children.length
+    );
+});
+
+// =====================================================
+// PENGAJUAN CHECKED
+// =====================================================
+
+const isPengajuanChecked = computed(() => {
+    if (!pengajuanModule.value) {
+        return false;
+    }
+
+    const children = pengajuanModule.value.children || [];
+
+    return (
+        children.length > 0 &&
+        permissions.pengajuanChildren.length === children.length
     );
 });
 
@@ -415,6 +494,25 @@ const toggleManagement = () => {
         permissions.managementChildren = [];
     } else {
         permissions.managementChildren = children.map((item) => item.id);
+    }
+};
+
+// =====================================================
+// TOGGLE PENGAJUAN
+// =====================================================
+const togglePengajuan = () => {
+    if (!pengajuanModule.value) {
+        return;
+    }
+
+    const children = pengajuanModule.value.children || [];
+
+    const allChecked = permissions.pengajuanChildren.length === children.length;
+
+    if (allChecked) {
+        permissions.pengajuanChildren = [];
+    } else {
+        permissions.pengajuanChildren = children.map((item) => item.id);
     }
 };
 
@@ -483,6 +581,30 @@ watch(
 );
 
 // =====================================================
+// INDETERMINATE PENGAJUAN
+// =====================================================
+
+watch(
+    () => permissions.pengajuanChildren,
+    (value) => {
+        nextTick(() => {
+            if (!pengajuanCheckbox.value || !pengajuanModule.value) {
+                return;
+            }
+
+            const total = pengajuanModule.value.children?.length || 0;
+
+            pengajuanCheckbox.value.indeterminate =
+                value.length > 0 && value.length < total;
+        });
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
+
+// =====================================================
 // TOGGLE EXPAND MODULE
 // =====================================================
 
@@ -516,6 +638,8 @@ const savePermission = () => {
         ...permissions.masterChildren,
 
         ...permissions.managementChildren,
+
+        ...permissions.pengajuanChildren,
 
         ...permissions.other
     ];

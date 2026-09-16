@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\ProfesiController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\UserPermission;
+use App\Http\Controllers\Pengajuan\StatusPengajuanController;
 use Illuminate\Support\Facades\Route;
 
 // Login
@@ -91,6 +92,15 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/store', [UserController::class, 'createUser']);
             Route::post('/update', [UserController::class, 'updateUser']);
             Route::delete('/delete', [UserController::class, 'deleteUser']);
+        });
+    });
+
+    Route::prefix('pengajuan')->group(function () {
+        Route::prefix('statuspengajuan')->group(function () {
+            Route::get('/', [StatusPengajuanController::class, 'getStatusPengajuan']);
+            Route::post('/store', [StatusPengajuanController::class, 'storeStatusPengajuan']);
+            Route::post('/update', [StatusPengajuanController::class, 'updateStatusPengajuan']);
+            Route::delete('/delete', [StatusPengajuanController::class, 'deleteStatusPengajuan']);
         });
     });
 

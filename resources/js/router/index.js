@@ -10,6 +10,7 @@ import JenisMediaView from "../modules/jenismedia/views/JenisMediaPage.vue";
 import UnitView from "../modules/unit/views/UnitPage.vue";
 import PegawaiView from "../modules/pegawai/views/PegawaiPage.vue";
 import PenggunaView from "../modules/pengguna/views/PenggunaPage.vue";
+import StatusPengajuanView from "../modules/statuspengajuan/views/StatusPengajuanPage.vue"
 
 const routes = [
     {
@@ -79,6 +80,12 @@ const routes = [
                 path: "/management-user/pengguna",
                 name: "pengguna",
                 component: PenggunaView,
+            },
+
+            {
+                path: "/pengajuan/statuspengajuan",
+                name: "statuspengajuan",
+                component: StatusPengajuanView,
             },
         ],
     },

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pengajuan extends Model
 {
@@ -64,5 +65,35 @@ class Pengajuan extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the pengajuanjenismedia for the Pengajuan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pengajuanjenismedia(): HasMany
+    {
+        return $this->hasMany(PengajuanJenisMedia::class, 'pengajuan_id', 'id');
+    }
+
+    /**
+     * Get all of the pengajuanvalidasi for the Pengajuan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pengajuanvalidasi(): HasMany
+    {
+        return $this->hasMany(PengajuanValidasi::class, 'pengajuan_id', 'id');
+    }
+
+    /**
+     * Get all of the pengajuanhistory for the Pengajuan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pengajuanhistory(): HasMany
+    {
+        return $this->hasMany(PengajuanHistory::class, 'pengajuan_id', 'id');
     }
 }

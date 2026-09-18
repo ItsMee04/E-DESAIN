@@ -7,14 +7,18 @@
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
                 <div>
                     <h2 class="text-base font-bold text-blue-950">
-                        {{ isEditing ? 'Edit Data Pegawai' : 'Tambah Data Pegawai' }}
+                        {{
+                            isEditing
+                                ? "Edit Data Pegawai"
+                                : "Tambah Data Pegawai"
+                        }}
                     </h2>
 
                     <p class="text-xs text-blue-950/50 mt-1">
                         {{
                             isEditing
-                                ? 'Perbarui informasi data pegawai.'
-                                : 'Tambahkan data pegawai baru.'
+                                ? "Perbarui informasi data pegawai."
+                                : "Tambahkan data pegawai baru."
                         }}
                     </p>
                 </div>
@@ -37,7 +41,7 @@
                             class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
                             :class="{
                                 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.nip
+                                    errors.nip,
                             }" @blur="$emit('validate-pegawai', 'nip')" />
 
                         <p v-if="errors.nip" class="text-[11px] text-rose-600">
@@ -54,7 +58,7 @@
                             class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
                             :class="{
                                 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.nama
+                                    errors.nama,
                             }" @blur="$emit('validate-pegawai', 'nama')" />
 
                         <p v-if="errors.nama" class="text-[11px] text-rose-600">
@@ -76,7 +80,7 @@
                             class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
                             :class="{
                                 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.tempat
+                                    errors.tempat,
                             }" @blur="$emit('validate-pegawai', 'tempat')" />
 
                         <p v-if="errors.tempat" class="text-[11px] text-rose-600">
@@ -95,7 +99,7 @@
                             class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
                             :class="{
                                 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.tanggal
+                                    errors.tanggal,
                             }" @blur="$emit('validate-pegawai', 'tanggal')" />
 
                         <p v-if="errors.tanggal" class="text-[11px] text-rose-600">
@@ -116,10 +120,7 @@
                             class="flex items-center gap-2 text-xs text-blue-950/70 cursor-pointer">
                             <input v-model="form.jeniskelamin_id" type="radio" :value="item.id"
                                 class="w-4 h-4 accent-[#B20600] cursor-pointer" @change="
-                                    $emit(
-                                        'validate-pegawai',
-                                        'jeniskelamin_id'
-                                    )
+                                    $emit('validate-pegawai', 'jeniskelamin_id')
                                     " />
 
                             <span>{{ item.jeniskelamin }}</span>
@@ -132,120 +133,32 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                     <!-- Agama -->
-                    <div class="relative">
-                        <label class="block text-xs font-medium text-blue-950 mb-1.5">
-                            Agama <span class="text-red-500">*</span>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-blue-950">
+                            Agama <span class="text-rose-600">*</span>
                         </label>
 
-                        <!-- Input -->
-                        <div class="relative">
-                            <input v-model="agamaSearch" type="text" placeholder="Pilih agama..."
-                                class="w-full h-10 px-3 pr-10 text-sm text-blue-950 bg-white border border-blue-950/15 rounded-lg outline-none transition-all duration-200 focus:border-[#B20600] focus:ring-2 focus:ring-[#B20600]/10"
-                                @focus="isAgamaOpen = true" @input="isAgamaOpen = true" @blur="closeAgamaDropdown" />
+                        <SearchableDropdown v-model="form.agama_id" :options="agamaOptions" label-key="agama"
+                            value-key="id" placeholder="Pilih agama..." dropdown-title="Pilih agama"
+                            empty-text="Data agama tidak ditemukan." />
 
-                            <ChevronDown
-                                class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-950/50 pointer-events-none transition-transform duration-200"
-                                :class="{ 'rotate-180': isAgamaOpen }" />
-                        </div>
-
-                        <!-- Dropdown -->
-                        <div v-if="isAgamaOpen"
-                            class="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-blue-950/10 rounded-xl shadow-lg shadow-blue-950/10 overflow-hidden">
-                            <!-- Header kecil -->
-                            <div class="px-3 py-2 border-b border-blue-950/5">
-                                <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
-                                    Pilih agama
-                                </p>
-                            </div>
-
-                            <!-- List -->
-                            <div class="max-h-48 overflow-y-auto py-1">
-                                <button v-for="item in filteredAgama" :key="item.id" type="button"
-                                    class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
-                                    :class="form.agama_id === item.id
-                                        ? 'bg-[#B20600]/5 text-[#B20600]'
-                                        : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
-                                        " @mousedown.prevent="selectAgama(item)">
-                                    <span>{{ item.agama }}</span>
-
-                                    <span v-if="form.agama_id === item.id"
-                                        class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
-                                        ✓
-                                    </span>
-                                </button>
-
-                                <!-- Empty state -->
-                                <div v-if="filteredAgama.length === 0" class="px-3 py-6 text-center">
-                                    <p class="text-xs text-blue-950/40">
-                                        Data agama tidak ditemukan.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Error -->
-                        <p v-if="errors.agama_id" class="mt-1 text-[11px] text-red-500">
+                        <p v-if="errors.agama_id" class="text-[11px] text-red-500">
                             {{ errors.agama_id }}
                         </p>
                     </div>
 
                     <!-- Profesi -->
-                    <div class="relative">
-                        <label class="block text-xs font-medium text-blue-950 mb-1.5">
-                            Profesi <span class="text-red-500">*</span>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-blue-950">
+                            Profesi <span class="text-rose-600">*</span>
                         </label>
 
-                        <!-- Input -->
-                        <div class="relative">
-                            <input v-model="profesiSearch" type="text" placeholder="Pilih profesi..."
-                                class="w-full h-10 px-3 pr-10 text-sm text-blue-950 bg-white border border-blue-950/15 rounded-lg outline-none transition-all duration-200 focus:border-[#B20600] focus:ring-2 focus:ring-[#B20600]/10"
-                                @focus="isProfesiOpen = true" @input="isProfesiOpen = true"
-                                @blur="closeProfesiDropdown" />
+                        <SearchableDropdown v-model="form.profesi_id" :options="profesiOptions" label-key="profesi"
+                            value-key="id" placeholder="Pilih profesi..." dropdown-title="Pilih profesi"
+                            empty-text="Data profesi tidak ditemukan." />
 
-                            <ChevronDown
-                                class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-950/50 pointer-events-none transition-transform duration-200"
-                                :class="{ 'rotate-180': isProfesiOpen }" />
-                        </div>
-
-                        <!-- Dropdown -->
-                        <div v-if="isProfesiOpen"
-                            class="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-blue-950/10 rounded-xl shadow-lg shadow-blue-950/10 overflow-hidden">
-                            <!-- Header kecil -->
-                            <div class="px-3 py-2 border-b border-blue-950/5">
-                                <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
-                                    Pilih profesi
-                                </p>
-                            </div>
-
-                            <!-- List -->
-                            <div class="max-h-48 overflow-y-auto py-1">
-                                <button v-for="item in filteredProfesi" :key="item.id" type="button"
-                                    class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
-                                    :class="form.profesi_id === item.id
-                                        ? 'bg-[#B20600]/5 text-[#B20600]'
-                                        : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
-                                        " @mousedown.prevent="selectProfesi(item)">
-                                    <span>{{ item.profesi }}</span>
-
-                                    <span v-if="form.profesi_id === item.id"
-                                        class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
-                                        ✓
-                                    </span>
-                                </button>
-
-                                <!-- Empty state -->
-                                <div v-if="filteredProfesi.length === 0" class="px-3 py-6 text-center">
-                                    <p class="text-xs text-blue-950/40">
-                                        Data profesi tidak ditemukan.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Error -->
-                        <p v-if="errors.profesi_id" class="mt-1 text-[11px] text-red-500">
+                        <p v-if="errors.profesi_id" class="text-[11px] text-red-500">
                             {{ errors.profesi_id }}
                         </p>
                     </div>
@@ -324,7 +237,7 @@
                                 <!-- Info -->
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-medium text-blue-950 truncate">
-                                        {{ selectedFileName || 'Foto pegawai' }}
+                                        {{ selectedFileName || "Foto pegawai" }}
                                     </p>
 
                                     <p class="text-[11px] text-green-600 mt-1">
@@ -355,7 +268,7 @@
                             class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
 
                         <span>
-                            {{ isSubmitting ? 'Menyimpan...' : 'Simpan' }}
+                            {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
                         </span>
                     </button>
                 </div>
@@ -365,169 +278,76 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import {
-    X,
-    ChevronDown,
-    Image as ImageIcon
-} from 'lucide-vue-next';
+import { ref, watch } from "vue";
+import { X, Image as ImageIcon } from "lucide-vue-next";
+
+import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
 
 const props = defineProps({
     isOpen: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     isEditing: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     form: {
         type: Object,
-        required: true
+        required: true,
     },
 
     errors: {
         type: Object,
-        default: () => ({})
+        default: () => ({}),
     },
 
     isSubmitting: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     agamaOptions: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 
     profesiOptions: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 
     jeniskelaminOptions: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 
     imagePreview: {
         type: String,
-        default: ''
-    }
+        default: "",
+    },
 });
 
-const emit = defineEmits([
-    'close',
-    'save',
-    'validate-pegawai',
-    'image-change'
-]);
-
-const agamaSearch = ref('');
-const profesiSearch = ref('');
-
-const isAgamaOpen = ref(false);
-const isProfesiOpen = ref(false);
+const emit = defineEmits(["close", "save", "validate-pegawai", "image-change"]);
 
 const fileInput = ref(null);
-const selectedFileName = ref('');
+const selectedFileName = ref("");
 
-/*
-|--------------------------------------------------------------------------
-| Filter Agama
-|--------------------------------------------------------------------------
-*/
+watch(
+    () => props.form.agama_id,
+    () => {
+        emit("validate-pegawai", "agama_id");
+    },
+);
 
-const filteredAgama = computed(() => {
-    const query = agamaSearch.value
-        .toLowerCase()
-        .trim();
-
-    if (!query) {
-        return props.agamaOptions;
-    }
-
-    return props.agamaOptions.filter((item) =>
-        item.agama?.toLowerCase().includes(query)
-    );
-});
-
-/*
-|--------------------------------------------------------------------------
-| Filter Profesi
-|--------------------------------------------------------------------------
-*/
-
-const filteredProfesi = computed(() => {
-    const query = profesiSearch.value
-        .toLowerCase()
-        .trim();
-
-    if (!query) {
-        return props.profesiOptions;
-    }
-
-    return props.profesiOptions.filter((item) =>
-        item.profesi?.toLowerCase().includes(query)
-    );
-});
-
-/*
-|--------------------------------------------------------------------------
-| Select Agama
-|--------------------------------------------------------------------------
-*/
-
-const selectAgama = (item) => {
-    props.form.agama_id = item.id;
-    agamaSearch.value = item.agama;
-
-    isAgamaOpen.value = false;
-
-    emit('validate-pegawai', 'agama_id');
-};
-
-/*
-|--------------------------------------------------------------------------
-| Select Profesi
-|--------------------------------------------------------------------------
-*/
-
-const selectProfesi = (item) => {
-    props.form.profesi_id = item.id;
-    profesiSearch.value = item.profesi;
-
-    isProfesiOpen.value = false;
-
-    emit('validate-pegawai', 'profesi_id');
-};
-
-/*
-|--------------------------------------------------------------------------
-| Close Dropdown
-|--------------------------------------------------------------------------
-*/
-
-const closeAgamaDropdown = () => {
-    setTimeout(() => {
-        isAgamaOpen.value = false;
-    }, 150);
-};
-
-const closeProfesiDropdown = () => {
-    setTimeout(() => {
-        isProfesiOpen.value = false;
-    }, 150);
-};
-
-/*
-|--------------------------------------------------------------------------
-| Image
-|--------------------------------------------------------------------------
-*/
+watch(
+    () => props.form.profesi_id,
+    () => {
+        emit("validate-pegawai", "profesi_id");
+    },
+);
 
 const handleImageChange = (event) => {
     const file = event.target.files?.[0];
@@ -538,82 +358,17 @@ const handleImageChange = (event) => {
 
     selectedFileName.value = file.name;
 
-    emit('image-change', file);
+    emit("image-change", file);
 
-    // Reset input agar file yang sama bisa dipilih kembali
-    event.target.value = '';
+    event.target.value = "";
 };
-
-/*
-|--------------------------------------------------------------------------
-| Sync Agama Search
-|--------------------------------------------------------------------------
-*/
-
-watch(
-    [
-        () => props.form.agama_id,
-        () => props.agamaOptions
-    ],
-    ([id, options]) => {
-        if (id === null || id === undefined || id === '') {
-            agamaSearch.value = '';
-            return;
-        }
-
-        const selected = options.find(
-            (item) => Number(item.id) === Number(id)
-        );
-
-        agamaSearch.value = selected?.agama ?? '';
-    },
-    {
-        immediate: true,
-        deep: true
-    }
-);
-
-/*
-|--------------------------------------------------------------------------
-| Sync Profesi Search
-|--------------------------------------------------------------------------
-*/
-
-watch(
-    [
-        () => props.form.profesi_id,
-        () => props.profesiOptions
-    ],
-    ([id, options]) => {
-        if (id === null || id === undefined || id === '') {
-            profesiSearch.value = '';
-            return;
-        }
-
-        const selected = options.find(
-            (item) => Number(item.id) === Number(id)
-        );
-
-        profesiSearch.value = selected?.profesi ?? '';
-    },
-    {
-        immediate: true,
-        deep: true
-    }
-);
-/*
-|--------------------------------------------------------------------------
-| Reset Search ketika modal ditutup
-|--------------------------------------------------------------------------
-*/
 
 watch(
     () => props.isOpen,
     (isOpen) => {
         if (!isOpen) {
-            isAgamaOpen.value = false;
-            isProfesiOpen.value = false;
+            selectedFileName.value = "";
         }
-    }
+    },
 );
 </script>

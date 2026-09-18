@@ -48,51 +48,9 @@
                         Unit <span class="text-red-500">*</span>
                     </label>
 
-                    <!-- Input -->
-                    <div class="relative">
-                        <input v-model="unitSearch" type="text" placeholder="Pilih unit..."
-                            class="w-full h-10 px-3 pr-10 text-sm text-blue-950 bg-white border border-blue-950/15 rounded-lg outline-none transition-all duration-200 focus:border-[#B20600] focus:ring-2 focus:ring-[#B20600]/10"
-                            @focus="isUnitOpen = true" @input="isUnitOpen = true" @blur="closeUnitDropdown" />
-
-                        <ChevronDown
-                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-950/50 pointer-events-none transition-transform duration-200"
-                            :class="{ 'rotate-180': isUnitOpen }" />
-                    </div>
-
-                    <!-- Dropdown -->
-                    <div v-if="isUnitOpen"
-                        class="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-blue-950/10 rounded-xl shadow-lg shadow-blue-950/10 overflow-hidden">
-                        <!-- Header -->
-                        <div class="px-3 py-2 border-b border-blue-950/5">
-                            <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
-                                Pilih unit
-                            </p>
-                        </div>
-
-                        <!-- List -->
-                        <div class="max-h-48 overflow-y-auto py-1">
-                            <button v-for="unit in filteredUnits" :key="unit.id" type="button"
-                                class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
-                                :class="form.unit_id === unit.id
-                                    ? 'bg-[#B20600]/5 text-[#B20600]'
-                                    : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
-                                    " @mousedown.prevent="selectUnit(unit)">
-                                <span>{{ unit.unit }}</span>
-
-                                <span v-if="form.unit_id === unit.id"
-                                    class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
-                                    ✓
-                                </span>
-                            </button>
-
-                            <!-- Empty State -->
-                            <div v-if="filteredUnits.length === 0" class="px-3 py-6 text-center">
-                                <p class="text-xs text-blue-950/40">
-                                    Data unit tidak ditemukan.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <SearchableDropdown v-model="form.unit_id" :options="unitOptions" label-key="unit" value-key="id"
+                        placeholder="Pilih unit..." dropdown-title="Pilih unit"
+                        empty-text="Data unit tidak ditemukan." />
 
                     <!-- Error -->
                     <p v-if="errors.unit_id" class="mt-1 text-[11px] text-red-500">
@@ -239,9 +197,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-
-import { X, ChevronDown } from "lucide-vue-next";
+import { computed } from "vue";
+import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
+import { X } from "lucide-vue-next";
 
 const props = defineProps({
     isOpen: {
@@ -279,7 +237,7 @@ const props = defineProps({
         default: () => [],
     },
 });
-
+const unitOptions = computed(() => props.units);
 const emit = defineEmits([
     "close",
     "save",
@@ -290,87 +248,4 @@ const emit = defineEmits([
     "validate-jumlah",
     "validate-keperluan",
 ]);
-
-/*
-|--------------------------------------------------------------------------
-| Unit Dropdown
-|--------------------------------------------------------------------------
-*/
-
-const unitSearch = ref("");
-const isUnitOpen = ref(false);
-
-const filteredUnits = computed(() => {
-    const query = unitSearch.value.trim().toLowerCase();
-
-    if (!query) {
-        return props.units;
-    }
-
-    return props.units.filter((unit) =>
-        unit.unit?.toLowerCase().includes(query),
-    );
-});
-
-const selectUnit = (unit) => {
-    props.form.unit_id = unit.id;
-
-    unitSearch.value = unit.unit;
-
-    isUnitOpen.value = false;
-
-    emit("validate-unit");
-};
-
-const closeUnitDropdown = () => {
-    setTimeout(() => {
-        isUnitOpen.value = false;
-
-        const selectedUnit = props.units.find(
-            (unit) => unit.id === props.form.unit_id,
-        );
-
-        unitSearch.value = selectedUnit?.unit ?? "";
-    }, 150);
-};
-
-/*
-|--------------------------------------------------------------------------
-| Sinkronisasi Unit Saat Modal Dibuka
-|--------------------------------------------------------------------------
-*/
-
-watch(
-    () => props.isOpen,
-    (value) => {
-        if (!value) {
-            return;
-        }
-
-        const selectedUnit = props.units.find(
-            (unit) => unit.id === props.form.unit_id,
-        );
-
-        unitSearch.value = selectedUnit?.unit ?? "";
-
-        isUnitOpen.value = false;
-    },
-);
-
-/*
-|--------------------------------------------------------------------------
-| Sinkronisasi Unit Jika Data Unit Berubah
-|--------------------------------------------------------------------------
-*/
-
-watch(
-    () => props.form.unit_id,
-    (value) => {
-        const selectedUnit = props.units.find((unit) => unit.id === value);
-
-        if (selectedUnit) {
-            unitSearch.value = selectedUnit.unit;
-        }
-    },
-);
 </script>

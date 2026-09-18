@@ -3,6 +3,11 @@
 namespace App\Services\Pengajuan;
 
 use App\Models\Pengajuan\Pengajuan;
+use App\Models\Pengajuan\PengajuanHistory;
+use App\Models\Pengajuan\PengajuanJenisMedia;
+use App\Models\Pengajuan\PengajuanValidasi;
+use App\Models\Pengajuan\StatusPengajuan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengajuanService
@@ -46,17 +51,54 @@ class PengajuanService
     public function storePengajuan(array $data)
     {
         return DB::transaction(function () use ($data) {
+            $user = Auth::user();
+
+            $statusDiajukan = StatusPengajuan::where('key', 'diajukan')
+                ->firstOrFail();
+
+            $statusMenungguValidasi = StatusPengajuan::where('key', 'menunggu_validasi')
+                ->firstOrFail();
 
             $pengajuan = Pengajuan::create([
                 'nomor' => $this->generateNomor(),
-                'pegawai_id' => $data['pegawai_id'],
+                'pegawai_id' => $user->pegawai_id,
                 'unit_id' => $data['unit_id'],
-                'statuspengajuan_id' => $data['statuspengajuan_id'],
+                'statuspengajuan_id' => $statusMenungguValidasi->id,
                 'nama_desain' => $data['nama_desain'],
                 'ukuran' => $data['ukuran'],
                 'jumlah' => $data['jumlah'],
                 'keperluan' => $data['keperluan'],
-                'user_id' => $data['user_id'],
+                'user_id' => $user->id,
+            ]);
+
+            foreach ($data['jenis_media'] as $jenisMediaId) {
+                PengajuanJenisMedia::create([
+                    'pengajuan_id' => $pengajuan->id,
+                    'jenismedia_id' => $jenisMediaId,
+                ]);
+            }
+
+            PengajuanHistory::create([
+                'pengajuan_id' => $pengajuan->id,
+                'statuspengajuan_id' => $statusDiajukan->id,
+                'user_id' => $user->id,
+                'catatan' => 'Pengajuan desain berhasil dibuat.',
+            ]);
+
+            PengajuanHistory::create([
+                'pengajuan_id' => $pengajuan->id,
+                'statuspengajuan_id' => $statusMenungguValidasi->id,
+                'user_id' => $user->id,
+                'catatan' => 'Pengajuan menunggu proses validasi.',
+            ]);
+
+            PengajuanValidasi::create([
+                'pengajuan_id' => $pengajuan->id,
+                'user_id' => null,
+                'jenis' => 'validasi',
+                'status' => 'pending',
+                'catatan' => null,
+                'validated_at' => null,
             ]);
 
             return $pengajuan->load([
@@ -65,6 +107,9 @@ class PengajuanService
                 'statuspengajuan',
                 'user',
                 'pengajuanjenismedia.jenisMedia',
+                'pengajuanhistory.statusPengajuan',
+                'pengajuanhistory.user',
+                'pengajuanvalidasi',
             ]);
         });
     }

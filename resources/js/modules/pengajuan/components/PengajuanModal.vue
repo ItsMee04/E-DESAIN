@@ -1,19 +1,24 @@
 <template>
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-blue-950/40 backdrop-blur-sm">
+    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 backdrop-blur-xs p-4">
 
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-
+        <div
+            class="bg-white rounded-2xl border border-gray-100 shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
             <!-- Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <div>
                     <h2 class="text-lg font-bold text-blue-950">
-                        {{ isEditing ? 'Edit Pengajuan Desain' : 'Tambah Pengajuan Desain' }}
+                        {{
+                            isEditing
+                                ? "Edit Pengajuan Desain"
+                                : "Tambah Pengajuan Desain"
+                        }}
                     </h2>
 
                     <p class="text-xs text-blue-950/60 mt-0.5">
-                        {{ isEditing
-                            ? 'Perbarui data pengajuan desain'
-                            : 'Isi formulir pengajuan desain'
+                        {{
+                            isEditing
+                                ? "Perbarui data pengajuan desain"
+                                : "Isi formulir pengajuan desain"
                         }}
                     </p>
                 </div>
@@ -21,14 +26,12 @@
                 <button @click="$emit('close')" :disabled="isSubmitting"
                     class="p-2 rounded-lg text-blue-950/50 hover:bg-gray-100 hover:text-blue-950 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Tutup">
-
                     <X :size="18" />
                 </button>
             </div>
 
             <!-- Form -->
-            <form @submit.prevent="$emit('save')" class="p-6 space-y-5">
-
+            <form @submit.prevent="$emit('save')" class="p-6 space-y-5 overflow-y-auto">
                 <!-- Yang Mengajukan -->
                 <div>
                     <label class="block text-xs font-semibold text-blue-950 mb-1.5">
@@ -68,7 +71,6 @@
 
                         <!-- List -->
                         <div class="max-h-48 overflow-y-auto py-1">
-
                             <button v-for="unit in filteredUnits" :key="unit.id" type="button"
                                 class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
                                 :class="form.unit_id === unit.id
@@ -89,7 +91,6 @@
                                     Data unit tidak ditemukan.
                                 </p>
                             </div>
-
                         </div>
                     </div>
 
@@ -111,7 +112,8 @@
                         class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
                         :class="errors.nama_desain
                             ? 'border-rose-400'
-                            : 'border-gray-200'" />
+                            : 'border-gray-200'
+                            " />
 
                     <p v-if="errors.nama_desain" class="mt-1.5 text-[11px] text-rose-600">
                         {{ errors.nama_desain }}
@@ -144,7 +146,6 @@
 
                 <!-- Ukuran & Jumlah -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                     <!-- Ukuran -->
                     <div>
                         <label class="block text-xs font-semibold text-blue-950 mb-1.5">
@@ -157,7 +158,8 @@
                             class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
                             :class="errors.ukuran
                                 ? 'border-rose-400'
-                                : 'border-gray-200'" />
+                                : 'border-gray-200'
+                                " />
 
                         <p v-if="errors.ukuran" class="mt-1.5 text-[11px] text-rose-600">
                             {{ errors.ukuran }}
@@ -176,13 +178,13 @@
                             class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
                             :class="errors.jumlah
                                 ? 'border-rose-400'
-                                : 'border-gray-200'" />
+                                : 'border-gray-200'
+                                " />
 
                         <p v-if="errors.jumlah" class="mt-1.5 text-[11px] text-rose-600">
                             {{ errors.jumlah }}
                         </p>
                     </div>
-
                 </div>
 
                 <!-- Keperluan -->
@@ -197,7 +199,8 @@
                         class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition resize-none"
                         :class="errors.keperluan
                             ? 'border-rose-400'
-                            : 'border-gray-200'">
+                            : 'border-gray-200'
+                            ">
                     </textarea>
 
                     <p v-if="errors.keperluan" class="mt-1.5 text-[11px] text-rose-600">
@@ -207,7 +210,6 @@
 
                 <!-- Footer -->
                 <div class="flex items-center justify-end gap-2.5 pt-2 border-t border-gray-100">
-
                     <button type="button" @click="$emit('close')" :disabled="isSubmitting"
                         class="px-4 py-2.5 text-xs font-semibold text-blue-950 bg-gray-100 hover:bg-gray-200 rounded-xl transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                         Batal
@@ -215,20 +217,21 @@
 
                     <button type="submit" :disabled="isSubmitting"
                         class="flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-white bg-[#B20600] hover:bg-[#8E0500] rounded-xl transition cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
-
                         <div v-if="isSubmitting"
-                            class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin">
-                        </div>
+                            class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
 
                         <span>
-                            {{ isSubmitting
-                                ? (isEditing ? 'Menyimpan...' : 'Mengajukan...')
-                                : (isEditing ? 'Simpan Perubahan' : 'Ajukan Pengajuan')
+                            {{
+                                isSubmitting
+                                    ? isEditing
+                                        ? "Menyimpan..."
+                                        : "Mengajukan..."
+                                    : isEditing
+                                        ? "Simpan Perubahan"
+                                        : "Ajukan Pengajuan"
                             }}
                         </span>
-
                     </button>
-
                 </div>
             </form>
         </div>
@@ -236,56 +239,138 @@
 </template>
 
 <script setup>
-import {
-    X,
-    ChevronDown
-} from 'lucide-vue-next';
+import { ref, computed, watch } from "vue";
 
-defineProps({
+import { X, ChevronDown } from "lucide-vue-next";
+
+const props = defineProps({
     isOpen: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     isEditing: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     form: {
         type: Object,
-        required: true
+        required: true,
     },
 
     errors: {
         type: Object,
-        default: () => ({})
+        default: () => ({}),
     },
 
     isSubmitting: {
         type: Boolean,
-        default: false
+        default: false,
     },
 
     units: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
 
     jenisMedia: {
         type: Array,
-        default: () => []
-    }
+        default: () => [],
+    },
 });
 
-defineEmits([
-    'close',
-    'save',
-    'validate-unit',
-    'validate-nama-desain',
-    'validate-jenis-media',
-    'validate-ukuran',
-    'validate-jumlah',
-    'validate-keperluan'
+const emit = defineEmits([
+    "close",
+    "save",
+    "validate-unit",
+    "validate-nama-desain",
+    "validate-jenis-media",
+    "validate-ukuran",
+    "validate-jumlah",
+    "validate-keperluan",
 ]);
+
+/*
+|--------------------------------------------------------------------------
+| Unit Dropdown
+|--------------------------------------------------------------------------
+*/
+
+const unitSearch = ref("");
+const isUnitOpen = ref(false);
+
+const filteredUnits = computed(() => {
+    const query = unitSearch.value.trim().toLowerCase();
+
+    if (!query) {
+        return props.units;
+    }
+
+    return props.units.filter((unit) =>
+        unit.unit?.toLowerCase().includes(query),
+    );
+});
+
+const selectUnit = (unit) => {
+    props.form.unit_id = unit.id;
+
+    unitSearch.value = unit.unit;
+
+    isUnitOpen.value = false;
+
+    emit("validate-unit");
+};
+
+const closeUnitDropdown = () => {
+    setTimeout(() => {
+        isUnitOpen.value = false;
+
+        const selectedUnit = props.units.find(
+            (unit) => unit.id === props.form.unit_id,
+        );
+
+        unitSearch.value = selectedUnit?.unit ?? "";
+    }, 150);
+};
+
+/*
+|--------------------------------------------------------------------------
+| Sinkronisasi Unit Saat Modal Dibuka
+|--------------------------------------------------------------------------
+*/
+
+watch(
+    () => props.isOpen,
+    (value) => {
+        if (!value) {
+            return;
+        }
+
+        const selectedUnit = props.units.find(
+            (unit) => unit.id === props.form.unit_id,
+        );
+
+        unitSearch.value = selectedUnit?.unit ?? "";
+
+        isUnitOpen.value = false;
+    },
+);
+
+/*
+|--------------------------------------------------------------------------
+| Sinkronisasi Unit Jika Data Unit Berubah
+|--------------------------------------------------------------------------
+*/
+
+watch(
+    () => props.form.unit_id,
+    (value) => {
+        const selectedUnit = props.units.find((unit) => unit.id === value);
+
+        if (selectedUnit) {
+            unitSearch.value = selectedUnit.unit;
+        }
+    },
+);
 </script>

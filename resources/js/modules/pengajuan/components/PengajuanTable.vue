@@ -21,13 +21,70 @@
                 </div>
 
                 <!-- Filter Status -->
-                <select v-model="statusFilter"
-                    class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition cursor-pointer">
-                    <option value="">Semua Status</option>
-                    <option v-for="status in statuses" :key="status.id" :value="status.id">
-                        {{ status.name }}
-                    </option>
-                </select>
+                <div ref="statusDropdownRef" class="relative w-40">
+                    <!-- Input -->
+                    <div class="relative">
+                        <input v-model="statusSearch" ref="statusInputRef" type="text" placeholder="Semua Status"
+                            class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 pr-9 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:border-[#B20600] focus:bg-white transition cursor-pointer"
+                            @focus="openStatusDropdown" @input="isStatusOpen = true" />
+
+                        <ChevronDown
+                            class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-950/50 pointer-events-none transition-transform duration-200"
+                            :class="{ 'rotate-180': isStatusOpen }" />
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div v-if="isStatusOpen"
+                        class="absolute z-50 left-0 right-0 mt-1.5 bg-white border border-blue-950/10 rounded-xl shadow-lg shadow-blue-950/10 overflow-hidden">
+                        <!-- Header -->
+                        <div class="px-3 py-2 border-b border-blue-950/5">
+                            <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
+                                Pilih status
+                            </p>
+                        </div>
+
+                        <!-- List -->
+                        <div class="max-h-48 overflow-y-auto py-1">
+
+                            <!-- Semua Status -->
+                            <button type="button"
+                                class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
+                                :class="!statusFilter
+                                    ? 'bg-[#B20600]/5 text-[#B20600]'
+                                    : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
+                                    " @mousedown.prevent="selectStatus(null)">
+                                <span>Semua Status</span>
+
+                                <span v-if="!statusFilter"
+                                    class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
+                                    ✓
+                                </span>
+                            </button>
+
+                            <!-- Status dari API -->
+                            <button v-for="status in filteredStatuses" :key="status.id" type="button"
+                                class="w-full flex items-center justify-between px-3 py-2.5 text-left text-sm transition-colors duration-150"
+                                :class="String(statusFilter) === String(status.id)
+                                    ? 'bg-[#B20600]/5 text-[#B20600]'
+                                    : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
+                                    " @mousedown.prevent="selectStatus(status)">
+                                <span>{{ status.name }}</span>
+
+                                <span v-if="String(statusFilter) === String(status.id)"
+                                    class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
+                                    ✓
+                                </span>
+                            </button>
+
+                            <!-- Empty State -->
+                            <div v-if="filteredStatuses.length === 0" class="px-3 py-6 text-center">
+                                <p class="text-xs text-blue-950/40">
+                                    Data status tidak ditemukan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tombol Refresh Data -->
                 <button @click="$emit('refresh')" :disabled="isLoading"
@@ -54,17 +111,11 @@
                         <th class="px-4 py-3 rounded-l-xl w-14 text-center">
                             No.
                         </th>
-
                         <th class="px-4 py-3">Nomor Pengajuan</th>
-
                         <th class="px-4 py-3">Nama Desain</th>
-
                         <th class="px-4 py-3">Pengaju</th>
-
                         <th class="px-4 py-3">Unit</th>
-
                         <th class="px-4 py-3">Status</th>
-
                         <th class="px-4 py-3 rounded-r-xl text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -77,7 +128,6 @@
                                 <div
                                     class="w-6 h-6 border-2 border-[#B20600] border-t-transparent rounded-full animate-spin">
                                 </div>
-
                                 <span class="text-xs font-medium text-blue-950/60">
                                     Memuat data...
                                 </span>
@@ -102,31 +152,26 @@
                         <td class="px-4 py-3.5 text-center text-xs font-medium text-blue-950/70">
                             {{ (currentPage - 1) * itemsPerPage + index + 1 }}
                         </td>
-
                         <!-- Nomor Pengajuan -->
                         <td class="px-4 py-3.5">
                             <span class="font-semibold text-blue-950">
                                 {{ item.nomor }}
                             </span>
                         </td>
-
                         <!-- Nama Desain -->
                         <td class="px-4 py-3.5">
                             <span class="font-medium text-blue-950">
                                 {{ item.nama_desain }}
                             </span>
                         </td>
-
                         <!-- Pengaju -->
                         <td class="px-4 py-3.5 text-xs">
                             {{ item.pegawai?.nama ?? "-" }}
                         </td>
-
                         <!-- Unit -->
                         <td class="px-4 py-3.5 text-xs">
                             {{ item.unit?.unit ?? "-" }}
                         </td>
-
                         <!-- Status -->
                         <td class="px-4 py-3.5">
                             <span :class="[
@@ -136,7 +181,6 @@
                                 {{ item.statuspengajuan?.name ?? "-" }}
                             </span>
                         </td>
-
                         <!-- Action Buttons -->
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex items-center justify-end gap-1.5">
@@ -146,14 +190,12 @@
                                     title="Detail Pengajuan">
                                     <Eye :size="16" />
                                 </button>
-
                                 <!-- Tombol Edit -->
                                 <button @click="$emit('open-edit', item)"
                                     class="p-1.5 text-amber-600 bg-amber-50 hover:bg-amber-100 hover:text-amber-700 rounded-lg border border-amber-200/60 transition cursor-pointer"
                                     title="Edit Data">
                                     <Pencil :size="16" />
                                 </button>
-
                                 <!-- Tombol Hapus -->
                                 <button @click="$emit('open-delete', item)"
                                     class="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-200/60 transition cursor-pointer"
@@ -222,6 +264,7 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import {
     Search,
     Plus,
@@ -231,27 +274,22 @@ import {
     Trash2,
     ChevronLeft,
     ChevronRight,
+    ChevronDown
 } from "lucide-vue-next";
 
-defineProps({
+const props = defineProps({
     paginatedItems: {
         type: Array,
         default: () => [],
     },
-
     filteredItems: {
         type: Array,
         default: () => [],
     },
-
     isLoading: Boolean,
-
     currentPage: Number,
-
     totalPages: Number,
-
     itemsPerPage: Number,
-
     statuses: {
         type: Array,
         default: () => [],
@@ -259,8 +297,73 @@ defineProps({
 });
 
 const searchQuery = defineModel("searchQuery");
-
 const statusFilter = defineModel("statusFilter");
+
+const statusSearch = ref("");
+const isStatusOpen = ref(false);
+const statusDropdownRef = ref(null);
+const statusInputRef = ref(null);
+
+const filteredStatuses = computed(() => {
+    const query = statusSearch.value.trim().toLowerCase();
+
+    if (!query) {
+        return props.statuses;
+    }
+
+    return props.statuses.filter((status) =>
+        status.name?.toLowerCase().includes(query)
+    );
+});
+
+const openStatusDropdown = () => {
+    statusSearch.value = "";
+    isStatusOpen.value = true;
+};
+
+const selectStatus = (status) => {
+    if (!status) {
+        statusFilter.value = "";
+        statusSearch.value = "";
+    } else {
+        statusFilter.value = status.id;
+        statusSearch.value = status.name;
+    }
+
+    isStatusOpen.value = false;
+
+    // Lepaskan focus dari input setelah memilih
+    statusInputRef.value?.blur();
+};
+
+const handleStatusClickOutside = (event) => {
+    if (
+        statusDropdownRef.value &&
+        !statusDropdownRef.value.contains(event.target)
+    ) {
+        isStatusOpen.value = false;
+
+        if (!statusFilter.value) {
+            statusSearch.value = "";
+            return;
+        }
+
+        const selected = props.statuses.find(
+            (status) =>
+                String(status.id) === String(statusFilter.value)
+        );
+
+        statusSearch.value = selected?.name ?? "";
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("mousedown", handleStatusClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("mousedown", handleStatusClickOutside);
+});
 
 defineEmits([
     "open-add",

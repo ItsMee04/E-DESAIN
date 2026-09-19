@@ -1,10 +1,20 @@
 <template>
     <div ref="dropdownRef" class="relative w-full">
+        <!-- Label -->
+        <label v-if="label" class="block text-xs font-semibold text-blue-950 mb-2">
+            {{ label }}
+
+            <span v-if="required" class="text-rose-600"> * </span>
+        </label>
+
         <!-- Input -->
         <div class="relative">
             <input v-model="searchQuery" ref="inputRef" type="text" :placeholder="placeholder"
                 class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 pr-9 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:border-[#B20600] focus:bg-white transition cursor-pointer"
-                @focus="openDropdown" @input="isOpen = true" />
+                :class="{
+                    'border-rose-500 focus:border-rose-500 focus:bg-white':
+                        error,
+                }" @focus="openDropdown" @input="isOpen = true" @blur="handleBlur" />
 
             <ChevronDown
                 class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-950/50 pointer-events-none transition-transform duration-200"
@@ -45,7 +55,9 @@
                             ? 'bg-[#B20600]/5 text-[#B20600]'
                             : 'text-blue-950/80 hover:bg-blue-950/[0.03]'
                         " @mousedown.prevent="selectOption(option)">
-                    <span>{{ option[labelKey] }}</span>
+                    <span>
+                        {{ option[labelKey] }}
+                    </span>
 
                     <span v-if="String(modelValue) === String(option[valueKey])"
                         class="w-5 h-5 flex items-center justify-center rounded-full bg-[#B20600] text-white text-[10px]">
@@ -61,11 +73,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- Error -->
+        <p v-if="error" class="mt-1.5 text-[11px] text-rose-600">
+            {{ error }}
+        </p>
     </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+
 import { ChevronDown } from "lucide-vue-next";
 
 const props = defineProps({
@@ -77,6 +95,11 @@ const props = defineProps({
     options: {
         type: Array,
         default: () => [],
+    },
+
+    label: {
+        type: String,
+        default: "",
     },
 
     labelKey: {
@@ -113,9 +136,19 @@ const props = defineProps({
         type: String,
         default: "Data tidak ditemukan.",
     },
+
+    error: {
+        type: [String, Boolean],
+        default: "",
+    },
+
+    required: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "blur"]);
 
 const dropdownRef = ref(null);
 const inputRef = ref(null);
@@ -146,26 +179,21 @@ const selectedOption = computed(() => {
 watch(
     [() => props.modelValue, () => props.options],
     ([value, options]) => {
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
+        if (value === null || value === undefined || value === "") {
             searchQuery.value = "";
             return;
         }
 
         const selected = options.find(
-            (option) =>
-                String(option[props.valueKey]) === String(value)
+            (option) => String(option[props.valueKey]) === String(value),
         );
 
         searchQuery.value = selected?.[props.labelKey] ?? "";
     },
     {
         immediate: true,
-        deep: true
-    }
+        deep: true,
+    },
 );
 
 const openDropdown = () => {
@@ -190,6 +218,10 @@ const selectOption = (option) => {
 
     // Lepaskan focus setelah memilih
     inputRef.value?.blur();
+};
+
+const handleBlur = () => {
+    emit("blur");
 };
 
 const handleClickOutside = (event) => {

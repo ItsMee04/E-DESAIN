@@ -34,36 +34,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- NIP -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            NIP <span class="text-rose-600">*</span>
-                        </label>
-                        <input v-model="form.nip" type="text" placeholder="Masukkan NIP"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
-                            :class="{
-                                'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.nip,
-                            }" @blur="$emit('validate-pegawai', 'nip')" />
-
-                        <p v-if="errors.nip" class="text-[11px] text-rose-600">
-                            {{ errors.nip }}
-                        </p>
+                        <BaseInput v-model="form.nip" label="NIP" type="text" placeholder="Masukkan NIP"
+                            :error="errors.nip" required @blur="$emit('validate-pegawai', 'nip')" />
                     </div>
 
                     <!-- Nama -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            Nama Pegawai <span class="text-rose-600">*</span>
-                        </label>
-                        <input v-model="form.nama" type="text" placeholder="Masukkan nama pegawai"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
-                            :class="{
-                                'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.nama,
-                            }" @blur="$emit('validate-pegawai', 'nama')" />
-
-                        <p v-if="errors.nama" class="text-[11px] text-rose-600">
-                            {{ errors.nama }}
-                        </p>
+                        <BaseInput v-model="form.nama" label="Nama Pegawai" type="text"
+                            placeholder="Masukkan Nama Pegawai" :error="errors.nama" required
+                            @blur="$emit('validate-pegawai', 'nama')" />
                     </div>
                 </div>
 
@@ -71,188 +50,58 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Tempat -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            Tempat Lahir
-                            <span class="text-rose-600">*</span>
-                        </label>
-
-                        <input v-model="form.tempat" type="text" placeholder="Masukkan tempat lahir"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
-                            :class="{
-                                'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.tempat,
-                            }" @blur="$emit('validate-pegawai', 'tempat')" />
-
-                        <p v-if="errors.tempat" class="text-[11px] text-rose-600">
-                            {{ errors.tempat }}
-                        </p>
+                        <BaseInput v-model="form.tempat" label="Tempat Lahir" type="text"
+                            placeholder="Masukkan Tempat Lahir" :error="errors.tempat" required
+                            @blur="$emit('validate-pegawai', 'tempat')" />
                     </div>
 
                     <!-- Tanggal -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            Tanggal Lahir
-                            <span class="text-rose-600">*</span>
-                        </label>
-
-                        <input v-model="form.tanggal" type="date"
-                            class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"
-                            :class="{
-                                'border-rose-500 focus:border-rose-500 focus:ring-rose-500/5':
-                                    errors.tanggal,
-                            }" @blur="$emit('validate-pegawai', 'tanggal')" />
-
-                        <p v-if="errors.tanggal" class="text-[11px] text-rose-600">
-                            {{ errors.tanggal }}
-                        </p>
+                        <DatePicker v-model="form.tanggal" label="Tanggal Lahir" placeholder="Pilih tanggal lahir..."
+                            :error="errors.tanggal" required />
                     </div>
                 </div>
 
                 <!-- Jenis Kelamin -->
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-blue-950">
-                        Jenis Kelamin
-                        <span class="text-rose-600">*</span>
-                    </label>
-
-                    <div class="flex flex-wrap items-center gap-6">
-                        <label v-for="item in jeniskelaminOptions" :key="item.id"
-                            class="flex items-center gap-2 text-xs text-blue-950/70 cursor-pointer">
-                            <input v-model="form.jeniskelamin_id" type="radio" :value="item.id"
-                                class="w-4 h-4 accent-[#B20600] cursor-pointer" @change="
-                                    $emit('validate-pegawai', 'jeniskelamin_id')
-                                    " />
-
-                            <span>{{ item.jeniskelamin }}</span>
-                        </label>
-                    </div>
-
-                    <p v-if="errors.jeniskelamin_id" class="text-[11px] text-rose-600">
-                        {{ errors.jeniskelamin_id }}
-                    </p>
+                    <BaseRadioGroup v-model="form.jeniskelamin_id" label="Jenis Kelamin" :options="jeniskelaminOptions"
+                        label-key="jeniskelamin" value-key="id" :error="errors.jeniskelamin_id" required
+                        @change="$emit('validate-pegawai', 'jeniskelamin_id')" />
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Agama -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            Agama <span class="text-rose-600">*</span>
-                        </label>
-
-                        <SearchableDropdown v-model="form.agama_id" :options="agamaOptions" label-key="agama"
-                            value-key="id" placeholder="Pilih agama..." dropdown-title="Pilih agama"
-                            empty-text="Data agama tidak ditemukan." />
-
-                        <p v-if="errors.agama_id" class="text-[11px] text-red-500">
-                            {{ errors.agama_id }}
-                        </p>
+                        <SearchableDropdown v-model="form.agama_id" label="Agama" :options="agamaOptions"
+                            label-key="agama" value-key="id" placeholder="Pilih agama..." dropdown-title="Pilih agama"
+                            empty-text="Data agama tidak ditemukan." :error="errors.agama_id" required
+                            @blur="$emit('validate-pegawai', 'agama_id')" />
                     </div>
 
                     <!-- Profesi -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-blue-950">
-                            Profesi <span class="text-rose-600">*</span>
-                        </label>
-
-                        <SearchableDropdown v-model="form.profesi_id" :options="profesiOptions" label-key="profesi"
-                            value-key="id" placeholder="Pilih profesi..." dropdown-title="Pilih profesi"
-                            empty-text="Data profesi tidak ditemukan." />
-
-                        <p v-if="errors.profesi_id" class="text-[11px] text-red-500">
-                            {{ errors.profesi_id }}
-                        </p>
+                        <SearchableDropdown v-model="form.profesi_id" label="Profesi" :options="profesiOptions"
+                            label-key="profesi" value-key="id" placeholder="Pilih profesi..."
+                            dropdown-title="Pilih profesi" empty-text="Data profesi tidak ditemukan."
+                            :error="errors.profesi_id" required @blur="$emit('validate-pegawai', 'profesi_id')" />
                     </div>
                 </div>
 
                 <!-- Alamat -->
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-blue-950">
-                        Alamat
-                    </label>
-
-                    <textarea v-model="form.alamat" rows="3" placeholder="Masukkan alamat"
-                        class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none resize-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition"></textarea>
+                    <BaseTextarea v-model="form.alamat" label="Alamat" placeholder="Masukkan alamat" :rows="5" />
                 </div>
 
                 <!-- Kontak -->
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-blue-950">
-                        Kontak
-                    </label>
-
-                    <input v-model="form.kontak" type="text" placeholder="Masukkan nomor kontak"
-                        class="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-xs text-blue-950 outline-none focus:border-blue-950/30 focus:ring-2 focus:ring-blue-950/5 transition" />
+                    <BaseInput v-model="form.kontak" label="Kontak" type="text" placeholder="Masukkan nomor kontak" />
                 </div>
 
                 <!-- Foto -->
                 <div>
-                    <label class="block text-xs font-medium text-blue-950 mb-1.5">
-                        Foto
-                    </label>
-
-                    <!-- Upload Area -->
-                    <div class="relative border-2 border-dashed rounded-xl transition-all duration-200" :class="imagePreview
-                        ? 'border-[#B20600]/30 bg-[#B20600]/[0.02]'
-                        : 'border-blue-950/10 hover:border-[#B20600]/30 hover:bg-blue-950/[0.01]'
-                        ">
-                        <!-- Input file -->
-                        <input ref="fileInput" type="file" accept="image/jpeg,image/png,image/jpg" class="hidden"
-                            @change="handleImageChange" />
-
-                        <!-- Belum ada foto -->
-                        <button v-if="!imagePreview" type="button"
-                            class="w-full px-6 py-8 flex flex-col items-center justify-center cursor-pointer"
-                            @click="fileInput?.click()">
-                            <div
-                                class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-950/[0.04] mb-3">
-                                <ImageIcon class="w-6 h-6 text-blue-950/40" />
-                            </div>
-
-                            <p class="text-sm font-medium text-blue-950/70">
-                                Pilih foto pegawai
-                            </p>
-
-                            <p class="mt-1 text-[11px] text-blue-950/40">
-                                JPG, JPEG atau PNG • Maksimal 2 MB
-                            </p>
-                        </button>
-
-                        <!-- Sudah ada foto -->
-                        <div v-else class="p-4">
-                            <div class="flex items-center gap-4">
-                                <!-- Preview -->
-                                <div class="relative shrink-0">
-                                    <img :src="imagePreview" alt="Preview foto"
-                                        class="w-20 h-20 object-cover rounded-xl border border-blue-950/10" />
-
-                                    <!-- Status -->
-                                    <div
-                                        class="absolute -right-1.5 -bottom-1.5 w-5 h-5 rounded-full bg-green-500 border-2 border-white flex items-center justify-center">
-                                        <span class="text-white text-[10px]">
-                                            ✓
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Info -->
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-blue-950 truncate">
-                                        {{ selectedFileName || "Foto pegawai" }}
-                                    </p>
-
-                                    <p class="text-[11px] text-green-600 mt-1">
-                                        Foto berhasil dipilih
-                                    </p>
-
-                                    <button type="button"
-                                        class="mt-2 text-[11px] font-medium text-[#B20600] hover:underline"
-                                        @click="fileInput?.click()">
-                                        Ganti foto
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <ImageUpload v-model="form.image" :preview="imagePreview" label="Foto"
+                        empty-text="Pilih foto pegawai" file-name-text="Foto pegawai" preview-alt="Preview foto pegawai"
+                        success-text="Foto berhasil dipilih" change-text="Ganti foto" />
                 </div>
 
                 <!-- Footer -->
@@ -278,10 +127,15 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import { X, Image as ImageIcon } from "lucide-vue-next";
+import { watch } from "vue";
+import { X } from "lucide-vue-next";
 
 import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
+import DatePicker from "../../../utilities/common/Datepicker.vue";
+import BaseInput from "../../../utilities/common/BaseInput.vue";
+import BaseTextarea from "../../../utilities/common/BaseTextarea.vue";
+import ImageUpload from "../../../utilities/common/ImageUpload.vue";
+import BaseRadioGroup from "../../../utilities/common/BaseRadioGroup.vue";
 
 const props = defineProps({
     isOpen: {
@@ -330,45 +184,17 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["close", "save", "validate-pegawai", "image-change"]);
-
-const fileInput = ref(null);
-const selectedFileName = ref("");
-
-watch(
-    () => props.form.agama_id,
-    () => {
-        emit("validate-pegawai", "agama_id");
-    },
-);
-
-watch(
-    () => props.form.profesi_id,
-    () => {
-        emit("validate-pegawai", "profesi_id");
-    },
-);
-
-const handleImageChange = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) {
-        return;
-    }
-
-    selectedFileName.value = file.name;
-
-    emit("image-change", file);
-
-    event.target.value = "";
-};
+const emit = defineEmits([
+    "close",
+    "save",
+    "validate-pegawai",
+]);
 
 watch(
     () => props.isOpen,
     (isOpen) => {
-        if (!isOpen) {
-            selectedFileName.value = "";
-        }
+        // Tidak ada state upload yang perlu di-reset di modal.
+        // ImageUpload menangani state file melalui v-model.
     },
 );
 </script>

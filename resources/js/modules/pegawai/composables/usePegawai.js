@@ -215,6 +215,7 @@ export function usePegawai() {
 
     const closeModal = () => {
         isModalOpen.value = false;
+        clearErrors();
     };
 
     const validatePegawai = (field = null) => {

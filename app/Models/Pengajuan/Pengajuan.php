@@ -24,7 +24,8 @@ class Pengajuan extends Model
         'ukuran',
         'jumlah',
         'keperluan',
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     /**

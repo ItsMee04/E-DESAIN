@@ -14,14 +14,9 @@
             <!-- Modal Body -->
             <form @submit.prevent="$emit('save')" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Nama Jenis Media *</label>
-                    <input v-model="form.jenismedia" type="text" placeholder="Contoh: Sticker, Banner, dll." :class="{ 'border-red-600': errors.jenismedia }"
-                        @blur="$emit('validate-jenismedia')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.jenismedia" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.jenismedia }}
-                    </p>
+                    <BaseInput v-model="form.jenismedia" label="Nama Jenis Media" type="text"
+                        placeholder="Contoh: Sticker, Banner, dll." :error="errors.jenismedia" required
+                        @blur="$emit('validate-jenismedia', 'jenismedia')" />
                 </div>
 
                 <!-- Modal Footer -->
@@ -59,6 +54,7 @@
 
 <script setup>
 import { X } from 'lucide-vue-next';
+import BaseInput from '../../../utilities/common/BaseInput.vue';
 
 defineProps({
     isOpen: Boolean,

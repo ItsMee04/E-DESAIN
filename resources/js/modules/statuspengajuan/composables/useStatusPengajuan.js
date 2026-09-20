@@ -85,7 +85,7 @@ export function useStatusPengajuan() {
     const openAddModal = () => {
         isEditing.value = false;
         selectedId.value = null;
-        form.value = { name: '', key: '', description: '', sort_order: 0 };
+        form.value = { name: '', key: '', description: '', sort_order: '' };
         clearErrors();
         isModalOpen.value = true;
     };
@@ -107,38 +107,53 @@ export function useStatusPengajuan() {
         isModalOpen.value = false;
     };
 
-    const validateStatusPengajuan = () => {
-        if (!form.value.name?.trim()) {
-            errors.value.name = 'Nama status pengajuan wajib diisi.';
-            return false;
+    const validateStatusPengajuan = (field = null) => {
+        let isValid = true;
+
+        if (!field || field === 'name') {
+            if (!form.value.name?.trim()) {
+                errors.value.name = 'Nama status pengajuan wajib diisi.';
+                isValid = false;
+            } else {
+                errors.value.name = '';
+            }
         }
 
-        if (!form.value.key?.trim()) {
-            errors.value.key = 'Key status pengajuan wajib diisi.';
-            return false;
+        if (!field || field === 'key') {
+            if (!form.value.key?.trim()) {
+                errors.value.key = 'Key status pengajuan wajib diisi.';
+                isValid = false;
+            } else {
+                errors.value.key = '';
+            }
         }
 
-        if (!form.value.description?.trim()) {
-            errors.value.description = 'Deskripsi status pengajuan wajib diisi.';
-            return false;
+        if (!field || field === 'description') {
+            if (!form.value.description?.trim()) {
+                errors.value.description =
+                    'Deskripsi status pengajuan wajib diisi.';
+                isValid = false;
+            } else {
+                errors.value.description = '';
+            }
         }
 
-        if (
-            form.value.sort_order === null ||
-            form.value.sort_order === '' ||
-            !Number.isInteger(Number(form.value.sort_order)) ||
-            Number(form.value.sort_order) < 1
-        ) {
-            errors.value.sort_order = 'Urutan wajib diisi dengan angka bulat lebih dari 0.';
-            return false;
+        if (!field || field === 'sort_order') {
+            if (
+                form.value.sort_order === null ||
+                form.value.sort_order === '' ||
+                !Number.isInteger(Number(form.value.sort_order)) ||
+                Number(form.value.sort_order) < 1
+            ) {
+                errors.value.sort_order =
+                    'Urutan wajib diisi dengan angka bulat lebih dari 0.';
+                isValid = false;
+            } else {
+                errors.value.sort_order = '';
+            }
         }
 
-        errors.value.name = '';
-        errors.value.key = '';
-        errors.value.description = '';
-        errors.value.sort_order = 0;
-
-        return true;
+        return isValid;
     };
 
     const clearErrors = () => {
@@ -146,7 +161,7 @@ export function useStatusPengajuan() {
             name: '',
             key: '',
             description: '',
-            sort_order: 0,
+            sort_order: '',
         };
     };
 

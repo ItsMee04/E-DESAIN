@@ -14,7 +14,19 @@ class ProfesiSeeder extends Seeder
     public function run(): void
     {
         $profesi = [
-            'IT',
+            'ADMINISTRASI',
+            'ANALIS',
+            'BIDAN',
+            'DOKTER',
+            'FARMASI',
+            'PERAWAT',
+            'PEREKAM MEDIS',
+            'RADIOGRAFER',
+            'FISIOTERAPIS',
+            'PENATA ANASTESI',
+            'NUTRISIONIS',
+            'TERAPIS WICARA',
+            'OKUPASI TERAPIS',
         ];
 
         foreach ($profesi as $namaProfesi) {

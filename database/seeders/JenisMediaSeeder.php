@@ -6,7 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class AgamaSeeder extends Seeder
+class JenisMediaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,20 +14,20 @@ class AgamaSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            'ISLAM',
-            'KRISTEN (PROTESTAN)',
-            'KATHOLIK',
-            'HINDU',
-            'BUDHA',
-            'KONGHUCHU',
-            'KEPERCAYAAN KEPADA TUHAN YME',
-            'LAIN-LAIN',
+            'STICKER',
+            'LEAFLET',
+            'AKRILIK',
+            'LEMBAR BALIK',
+            'BROSUR',
+            'BANNER',
+            'BALIHO',
+            'POSTER',
         ];
 
-        foreach ($data as $dataitem) {
-            DB::table('agama')->updateOrInsert(
+        foreach ($data as $item) {
+            DB::table('jenismedia')->updateOrInsert(
                 [
-                    'agama' => $dataitem,
+                    'jenismedia' => $item,
                 ],
                 [
                     'status' => 1,

@@ -108,42 +108,14 @@
         </div>
 
         <!-- Pagination Controls -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-gray-100">
-            <div class="text-xs text-blue-950/60">
-                Menampilkan <span class="font-bold text-blue-950">{{ filteredItems.length ? (currentPage - 1) *
-                    itemsPerPage + 1 : 0 }}</span>
-                sampai <span class="font-bold text-blue-950">{{ Math.min(currentPage * itemsPerPage,
-                    filteredItems.length) }}</span>
-                dari <span class="font-bold text-blue-950">{{ filteredItems.length }}</span> data
-            </div>
-
-            <div class="flex items-center gap-1.5">
-                <button @click="$emit('change-page', currentPage - 1)" :disabled="currentPage === 1"
-                    class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
-                    <ChevronLeft :size="15" />
-                </button>
-
-                <button v-for="page in totalPages" :key="page" @click="$emit('change-page', page)" :class="[
-                    page === currentPage
-                        ? 'bg-[#B20600] text-white font-bold border-[#B20600]'
-                        : 'bg-white text-blue-950 hover:bg-gray-50 border-gray-200',
-                    'w-8 h-8 rounded-lg text-xs border flex items-center justify-center transition cursor-pointer'
-                ]">
-                    {{ page }}
-                </button>
-
-                <button @click="$emit('change-page', currentPage + 1)"
-                    :disabled="currentPage === totalPages || totalPages === 0"
-                    class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
-                    <ChevronRight :size="15" />
-                </button>
-            </div>
-        </div>
+        <Pagination :current-page="currentPage" :total-pages="totalPages" :total-items="filteredItems.length"
+            :items-per-page="itemsPerPage" @change-page="$emit('change-page', $event)" />
     </div>
 </template>
 
 <script setup>
-import { Search, Plus, RotateCw, Pencil, Trash2, ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { Search, Plus, RotateCw, Pencil, Trash2 } from 'lucide-vue-next';
+import Pagination from "../../../utilities/common/Pagination.vue"
 
 defineProps({
     paginatedItems: Array,

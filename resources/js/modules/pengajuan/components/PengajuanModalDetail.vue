@@ -13,7 +13,8 @@
                     </p>
                 </div>
 
-                <button type="button" @click="$emit('close')" class="text-blue-950/40 hover:text-blue-950 transition cursor-pointer">
+                <button type="button" @click="$emit('close')"
+                    class="text-blue-950/40 hover:text-blue-950 transition cursor-pointer">
                     <X :size="18" />
                 </button>
             </div>
@@ -90,22 +91,16 @@
                         </div>
 
                         <!-- Jenis Media -->
-                        <div>
-                            <p class="text-[11px] font-medium text-blue-950/40">
-                                Jenis Media
-                            </p>
-
-                            <div v-if="item?.pengajuanjenismedia?.length" class="flex flex-wrap gap-1.5 mt-1.5">
-                                <span v-for="media in item.pengajuanjenismedia" :key="media.id"
-                                    class="inline-flex items-center px-2 py-1 rounded-md bg-[#B20600]/5 text-[#B20600] text-[11px] font-medium">
-                                    {{ media.jenismedia?.jenismedia ?? '-' }}
-                                </span>
-                            </div>
-
-                            <p v-else class="text-xs font-medium text-blue-950 mt-1">
-                                -
-                            </p>
+                        <div v-if="item?.pengajuanjenismedia?.length" class="flex flex-wrap gap-1.5 mt-1.5">
+                            <span v-for="media in item.pengajuanjenismedia" :key="media.id"
+                                class="inline-flex items-center px-2 py-1 rounded-md bg-[#B20600]/5 text-[#B20600] text-[11px] font-medium">
+                                {{ media.jenis_media?.jenismedia ?? '-' }}
+                            </span>
                         </div>
+
+                        <p v-else class="text-xs font-medium text-blue-950 mt-1">
+                            -
+                        </p>
 
                         <!-- Ukuran -->
                         <div>
@@ -145,33 +140,36 @@
 
                 <!-- Riwayat -->
                 <div v-if="item?.pengajuanhistory?.length" class="rounded-xl border border-gray-100 overflow-hidden">
-                    <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                        <h4 class="text-xs font-semibold text-blue-950">
-                            Riwayat Pengajuan
-                        </h4>
-                    </div>
-
                     <div class="p-4 space-y-4">
-                        <div v-for="history in item.pengajuanhistory" :key="history.id" class="relative pl-5">
-                            <span class="absolute left-0 top-1.5 w-2 h-2 rounded-full bg-[#B20600]"></span>
+                        <div v-for="(history, index) in item.pengajuanhistory" :key="history.id" class="relative pl-6">
+                            <!-- Garis timeline -->
+                            <span v-if="index < item.pengajuanhistory.length - 1"
+                                class="absolute left-[3px] top-3 bottom-[-16px] w-px bg-gray-200"></span>
 
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                                <p class="text-xs font-semibold text-blue-950">
-                                    {{ history.statusPengajuan?.name ?? '-' }}
-                                </p>
+                            <!-- Titik timeline -->
+                            <span class="absolute left-0 top-1.5 w-2 h-2 rounded-full"
+                                :class="getHistoryDotClass(history.status_pengajuan?.key)"></span>
 
-                                <p class="text-[10px] text-blue-950/40">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-semibold"
+                                        :class="getHistoryTextClass(history.status_pengajuan?.key)">
+                                        {{ history.status_pengajuan?.name ?? '-' }}
+                                    </p>
+
+                                    <p v-if="history.catatan" class="text-xs text-gray-600 mt-1">
+                                        {{ history.catatan }}
+                                    </p>
+
+                                    <p v-if="history.user?.pegawai?.nama" class="text-[11px] text-gray-400 mt-1">
+                                        Oleh: {{ history.user.pegawai.nama }}
+                                    </p>
+                                </div>
+
+                                <p class="text-[10px] text-gray-400 whitespace-nowrap">
                                     {{ formatDate(history.created_at) }}
                                 </p>
                             </div>
-
-                            <p v-if="history.catatan" class="text-[11px] text-blue-950/60 mt-1 leading-relaxed">
-                                {{ history.catatan }}
-                            </p>
-
-                            <p v-if="history.user?.pegawai?.nama" class="text-[10px] text-blue-950/40 mt-1">
-                                Oleh: {{ history.user.pegawai.nama }}
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -234,5 +232,33 @@ const formatDate = (date) => {
         hour: '2-digit',
         minute: '2-digit'
     });
+};
+
+const getHistoryDotClass = (key) => {
+    const classes = {
+        diajukan: "bg-green-500",
+        menunggu_validasi: "bg-amber-500",
+        diproses: "bg-indigo-500",
+        revisi: "bg-orange-500",
+        selesai: "bg-green-600",
+        ditolak: "bg-red-500",
+        dibatalkan: "bg-gray-400",
+    };
+
+    return classes[key] || "bg-gray-300";
+};
+
+const getHistoryTextClass = (key) => {
+    const classes = {
+        diajukan: "text-green-600",
+        menunggu_validasi: "text-amber-600",
+        diproses: "text-indigo-600",
+        revisi: "text-orange-600",
+        selesai: "text-green-700",
+        ditolak: "text-red-600",
+        dibatalkan: "text-gray-500",
+    };
+
+    return classes[key] || "text-blue-950";
 };
 </script>

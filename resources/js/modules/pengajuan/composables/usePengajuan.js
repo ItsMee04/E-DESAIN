@@ -1,5 +1,6 @@
 import { ref, computed, watch, onMounted } from "vue";
 
+import { authenticationService } from "../../authentication/services/authenticationService"
 import { pengajuanService } from "../services/pengajuanService"
 import { unitService } from "../../unit/services/unitService";
 import { jenismediaService } from "../../jenismedia/services/jenismediaService";
@@ -85,7 +86,7 @@ export function usePengajuan() {
     const selectedId = ref(null);
 
     const form = ref({
-        pegawai_nama: "IT RSUWH",
+        pegawai_nama: "",
         unit_id: "",
         nama_desain: "",
         jenis_media: [],
@@ -111,6 +112,28 @@ export function usePengajuan() {
     */
     const isDeleteModalOpen = ref(false);
     const selectedDeleteItem = ref(null);
+
+    /*
+    |--------------------------------------------------------------------------
+    | PEGAWAI YANG SEDANG LOGIN
+    |--------------------------------------------------------------------------
+    */
+
+    const currentUser = ref(null);
+
+    const getCurrentUser = async () => {
+        try {
+            const response = await authenticationService.me();
+
+            currentUser.value = response.data;
+
+            form.value.pegawai_nama =
+                response.data?.pegawai?.nama ?? "";
+        } catch (error) {
+            console.error("Gagal mengambil data pengguna:", error);
+            form.value.pegawai_nama = "";
+        }
+    };
 
     /*
     |--------------------------------------------------------------------------
@@ -160,6 +183,7 @@ export function usePengajuan() {
         getJenisMedia();
         getStatusPengajuan();
         getPengajuan();
+        getCurrentUser();
     });
 
     /*
@@ -236,7 +260,7 @@ export function usePengajuan() {
         selectedId.value = null;
 
         form.value = {
-            pegawai_nama: "IT RSUWH",
+            pegawai_nama: currentUser.value?.pegawai?.nama ?? "",
             unit_id: "",
             nama_desain: "",
             jenis_media: [],
@@ -274,7 +298,7 @@ export function usePengajuan() {
             nama_desain: item.nama_desain ?? "",
             jenis_media:
                 item.pengajuanjenismedia?.map(
-                    (media) => media.jenis_media_id,
+                    (media) => Number(media.jenismedia_id)
                 ) ?? [],
             ukuran: item.ukuran ?? "",
             jumlah: item.jumlah ?? "",
@@ -319,96 +343,82 @@ export function usePengajuan() {
     | VALIDATION
     |--------------------------------------------------------------------------
     */
-    const validateUnit = () => {
-        if (!form.value.unit_id) {
-            errors.value.unit_id = "Unit wajib dipilih";
-            return false;
+
+    const validatePengajuan = (field = null) => {
+        let isValid = true;
+
+        if (!field || field === 'unit_id') {
+            if (!form.value.unit_id) {
+                errors.value.unit_id = "Unit wajib dipilih";
+                return false;
+            } else {
+                errors.value.unit_id = '';
+            }
         }
 
-        delete errors.value.unit_id;
+        if (!field || field === 'nama_desain') {
+            if (!form.value.nama_desain) {
+                errors.value.nama_desain = "Nama desain wajib diisi";
+                return false;
+            } else {
+                errors.value.nama_desain = '';
+            }
+        }
+
+        if (!field || field === 'jenis_media') {
+            if (!form.value.jenis_media) {
+                errors.value.jenis_media = "Minimal pilih satu jenis media";
+                return false;
+            } else {
+                errors.value.jenis_media = '';
+            }
+        }
+
+        if (!field || field === 'ukuran') {
+            if (!form.value.ukuran) {
+                errors.value.ukuran = "Ukuran wajib diisi";
+                return false;
+            } else {
+                errors.value.ukuran = '';
+            }
+        }
+
+        if (!field || field === 'jumlah') {
+            if (!form.value.jumlah) {
+                errors.value.jumlah = "Jumlah cetak wajib diisi";
+                return false;
+            } if (
+                Number.isNaN(Number(form.value.jumlah)) ||
+                Number(form.value.jumlah) < 1
+            ) {
+                errors.value.jumlah = "Jumlah cetak minimal 1";
+                return false;
+            } else {
+                errors.value.jumlah = '';
+            }
+        }
+
+        if (!field || field === 'keperluan') {
+            if (!form.value.keperluan) {
+                errors.value.keperluan = "Keperluan wajib diisi";
+                return false;
+            } else {
+                errors.value.keperluan = '';
+            }
+        }
+
         return true;
-    };
-
-    const validateNamaDesain = () => {
-        if (!form.value.nama_desain?.trim()) {
-            errors.value.nama_desain = "Nama desain wajib diisi";
-            return false;
-        }
-
-        delete errors.value.nama_desain;
-        return true;
-    };
-
-    const validateJenisMedia = () => {
-        if (!form.value.jenis_media || form.value.jenis_media.length === 0) {
-            errors.value.jenis_media = "Minimal pilih satu jenis media";
-            return false;
-        }
-
-        delete errors.value.jenis_media;
-        return true;
-    };
-
-    const validateUkuran = () => {
-        if (!form.value.ukuran?.trim()) {
-            errors.value.ukuran = "Ukuran wajib diisi";
-            return false;
-        }
-
-        delete errors.value.ukuran;
-        return true;
-    };
-
-    const validateJumlah = () => {
-        if (
-            form.value.jumlah === "" ||
-            form.value.jumlah === null ||
-            form.value.jumlah === undefined
-        ) {
-            errors.value.jumlah = "Jumlah cetak wajib diisi";
-            return false;
-        }
-
-        if (
-            Number.isNaN(Number(form.value.jumlah)) ||
-            Number(form.value.jumlah) < 1
-        ) {
-            errors.value.jumlah = "Jumlah cetak minimal 1";
-            return false;
-        }
-
-        delete errors.value.jumlah;
-        return true;
-    };
-
-    const validateKeperluan = () => {
-        if (!form.value.keperluan?.trim()) {
-            errors.value.keperluan = "Keperluan wajib diisi";
-            return false;
-        }
-
-        delete errors.value.keperluan;
-        return true;
-    };
+    }
 
     /*
     |--------------------------------------------------------------------------
-    | SAVE STATIC
+    | SAVE
     |--------------------------------------------------------------------------
     */
     const saveForm = async () => {
         errors.value = {};
 
-        const valid = [
-            validateUnit(),
-            validateNamaDesain(),
-            validateJenisMedia(),
-            validateUkuran(),
-            validateJumlah(),
-            validateKeperluan(),
-        ].every(Boolean);
-
-        if (!valid) {
+        if (!validatePengajuan()) {
             return;
         }
 
@@ -421,9 +431,6 @@ export function usePengajuan() {
             keperluan: form.value.keperluan,
         };
 
-        console.log("Payload Pengajuan:", payload);
-        console.log("Payload JSON:", JSON.stringify(payload, null, 4));
-
         isSubmitting.value = true;
 
         try {
@@ -433,14 +440,9 @@ export function usePengajuan() {
                     ...payload,
                 });
 
-                console.log("Response Update Pengajuan:", response);
-
                 toast.success("Data pengajuan berhasil diperbarui");
             } else {
                 const response = await pengajuanService.storePengajuan(payload);
-
-                console.log("Response Store Pengajuan:", response);
-
                 toast.success("Pengajuan desain berhasil dibuat");
             }
 
@@ -580,11 +582,6 @@ export function usePengajuan() {
         setPage,
         refreshData,
 
-        validateUnit,
-        validateNamaDesain,
-        validateJenisMedia,
-        validateUkuran,
-        validateJumlah,
-        validateKeperluan,
+        validatePengajuan
     };
 }

@@ -64,6 +64,6 @@ class AuthenticationService
      */
     public function getAuthenticatedUser(User $user): User
     {
-        return $user;
+        return $user->load('pegawai');
     }
 }

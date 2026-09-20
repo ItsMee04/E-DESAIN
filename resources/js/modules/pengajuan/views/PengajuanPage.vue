@@ -22,9 +22,7 @@
         <!-- Modal Pengajuan -->
         <PengajuanModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
             :is-submitting="isSubmitting" :units="units" :jenis-media="jenisMedia" @close="closeModal" @save="saveForm"
-            @validate-unit="validateUnit" @validate-nama-desain="validateNamaDesain"
-            @validate-jenis-media="validateJenisMedia" @validate-ukuran="validateUkuran"
-            @validate-jumlah="validateJumlah" @validate-keperluan="validateKeperluan" />
+            @validate-pengajuan="validatePengajuan" />
 
         <!-- Detail Modal -->
         <PengajuanDetailModal :is-open="isDetailModalOpen" :item="selectedDetailItem" @close="closeDetailModal" />
@@ -101,11 +99,6 @@ const {
     refreshData,
 
     // Validation
-    validateUnit,
-    validateNamaDesain,
-    validateJenisMedia,
-    validateUkuran,
-    validateJumlah,
-    validateKeperluan
+    validatePengajuan
 } = usePengajuan();
 </script>

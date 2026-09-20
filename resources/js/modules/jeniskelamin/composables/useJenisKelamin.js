@@ -100,7 +100,7 @@ export function useJenisKelamin() {
 
     const validateJenisKelamin = () => {
         if (!form.value.jeniskelamin?.trim()) {
-            errors.value.jeniskelamin = 'Nama jenis kelamin wajib diisi.';
+            errors.value.jeniskelamin = 'jenis kelamin wajib diisi.';
             return false;
         }
 

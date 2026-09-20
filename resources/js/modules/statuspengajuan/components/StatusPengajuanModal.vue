@@ -14,47 +14,27 @@
             <!-- Modal Body -->
             <form @submit.prevent="$emit('save')" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Name *</label>
-                    <input v-model="form.name" type="text" placeholder="Contoh: Pending atau Proses"
-                        @blur="$emit('validate-statuspengajuan')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.name" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.name }}
-                    </p>
+                    <BaseInput v-model="form.name" label="Nama Status Pengajuan" type="text"
+                        placeholder="Contoh: Diajukan, Proses" :error="errors.name" required
+                        @blur="$emit('validate-statuspengajuan', 'name')" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Key *</label>
-                    <input v-model="form.key" type="text" placeholder="Contoh: Pending atau Proses"
-                        @blur="$emit('validate-statuspengajuan')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.key" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.key }}
-                    </p>
+                    <BaseInput v-model="form.key" label="Key" type="text"
+                        placeholder="Contoh: diajukan, proses" :error="errors.key" required
+                        @blur="$emit('validate-statuspengajuan', 'key')" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Deskripsi *</label>
-                    <input v-model="form.description" type="text" placeholder="Contoh: Pending atau Proses"
-                        @blur="$emit('validate-statuspengajuan')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.description" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.description }}
-                    </p>
+                    <BaseInput v-model="form.description" label="Deskripsi" type="text"
+                        placeholder="Contoh: Pengajuan desain telah dibuat oleh pegawai." :error="errors.description" required
+                        @blur="$emit('validate-statuspengajuan', 'description')" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Sort / Urutan *</label>
-                    <input v-model="form.sort_order" type="text" placeholder="Contoh: Pending atau Proses"
-                        @blur="$emit('validate-statuspengajuan')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.sort_order" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.sort_order }}
-                    </p>
+                    <BaseInput v-model="form.sort_order" label="Sort Order / Urutan" type="text"
+                        placeholder="Contoh: 1." :error="errors.sort_order" required
+                        @blur="$emit('validate-statuspengajuan', 'sort_order')" />
                 </div>
 
                 <!-- Modal Footer -->
@@ -92,6 +72,7 @@
 
 <script setup>
 import { X } from 'lucide-vue-next';
+import BaseInput from '../../../utilities/common/BaseInput.vue';
 
 defineProps({
     isOpen: Boolean,
@@ -104,6 +85,6 @@ defineProps({
 defineEmits([
     'close',
     'save',
-    'validate-profesi'
+    'validate-statuspengajuan'
 ]);
 </script>

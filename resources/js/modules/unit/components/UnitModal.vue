@@ -14,14 +14,8 @@
             <!-- Modal Body -->
             <form @submit.prevent="$emit('save')" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Nama Unit *</label>
-                    <input v-model="form.unit" type="text" placeholder="Contoh: Dokter Spesialis Dahulu"
-                        @blur="$emit('validate-unit')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.unit" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.unit }}
-                    </p>
+                    <BaseInput v-model="form.unit" label="Nama Unit" type="text" placeholder="Contoh: IT, Humas, dll."
+                        :error="errors.unit" required @blur="$emit('validate-unit', 'unit')" />
                 </div>
 
                 <!-- Modal Footer -->
@@ -59,6 +53,7 @@
 
 <script setup>
 import { X } from 'lucide-vue-next';
+import BaseInput from '../../../utilities/common/BaseInput.vue';
 
 defineProps({
     isOpen: Boolean,

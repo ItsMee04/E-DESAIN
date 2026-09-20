@@ -23,6 +23,8 @@ class PengajuanService
             'statuspengajuan',
             'user',
             'pengajuanjenismedia.jenisMedia',
+            'pengajuanhistory.statusPengajuan',
+            'pengajuanhistory.user.pegawai',
         ])
             ->latest()
             ->get();
@@ -124,14 +126,11 @@ class PengajuanService
             $pengajuan = Pengajuan::findOrFail($id);
 
             $pengajuan->update([
-                'pegawai_id' => $data['pegawai_id'],
                 'unit_id' => $data['unit_id'],
-                'statuspengajuan_id' => $data['statuspengajuan_id'],
                 'nama_desain' => $data['nama_desain'],
                 'ukuran' => $data['ukuran'],
                 'jumlah' => $data['jumlah'],
                 'keperluan' => $data['keperluan'],
-                'user_id' => $data['user_id'],
             ]);
 
             return $pengajuan->fresh([

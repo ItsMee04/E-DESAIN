@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedInteger('jumlah')->default(0);
             $table->text('keperluan')->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->integer('status')->unsigned()->default(1);
             $table->timestamps();
 
             $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('restrict');

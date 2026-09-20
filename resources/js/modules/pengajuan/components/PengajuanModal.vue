@@ -44,38 +44,17 @@
 
                 <!-- Unit -->
                 <div class="relative">
-                    <label class="block text-xs font-medium text-blue-950 mb-1.5">
-                        Unit <span class="text-red-500">*</span>
-                    </label>
-
-                    <SearchableDropdown v-model="form.unit_id" :options="unitOptions" label-key="unit" value-key="id"
-                        placeholder="Pilih unit..." dropdown-title="Pilih unit"
-                        empty-text="Data unit tidak ditemukan." />
-
-                    <!-- Error -->
-                    <p v-if="errors.unit_id" class="mt-1 text-[11px] text-red-500">
-                        {{ errors.unit_id }}
-                    </p>
+                    <SearchableDropdown v-model="form.unit_id" label="Unit" :options="unitOptions" label-key="unit"
+                        value-key="id" placeholder="Pilih Unit..." dropdown-title="Pilih Unit"
+                        empty-text="Data unit tidak ditemukan." :error="errors.unit_id" required
+                        @blur="$emit('validate-pengajuan','unit_id')" />
                 </div>
 
                 <!-- Nama Desain -->
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950 mb-1.5">
-                        Nama Desain
-                        <span class="text-[#B20600]">*</span>
-                    </label>
-
-                    <input v-model="form.nama_desain" @blur="$emit('validate-nama-desain')" type="text"
-                        placeholder="Masukkan nama desain..."
-                        class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
-                        :class="errors.nama_desain
-                            ? 'border-rose-400'
-                            : 'border-gray-200'
-                            " />
-
-                    <p v-if="errors.nama_desain" class="mt-1.5 text-[11px] text-rose-600">
-                        {{ errors.nama_desain }}
-                    </p>
+                    <BaseInput v-model="form.nama_desain" label="Nama Desain" type="text"
+                        placeholder="Masukkan nama desain ..." :error="errors.nama_desain" required
+                        @blur="$emit('validate-pengajuan','nama_desain')" />
                 </div>
 
                 <!-- Jenis Media -->
@@ -106,64 +85,22 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- Ukuran -->
                     <div>
-                        <label class="block text-xs font-semibold text-blue-950 mb-1.5">
-                            Ukuran
-                            <span class="text-[#B20600]">*</span>
-                        </label>
-
-                        <input v-model="form.ukuran" @blur="$emit('validate-ukuran')" type="text"
-                            placeholder="Contoh: 3 x 1 meter"
-                            class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
-                            :class="errors.ukuran
-                                ? 'border-rose-400'
-                                : 'border-gray-200'
-                                " />
-
-                        <p v-if="errors.ukuran" class="mt-1.5 text-[11px] text-rose-600">
-                            {{ errors.ukuran }}
-                        </p>
+                        <BaseInput v-model="form.ukuran" label="Ukuran" type="text" placeholder="Contoh: 3 x 1 meter"
+                            :error="errors.ukuran" required @blur="$emit('validate-pengajuan','ukuran')" />
                     </div>
 
                     <!-- Jumlah -->
                     <div>
-                        <label class="block text-xs font-semibold text-blue-950 mb-1.5">
-                            Jumlah Cetak
-                            <span class="text-[#B20600]">*</span>
-                        </label>
-
-                        <input v-model="form.jumlah" @blur="$emit('validate-jumlah')" type="number" min="1"
-                            placeholder="Masukkan jumlah"
-                            class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition"
-                            :class="errors.jumlah
-                                ? 'border-rose-400'
-                                : 'border-gray-200'
-                                " />
-
-                        <p v-if="errors.jumlah" class="mt-1.5 text-[11px] text-rose-600">
-                            {{ errors.jumlah }}
-                        </p>
+                        <BaseInput v-model="form.jumlah" label="Jumlah Cetak" type="text"
+                            placeholder="Masukkan jumlah ..." :error="errors.jumlah" required
+                            @blur="$emit('validate-pengajuan','jumlah')" />
                     </div>
                 </div>
 
                 <!-- Keperluan -->
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950 mb-1.5">
-                        Keperluan
-                        <span class="text-[#B20600]">*</span>
-                    </label>
-
-                    <textarea v-model="form.keperluan" @blur="$emit('validate-keperluan')" rows="4"
-                        placeholder="Jelaskan keperluan desain..."
-                        class="w-full text-xs bg-gray-50 border rounded-xl px-3.5 py-2.5 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:bg-white focus:border-[#B20600] transition resize-none"
-                        :class="errors.keperluan
-                            ? 'border-rose-400'
-                            : 'border-gray-200'
-                            ">
-                    </textarea>
-
-                    <p v-if="errors.keperluan" class="mt-1.5 text-[11px] text-rose-600">
-                        {{ errors.keperluan }}
-                    </p>
+                    <BaseTextarea v-model="form.keperluan" label="Keperluan" placeholder="Jelaskan keperluan desain..."
+                        :rows="5" required @blur="$emit('validate-pengajuan','keperluan')" />
                 </div>
 
                 <!-- Footer -->
@@ -198,8 +135,11 @@
 
 <script setup>
 import { computed } from "vue";
-import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
 import { X } from "lucide-vue-next";
+
+import BaseInput from "../../../utilities/common/BaseInput.vue";
+import BaseTextarea from "../../../utilities/common/BaseTextarea.vue";
+import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
 
 const props = defineProps({
     isOpen: {
@@ -241,11 +181,6 @@ const unitOptions = computed(() => props.units);
 const emit = defineEmits([
     "close",
     "save",
-    "validate-unit",
-    "validate-nama-desain",
-    "validate-jenis-media",
-    "validate-ukuran",
-    "validate-jumlah",
-    "validate-keperluan",
+    "validate-pengajuan",
 ]);
 </script>

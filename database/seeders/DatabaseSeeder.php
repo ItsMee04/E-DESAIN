@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             ProfesiSeeder::class,
             JenisKelaminSeeder::class,
             AgamaSeeder::class,
+            JenisMediaSeeder::class,
+            UnitSeeder::class,
             PegawaiSeeder::class,
             UserSeeder::class,
             ModuleSeeder::class,

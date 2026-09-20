@@ -14,14 +14,8 @@
             <!-- Modal Body -->
             <form @submit.prevent="$emit('save')" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-blue-950/70 mb-1.5">Nama Agama *</label>
-                    <input v-model="form.agama" type="text" placeholder="Contoh: Islam"
-                        @blur="$emit('validate-agama')"
-                        class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
-                    <p v-if="errors.agama" class="mt-1.5 text-[11px] text-red-600">
-                        {{ errors.agama }}
-                    </p>
+                    <BaseInput v-model="form.agama" label="Nama Agama" type="text" placeholder="Contoh: Islam"
+                        :error="errors.agama" required @blur="$emit('validate-agama', 'agama')" />
                 </div>
 
                 <!-- Modal Footer -->
@@ -59,6 +53,7 @@
 
 <script setup>
 import { X } from 'lucide-vue-next';
+import BaseInput from '../../../utilities/common/BaseInput.vue';
 
 defineProps({
     isOpen: Boolean,

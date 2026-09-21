@@ -74,7 +74,7 @@ export function usePengajuan() {
     |--------------------------------------------------------------------------
     */
     const currentPage = ref(1);
-    const itemsPerPage = ref(5);
+    const itemsPerPage = ref(10);
 
     /*
     |--------------------------------------------------------------------------
@@ -498,20 +498,30 @@ export function usePengajuan() {
 
         isDeleting.value = true;
 
-        await new Promise((resolve) => setTimeout(resolve, 700));
+        try {
+            await pengajuanService.deletePengajuan({
+                id: selectedDeleteItem.value.id,
+            });
 
-        items.value = items.value.filter(
-            (item) => item.id !== selectedDeleteItem.value.id,
-        );
+            toast.success("Data pengajuan berhasil dihapus");
 
-        toast.success("Data pengajuan berhasil dihapus");
+            isDeleteModalOpen.value = false;
+            selectedDeleteItem.value = null;
 
-        isDeleteModalOpen.value = false;
-        selectedDeleteItem.value = null;
-        isDeleting.value = false;
+            await refreshData();
 
-        if (currentPage.value > totalPages.value) {
-            currentPage.value = totalPages.value;
+            if (currentPage.value > totalPages.value) {
+                currentPage.value = totalPages.value;
+            }
+        } catch (error) {
+            console.error("Gagal menghapus pengajuan:", error);
+
+            toast.error(
+                error.response?.data?.message ||
+                "Data pengajuan gagal dihapus"
+            );
+        } finally {
+            isDeleting.value = false;
         }
     };
 
@@ -521,11 +531,7 @@ export function usePengajuan() {
     |--------------------------------------------------------------------------
     */
     const refreshData = async () => {
-        isLoading.value = true;
-
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        isLoading.value = false;
+        await getPengajuan();
 
         toast.success("Data pengajuan berhasil diperbarui");
     };

@@ -1,6 +1,11 @@
 <script setup>
 import { computed } from "vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import {
+    ChevronsLeft,
+    ChevronLeft,
+    ChevronRight,
+    ChevronsRight,
+} from "lucide-vue-next";
 
 const props = defineProps({
     currentPage: {
@@ -31,19 +36,22 @@ const paginationPages = computed(() => {
     const current = props.currentPage;
 
     if (total <= 5) {
-        return Array.from({ length: total }, (_, index) => index + 1);
+        return Array.from(
+            { length: total },
+            (_, index) => index + 1
+        );
     }
 
     let startPage = current - 2;
     let endPage = current + 2;
 
-    // Jika di awal
+    // Di awal
     if (current <= 3) {
         startPage = 1;
         endPage = 5;
     }
 
-    // Jika di akhir
+    // Di akhir
     if (current >= total - 2) {
         startPage = total - 4;
         endPage = total;
@@ -60,16 +68,23 @@ const startItem = computed(() => {
         return 0;
     }
 
-    return (props.currentPage - 1) * props.itemsPerPage + 1;
+    return (
+        (props.currentPage - 1) *
+        props.itemsPerPage +
+        1
+    );
 });
 
 const endItem = computed(() => {
-    return Math.min(props.currentPage * props.itemsPerPage, props.totalItems);
+    return Math.min(
+        props.currentPage * props.itemsPerPage,
+        props.totalItems
+    );
 });
 
-const changePage = (page) => {
+// Pindah ke halaman tertentu
+const goToPage = (page) => {
     if (
-        page === "..." ||
         page < 1 ||
         page > props.totalPages ||
         page === props.currentPage
@@ -79,6 +94,11 @@ const changePage = (page) => {
 
     emit("change-page", page);
 };
+
+// Sebelumnya / selanjutnya
+const changePage = (page) => {
+    goToPage(page);
+};
 </script>
 
 <template>
@@ -86,58 +106,65 @@ const changePage = (page) => {
         <!-- Info Data -->
         <div class="text-xs text-blue-950/60">
             Menampilkan
-
             <span class="font-bold text-blue-950">
                 {{ startItem }}
             </span>
-
             sampai
-
             <span class="font-bold text-blue-950">
                 {{ endItem }}
             </span>
-
             dari
-
             <span class="font-bold text-blue-950">
                 {{ totalItems }}
             </span>
-
             data
         </div>
 
         <!-- Navigation -->
         <div class="flex items-center gap-1.5">
+
+            <!-- First Page -->
+            <button type="button" @click="goToPage(1)" :disabled="currentPage === 1 ||
+                totalPages === 0
+                " title="Halaman pertama"
+                class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
+                <ChevronsLeft :size="15" />
+            </button>
+
             <!-- Previous -->
-            <button type="button" @click="changePage(currentPage - 1)" :disabled="currentPage === 1 || totalPages === 0"
+            <button type="button" @click="changePage(currentPage - 1)" :disabled="currentPage === 1 ||
+                totalPages === 0
+                " title="Halaman sebelumnya"
                 class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
                 <ChevronLeft :size="15" />
             </button>
 
             <!-- Page Numbers -->
-            <template v-for="(page, index) in paginationPages" :key="`${page}-${index}`">
-                <!-- Ellipsis -->
-                <span v-if="page === '...'" class="w-8 h-8 flex items-center justify-center text-xs text-blue-950/50">
-                    ...
-                </span>
-
-                <!-- Page -->
-                <button v-else type="button" @click="changePage(page)" :class="[
-                    page === currentPage
-                        ? 'bg-[#B20600] text-white font-bold border-[#B20600]'
-                        : 'bg-white text-blue-950 hover:bg-gray-50 border-gray-200',
-                    'w-8 h-8 rounded-lg text-xs border flex items-center justify-center transition cursor-pointer',
-                ]">
-                    {{ page }}
-                </button>
-            </template>
+            <button v-for="page in paginationPages" :key="page" type="button" @click="goToPage(page)" :class="[
+                page === currentPage
+                    ? 'bg-[#B20600] text-white font-bold border-[#B20600]'
+                    : 'bg-white text-blue-950 hover:bg-gray-50 border-gray-200',
+                'w-8 h-8 rounded-lg text-xs border flex items-center justify-center transition cursor-pointer',
+            ]">
+                {{ page }}
+            </button>
 
             <!-- Next -->
-            <button type="button" @click="changePage(currentPage + 1)"
-                :disabled="currentPage === totalPages || totalPages === 0"
+            <button type="button" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages ||
+                totalPages === 0
+                " title="Halaman berikutnya"
                 class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
                 <ChevronRight :size="15" />
             </button>
+
+            <!-- Last Page -->
+            <button type="button" @click="goToPage(totalPages)" :disabled="currentPage === totalPages ||
+                totalPages === 0
+                " title="Halaman terakhir"
+                class="p-2 rounded-lg border border-gray-200 text-blue-950 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition cursor-pointer">
+                <ChevronsRight :size="15" />
+            </button>
+
         </div>
     </div>
 </template>

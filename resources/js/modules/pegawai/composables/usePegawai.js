@@ -19,7 +19,7 @@ export function usePegawai() {
 
     // State Paginasi
     const currentPage = ref(1);
-    const itemsPerPage = ref(5);
+    const itemsPerPage = ref(25);
 
     // State Modal Form (Tambah / Edit)
     const isModalOpen = ref(false);

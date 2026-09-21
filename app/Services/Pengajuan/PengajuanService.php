@@ -26,6 +26,7 @@ class PengajuanService
             'pengajuanhistory.statusPengajuan',
             'pengajuanhistory.user.pegawai',
         ])
+            ->where('status', 1)
             ->latest()
             ->get();
     }
@@ -152,7 +153,9 @@ class PengajuanService
 
             $pengajuan = Pengajuan::findOrFail($id);
 
-            $pengajuan->delete();
+            $pengajuan->update([
+                'status' => 0,
+            ]);
 
             return true;
         });

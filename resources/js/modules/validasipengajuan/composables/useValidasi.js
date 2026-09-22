@@ -1,6 +1,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useToast } from "../../../utilities/toast/useToast";
 import { pengajuanValidasiService } from "../services/validasiService";
+import { statuspengajuanService } from "../../statuspengajuan/services/statuspengajuanService";
 
 export function useValidasi() {
     const items = ref([]);
@@ -10,10 +11,11 @@ export function useValidasi() {
     // Search & Filter
     const searchQuery = ref("");
     const statusFilter = ref("");
+    const statuses = ref([]);
 
     // State Paginasi
     const currentPage = ref(1);
-    const itemsPerPage = ref(10);
+    const itemsPerPage = ref(25);
 
     // State Modal Detail
     const isModalOpen = ref(false);
@@ -55,6 +57,17 @@ export function useValidasi() {
         await fetchData();
     };
 
+    const getStatusPengajuan = async () => {
+        try {
+            const response = await statuspengajuanService.getStatusPengajuan();
+
+            statuses.value = response.data || response;
+        } catch (error) {
+            console.error("Gagal mengambil data status pengajuan:", error);
+        }
+    }
+
+
     // =========================
     // Filter & Paginasi
     // =========================
@@ -72,7 +85,7 @@ export function useValidasi() {
 
             const matchesStatus =
                 !statusFilter.value ||
-                item.statuspengajuan?.key === statusFilter.value;
+                item.statuspengajuan?.id === statusFilter.value;
 
             return matchesSearch && matchesStatus;
         });
@@ -236,6 +249,7 @@ export function useValidasi() {
 
     onMounted(() => {
         fetchData();
+        getStatusPengajuan();
     });
 
     return {
@@ -247,6 +261,7 @@ export function useValidasi() {
         // Search & Filter
         searchQuery,
         statusFilter,
+        statuses,
 
         // Pagination
         currentPage,

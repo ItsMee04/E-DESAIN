@@ -1,7 +1,7 @@
 <template>
     <div class="space-y-6">
         <!-- Tabel Validasi Pengajuan -->
-        <PengajuanValidasiTable v-model:searchQuery="searchQuery" v-model:statusFilter="statusFilter"
+        <PengajuanValidasiTable v-model:searchQuery="searchQuery" v-model:statusFilter="statusFilter" :statuses="statuses"
             :paginated-items="paginatedItems" :filtered-items="filteredItems" :is-loading="isLoading"
             :current-page="currentPage" :total-pages="totalPages" :items-per-page="itemsPerPage"
             @open-detail="openDetailModal" @change-page="setPage" @refresh="refreshData" />
@@ -22,6 +22,7 @@ const {
     isSubmitting,
     searchQuery,
     statusFilter,
+    statuses,
     currentPage,
     itemsPerPage,
     totalPages,

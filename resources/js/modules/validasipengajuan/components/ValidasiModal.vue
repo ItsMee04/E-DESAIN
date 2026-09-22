@@ -14,7 +14,7 @@
                 </div>
 
                 <button @click="$emit('close')" :disabled="isSubmitting"
-                    class="text-blue-950/40 hover:text-blue-950 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="text-blue-950/40 hover:text-blue-950 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
                     <X :size="18" />
                 </button>
             </div>

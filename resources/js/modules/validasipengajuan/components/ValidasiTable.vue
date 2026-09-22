@@ -22,12 +22,11 @@
                 </div>
 
                 <!-- Filter Status -->
-                <select v-model="statusFilter"
-                    class="text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-blue-950 focus:outline-none focus:border-[#B20600] focus:bg-white transition cursor-pointer">
-                    <option value="">Semua Status</option>
-
-                    <option value="menunggu_validasi">Menunggu Validasi</option>
-                </select>
+                <div class="w-40">
+                    <SearchableDropdown v-model="statusFilter" :options="statuses" label-key="name" value-key="id"
+                        placeholder="Semua Status" dropdown-title="Pilih status" :allow-all="true"
+                        all-label="Semua Status" empty-text="Data status tidak ditemukan." />
+                </div>
 
                 <!-- Tombol Refresh Data -->
                 <button @click="$emit('refresh')" :disabled="isLoading"
@@ -152,6 +151,7 @@
 <script setup>
 import { Search, RotateCw, Eye } from "lucide-vue-next";
 import Pagination from "../../../utilities/common/Pagination.vue";
+import SearchableDropdown from "../../../utilities/common/SearchableDropdown.vue";
 
 defineProps({
     paginatedItems: Array,
@@ -160,6 +160,10 @@ defineProps({
     currentPage: Number,
     totalPages: Number,
     itemsPerPage: Number,
+    statuses: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const searchQuery = defineModel("searchQuery");
@@ -171,12 +175,13 @@ const getStatusClass = (key) => {
     const statusClasses = {
         diajukan: "bg-blue-50 text-blue-700 border-blue-200",
         menunggu_validasi: "bg-amber-50 text-amber-700 border-amber-200",
-        menunggu_validasi_pkrs: "bg-amber-50 text-amber-700 border-amber-200",
         diproses: "bg-indigo-50 text-indigo-700 border-indigo-200",
         revisi: "bg-orange-50 text-orange-700 border-orange-200",
-        tidak_acc: "bg-rose-50 text-rose-700 border-rose-200",
         selesai: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        ditolak: "bg-rose-50 text-rose-700 border-rose-200",
+        dibatalkan: "bg-gray-50 text-gray-700 border-gray-200",
     };
-    return statusClasses[key] || "bg-gray-50 text-gray-700 border-gray-200";
+
+    return statusClasses[key] ?? "bg-gray-50 text-gray-700 border-gray-200";
 };
 </script>

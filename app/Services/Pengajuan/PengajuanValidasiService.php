@@ -51,19 +51,15 @@ class PengajuanValidasiService
             $pengajuan = Pengajuan::where('status', 1)
                 ->findOrFail($id);
 
-            $validator = $data['jenis'];
+            $validator = 'pkrs';
             $keputusan = $data['status'];
             $catatan = $data['catatan'] ?? null;
 
-            /*
-         * Validasi tahap PKRS
-         */
             if ($validator === 'pkrs') {
 
-                // Pastikan pengajuan masih menunggu validasi PKRS
                 $statusMenunggu = StatusPengajuan::where(
                     'key',
-                    'menunggu_validasi_pkrs'
+                    'menunggu_validasi'
                 )->firstOrFail();
 
                 if ($pengajuan->statuspengajuan_id !== $statusMenunggu->id) {
@@ -72,7 +68,6 @@ class PengajuanValidasiService
                     );
                 }
 
-                // Tentukan status berikutnya
                 if ($keputusan === 'approved') {
                     $statusBerikutnya = StatusPengajuan::where(
                         'key',
@@ -81,16 +76,11 @@ class PengajuanValidasiService
                 } else {
                     $statusBerikutnya = StatusPengajuan::where(
                         'key',
-                        'tidak_acc'
+                        'ditolak'
                     )->firstOrFail();
                 }
-            }
+            } elseif ($validator === 'it') {
 
-            /*
-         * Validasi tahap IT
-         */ elseif ($validator === 'it') {
-
-                // Pastikan pengajuan sudah masuk tahap IT
                 $statusDiproses = StatusPengajuan::where(
                     'key',
                     'diproses'
@@ -102,7 +92,6 @@ class PengajuanValidasiService
                     );
                 }
 
-                // Keputusan IT
                 if ($keputusan === 'approved') {
                     $statusBerikutnya = StatusPengajuan::where(
                         'key',
@@ -115,14 +104,9 @@ class PengajuanValidasiService
                     )->firstOrFail();
                 }
             } else {
-                throw new \Exception(
-                    'Jenis validator tidak valid.'
-                );
+                throw new \Exception('Jenis validator tidak valid.');
             }
 
-            /*
-         * Simpan hasil validasi
-         */
             PengajuanValidasi::create([
                 'pengajuan_id' => $pengajuan->id,
                 'user_id' => Auth::id(),
@@ -132,16 +116,10 @@ class PengajuanValidasiService
                 'validated_at' => now(),
             ]);
 
-            /*
-         * Update status pengajuan
-         */
             $pengajuan->update([
                 'statuspengajuan_id' => $statusBerikutnya->id,
             ]);
 
-            /*
-         * Simpan history
-         */
             $pengajuan->history()->create([
                 'statuspengajuan_id' => $statusBerikutnya->id,
                 'user_id' => Auth::id(),

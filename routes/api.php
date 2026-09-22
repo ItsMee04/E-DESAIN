@@ -11,6 +11,7 @@ use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\UserPermission;
 use App\Http\Controllers\Pengajuan\PengajuanController;
+use App\Http\Controllers\Pengajuan\PengajuanValidasiController;
 use App\Http\Controllers\Pengajuan\StatusPengajuanController;
 use Illuminate\Support\Facades\Route;
 
@@ -110,6 +111,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/store', [PengajuanController::class, 'storePengajuan']);
             Route::post('/update', [PengajuanController::class, 'updatePengajuan']);
             Route::delete('/delete', [PengajuanController::class, 'deletePengajuan']);
+        });
+
+        Route::prefix('validasi')->group(function () {
+            Route::get('/', [PengajuanValidasiController::class, 'getPengajuanValidasi']);
+            Route::get('/detail/{id}', [PengajuanValidasiController::class, 'getDetailPengajuanValidasi']);
+            Route::post('/validasi/{id}', [PengajuanValidasiController::class, 'validasiPengajuan']);
         });
     });
 

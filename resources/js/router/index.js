@@ -12,6 +12,7 @@ import PegawaiView from "../modules/pegawai/views/PegawaiPage.vue";
 import PenggunaView from "../modules/pengguna/views/PenggunaPage.vue";
 import StatusPengajuanView from "../modules/statuspengajuan/views/StatusPengajuanPage.vue"
 import PengajuanView from "../modules/pengajuan/views/PengajuanPage.vue"
+import ValidasiPengajuan from "../modules/validasipengajuan/views/ValidasiPage.vue"
 
 const routes = [
     {
@@ -93,6 +94,12 @@ const routes = [
                 path: "/pengajuan/pengaujandesain",
                 name: "pengajuan",
                 component: PengajuanView,
+            },
+
+            {
+                path: "/pengajuan/validasi",
+                name: "validasi",
+                component: ValidasiPengajuan,
             },
         ],
     },

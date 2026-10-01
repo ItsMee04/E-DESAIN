@@ -167,5 +167,15 @@ class ModuleSeeder extends Seeder
             'sort_order' => 2,
             'status' => 1,
         ]);
+
+        Module::create([
+            'parent_id' => $formdesain->id,
+            'name' => 'Validasi Permintaan',
+            'key' => 'validasipermintaan',
+            'route' => '/pengajuan/validasi',
+            'icon' => null,
+            'sort_order' => 3,
+            'status' => 1,
+        ]);
     }
 }

@@ -118,8 +118,6 @@ export function useValidasi() {
     // =========================
 
     const openDetailModal = async (item) => {
-        isLoading.value = true;
-
         try {
             const response =
                 await pengajuanValidasiService.getDetailPengajuanValidasi(
@@ -144,16 +142,10 @@ export function useValidasi() {
                 "Gagal mengambil detail pengajuan.";
 
             toast.error(errorMessage);
-        } finally {
-            isLoading.value = false;
         }
     };
 
     const closeModal = () => {
-        if (isSubmitting.value) {
-            return;
-        }
-
         isModalOpen.value = false;
         selectedItem.value = null;
 

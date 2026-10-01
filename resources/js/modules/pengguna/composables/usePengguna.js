@@ -66,7 +66,8 @@ export function usePengguna() {
         const q = searchQuery.value.toLowerCase();
         return items.value.filter(
             (item) =>
-                (item.username && item.username.toLowerCase().includes(q))
+                (item.username && item.username.toLowerCase().includes(q)) ||
+                (item.pegawai.nama && item.pegawai?.nama.toLowerCase().includes(q))
         );
     });
 

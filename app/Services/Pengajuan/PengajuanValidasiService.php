@@ -120,7 +120,7 @@ class PengajuanValidasiService
                 'statuspengajuan_id' => $statusBerikutnya->id,
             ]);
 
-            $pengajuan->history()->create([
+            $pengajuan->pengajuanhistory()->create([
                 'statuspengajuan_id' => $statusBerikutnya->id,
                 'user_id' => Auth::id(),
                 'catatan' => $catatan,

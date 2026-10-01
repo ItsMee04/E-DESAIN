@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -624,6 +625,17 @@ class PegawaiSeeder extends Seeder
                     'updated_at' => now(),
                     'created_at' => now(),
                 ])
+            );
+
+            $pegawaiData = DB::table('pegawai')
+                ->where('nip', $pegawai['nip'])
+                ->first();
+
+            User::updateOrCreate(
+                ['pegawai_id' => $pegawaiData->id],
+                [
+                    'status' => 1,
+                ]
             );
         }
     }

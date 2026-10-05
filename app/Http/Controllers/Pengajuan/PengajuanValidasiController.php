@@ -65,4 +65,28 @@ class PengajuanValidasiController extends Controller
             'data' => $data
         ], 201);
     }
+
+    /**
+     * Menampilkan data pengajuan yang menunggu validasi.
+     */
+    public function getPengajuanValidasiIT()
+    {
+        $data = $this->pengajuanValidasiService->getPengajuanValidasiIT();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'success' => false,
+                'message' => 'Data pengajuan validasi tidak ditemukan',
+                'data' => $data
+            ], 201);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Data pengajuan validasi berhasil ditemukan',
+            'data' => $data
+        ], 201);
+    }
 }

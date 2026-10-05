@@ -71,7 +71,7 @@ class PengajuanValidasiService
                 if ($keputusan === 'approved') {
                     $statusBerikutnya = StatusPengajuan::where(
                         'key',
-                        'diproses'
+                        'menunggu_validasi_it'
                     )->firstOrFail();
                 } else {
                     $statusBerikutnya = StatusPengajuan::where(
@@ -81,12 +81,12 @@ class PengajuanValidasiService
                 }
             } elseif ($validator === 'it') {
 
-                $statusDiproses = StatusPengajuan::where(
+                $statusMenungguValidasiIt = StatusPengajuan::where(
                     'key',
-                    'diproses'
+                    'menunggu_validasi_it'
                 )->firstOrFail();
 
-                if ($pengajuan->statuspengajuan_id !== $statusDiproses->id) {
+                if ($pengajuan->statuspengajuan_id !== $statusMenungguValidasiIt->id) {
                     throw new \Exception(
                         'Pengajuan belum berada pada tahap validasi IT.'
                     );
@@ -95,7 +95,7 @@ class PengajuanValidasiService
                 if ($keputusan === 'approved') {
                     $statusBerikutnya = StatusPengajuan::where(
                         'key',
-                        'selesai'
+                        'diproses'
                     )->firstOrFail();
                 } else {
                     $statusBerikutnya = StatusPengajuan::where(
@@ -133,5 +133,24 @@ class PengajuanValidasiService
                 'pengajuanjenismedia.jenismedia',
             ]);
         });
+    }
+
+    /**
+     * Mengambil data pengajuan yang menunggu validasi.
+     */
+    public function getPengajuanValidasiIT()
+    {
+        return Pengajuan::with([
+            'pegawai',
+            'unit',
+            'statuspengajuan',
+            'pengajuanjenismedia.jenismedia',
+        ])
+            ->where('status', 1)
+            ->whereHas('statuspengajuan', function ($query) {
+                $query->where('key', 'menunggu_validasi_it');
+            })
+            ->latest()
+            ->get();
     }
 }

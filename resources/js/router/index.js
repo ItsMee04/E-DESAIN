@@ -13,6 +13,7 @@ import PenggunaView from "../modules/pengguna/views/PenggunaPage.vue";
 import StatusPengajuanView from "../modules/statuspengajuan/views/StatusPengajuanPage.vue"
 import PengajuanView from "../modules/pengajuan/views/PengajuanPage.vue"
 import ValidasiPengajuan from "../modules/validasipengajuan/views/ValidasiPage.vue"
+import ValidasiITPage from "../modules/validasipengajuan/views/ValidasiITPage.vue"
 
 const routes = [
     {
@@ -100,6 +101,12 @@ const routes = [
                 path: "/pengajuan/validasi",
                 name: "validasi",
                 component: ValidasiPengajuan,
+            },
+
+            {
+                path: "/pengajuan/validasi/it",
+                name: "validasi-it",
+                component: ValidasiITPage,
             },
         ],
     },

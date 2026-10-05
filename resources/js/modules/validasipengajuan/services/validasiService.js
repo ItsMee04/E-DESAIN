@@ -32,6 +32,15 @@ export const pengajuanValidasiService = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    async getPengajuanValidasiIT() {
+        try {
+            const response = await api.get('/pengajuan/validasi/it');
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 
 };

@@ -162,7 +162,7 @@ class ModuleSeeder extends Seeder
             'parent_id' => $formdesain->id,
             'name' => 'Pengajuan Desain',
             'key' => 'pengajuandesain',
-            'route' => '/pengajuan/pengaujandesain',
+            'route' => '/pengajuan/pengajuandesain',
             'icon' => null,
             'sort_order' => 2,
             'status' => 1,
@@ -175,6 +175,16 @@ class ModuleSeeder extends Seeder
             'route' => '/pengajuan/validasi',
             'icon' => null,
             'sort_order' => 3,
+            'status' => 1,
+        ]);
+
+        Module::create([
+            'parent_id' => $formdesain->id,
+            'name' => 'Validasi Permintaan IT',
+            'key' => 'validasipermintaanit',
+            'route' => '/pengajuan/validasi/it',
+            'icon' => null,
+            'sort_order' => 4,
             'status' => 1,
         ]);
     }

@@ -92,7 +92,7 @@ const routes = [
             },
 
             {
-                path: "/pengajuan/pengaujandesain",
+                path: "/pengajuan/pengajuandesain",
                 name: "pengajuan",
                 component: PengajuanView,
             },

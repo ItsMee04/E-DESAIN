@@ -89,4 +89,17 @@ class PengajuanValidasiController extends Controller
             'data' => $data
         ], 201);
     }
+
+    public function validasiPengajuanIT(Request $request, int $id)
+    {
+        $data = $this->pengajuanValidasiService
+            ->validasiPengajuanIT($id, $request->all());
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Pengajuan berhasil divalidasi',
+            'data' => $data
+        ], 201);
+    }
 }

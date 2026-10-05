@@ -153,4 +153,90 @@ class PengajuanValidasiService
             ->latest()
             ->get();
     }
+
+    /**
+     * Memproses validasi pengajuan oleh IT.
+     */
+    public function validasiPengajuanIT(int $id, array $data)
+    {
+        return DB::transaction(function () use ($id, $data) {
+
+            $pengajuan = Pengajuan::where('status', 1)
+                ->findOrFail($id);
+
+            $keputusan = $data['status'];
+            $catatan = $data['catatan'] ?? null;
+
+            // =========================
+            // Pastikan status validasi IT
+            // =========================
+
+            $statusMenungguValidasiIT = StatusPengajuan::where(
+                'key',
+                'menunggu_validasi_it'
+            )->firstOrFail();
+
+            if ($pengajuan->statuspengajuan_id !== $statusMenungguValidasiIT->id) {
+                throw new \Exception(
+                    'Pengajuan tidak berada pada tahap validasi IT.'
+                );
+            }
+
+            // =========================
+            // Tentukan status berikutnya
+            // =========================
+
+            if ($keputusan === 'approved') {
+
+                $statusBerikutnya = StatusPengajuan::where(
+                    'key',
+                    'diproses'
+                )->firstOrFail();
+            } else {
+
+                $statusBerikutnya = StatusPengajuan::where(
+                    'key',
+                    'revisi'
+                )->firstOrFail();
+            }
+
+            // =========================
+            // Simpan validasi IT
+            // =========================
+
+            PengajuanValidasi::create([
+                'pengajuan_id' => $pengajuan->id,
+                'user_id' => Auth::id(),
+                'jenis' => 'it',
+                'status' => $keputusan,
+                'catatan' => $catatan,
+                'validated_at' => now(),
+            ]);
+
+            // =========================
+            // Update status pengajuan
+            // =========================
+
+            $pengajuan->update([
+                'statuspengajuan_id' => $statusBerikutnya->id,
+            ]);
+
+            // =========================
+            // Simpan history
+            // =========================
+
+            $pengajuan->pengajuanhistory()->create([
+                'statuspengajuan_id' => $statusBerikutnya->id,
+                'user_id' => Auth::id(),
+                'catatan' => $catatan,
+            ]);
+
+            return $pengajuan->fresh([
+                'pegawai',
+                'unit',
+                'statuspengajuan',
+                'pengajuanjenismedia.jenismedia',
+            ]);
+        });
+    }
 }

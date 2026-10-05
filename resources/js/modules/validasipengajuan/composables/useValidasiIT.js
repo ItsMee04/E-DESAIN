@@ -205,7 +205,7 @@ export function useValidasiIT() {
         isSubmitting.value = true;
 
         try {
-            await pengajuanValidasiService.validasiPengajuan(
+            await pengajuanValidasiService.validasiPengajuanIT(
                 selectedItem.value.id,
                 {
                     status: form.value.status,

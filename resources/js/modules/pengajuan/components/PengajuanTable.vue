@@ -125,24 +125,30 @@
                         <!-- Action Buttons -->
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex items-center justify-end gap-1.5">
+
                                 <!-- Tombol Detail -->
                                 <button @click="$emit('open-detail', item)"
                                     class="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 rounded-lg border border-blue-200/60 transition cursor-pointer"
                                     title="Detail Pengajuan">
                                     <Eye :size="16" />
                                 </button>
+
                                 <!-- Tombol Edit -->
-                                <button @click="$emit('open-edit', item)"
+                                <button v-if="item.statuspengajuan?.key !== 'diproses'"
+                                    @click="$emit('open-edit', item)"
                                     class="p-1.5 text-amber-600 bg-amber-50 hover:bg-amber-100 hover:text-amber-700 rounded-lg border border-amber-200/60 transition cursor-pointer"
                                     title="Edit Data">
                                     <Pencil :size="16" />
                                 </button>
+
                                 <!-- Tombol Hapus -->
-                                <button @click="$emit('open-delete', item)"
+                                <button v-if="item.statuspengajuan?.key !== 'diproses'"
+                                    @click="$emit('open-delete', item)"
                                     class="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-200/60 transition cursor-pointer"
                                     title="Hapus Data">
                                     <Trash2 :size="16" />
                                 </button>
+
                             </div>
                         </td>
                     </tr>
@@ -253,6 +259,7 @@ const getStatusClass = (key) => {
     const statusClasses = {
         diajukan: "bg-blue-50 text-blue-700 border-blue-200",
         menunggu_validasi: "bg-amber-50 text-amber-700 border-amber-200",
+        menunggu_validasi_it: "bg-amber-50 text-amber-700 border-amber-200",
         diproses: "bg-indigo-50 text-indigo-700 border-indigo-200",
         revisi: "bg-orange-50 text-orange-700 border-orange-200",
         selesai: "bg-emerald-50 text-emerald-700 border-emerald-200",

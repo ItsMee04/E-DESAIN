@@ -208,16 +208,17 @@ defineEmits([
 
 const getStatusClass = (key) => {
     const statusClasses = {
-        diajukan: 'bg-blue-50 text-blue-700 border-blue-200',
-        menunggu_validasi: 'bg-amber-50 text-amber-700 border-amber-200',
-        diproses: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-        revisi: 'bg-orange-50 text-orange-700 border-orange-200',
-        selesai: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        ditolak: 'bg-rose-50 text-rose-700 border-rose-200',
-        dibatalkan: 'bg-gray-50 text-gray-700 border-gray-200'
+        diajukan: "bg-blue-50 text-blue-700 border-blue-200",
+        menunggu_validasi: "bg-amber-50 text-amber-700 border-amber-200",
+        menunggu_validasi_it: "bg-amber-50 text-amber-700 border-amber-200",
+        diproses: "bg-indigo-50 text-indigo-700 border-indigo-200",
+        revisi: "bg-orange-50 text-orange-700 border-orange-200",
+        selesai: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        ditolak: "bg-rose-50 text-rose-700 border-rose-200",
+        dibatalkan: "bg-gray-50 text-gray-700 border-gray-200",
     };
 
-    return statusClasses[key] ?? 'bg-gray-50 text-gray-700 border-gray-200';
+    return statusClasses[key] ?? "bg-gray-50 text-gray-700 border-gray-200";
 };
 
 const formatDate = (date) => {
@@ -238,6 +239,7 @@ const getHistoryDotClass = (key) => {
     const classes = {
         diajukan: "bg-green-500",
         menunggu_validasi: "bg-amber-500",
+        menunggu_validasi_it: "bg-amber-800",
         diproses: "bg-indigo-500",
         revisi: "bg-orange-500",
         selesai: "bg-green-600",
@@ -252,6 +254,7 @@ const getHistoryTextClass = (key) => {
     const classes = {
         diajukan: "text-green-600",
         menunggu_validasi: "text-amber-600",
+        menunggu_validasi_it: "text-amber-800",
         diproses: "text-indigo-600",
         revisi: "text-orange-600",
         selesai: "text-green-700",

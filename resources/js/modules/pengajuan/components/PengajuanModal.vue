@@ -67,7 +67,7 @@
                         <label v-for="media in jenisMedia" :key="media.id"
                             class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-blue-950/10 bg-white hover:bg-blue-950/[0.02] cursor-pointer transition-colors">
                             <input type="checkbox" :value="media.id" v-model="form.jenis_media"
-                                @change="emit('validate-jenis-media')"
+                                @change="emit('validate-pengajuan')"
                                 class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
                             <span class="text-sm text-blue-950">

@@ -41,11 +41,7 @@ class PegawaiController extends Controller
         $request->validate([
             'nip'               => 'required|string',
             'nama'              => 'required|string',
-            'tempat'            => 'required|string',
-            'tanggal'           => 'required|string',
-            'jeniskelamin_id'   => 'required|exists:jeniskelamin,id',
-            'alamat'            => 'nullable|string',
-            'agama_id'          => 'required|exists:agama,id',
+            'unit_id'           => 'required|exists:unit,id',
             'profesi_id'        => 'required|exists:profesi,id',
             'kontak'            => 'nullable|string|digits_between:10,13',
             'image'             => 'nullable|file|mimes:jpeg,png,jpg|max:1024'
@@ -54,11 +50,7 @@ class PegawaiController extends Controller
         $data = $this->pegawaiService->createPegawai([
             'nip'               => $request->nip,
             'nama'              => strtoupper($request->nama),
-            'tempat'            => strtoupper($request->tempat),
-            'tanggal'           => strtoupper($request->tanggal),
-            'jeniskelamin_id'   => $request->jeniskelamin_id,
-            'alamat'            => strtoupper($request->alamat),
-            'agama_id'          => $request->agama_id,
+            'unit_id'           => $request->unit_id,
             'profesi_id'        => $request->profesi_id,
             'kontak'            => $request->kontak,
 
@@ -79,11 +71,7 @@ class PegawaiController extends Controller
             'id'                => 'required|integer|exists:pegawai,id', // Validasi id agar pasti aman
             'nip'               => 'required|string',
             'nama'              => 'required|string',
-            'tempat'            => 'required|string',
-            'tanggal'           => 'required|string',
-            'jeniskelamin_id'   => 'required|exists:jeniskelamin,id',
-            'alamat'            => 'nullable|string',
-            'agama_id'          => 'required|exists:agama,id',
+            'unit_id'           => 'required|exists:unit,id',
             'profesi_id'        => 'required|exists:profesi,id',
             'kontak'            => 'nullable|string|digits_between:10,13',
             'image'             => 'nullable|file|mimes:jpeg,png,jpg|max:1024'

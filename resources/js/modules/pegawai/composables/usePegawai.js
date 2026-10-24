@@ -3,9 +3,8 @@ import { useToast } from '../../../utilities/toast/useToast';
 
 // Service API
 import { pegawaiService } from '../services/pegawaiService';
-import { agamaService } from '../../agama/services/agamaService';
 import { profesiService } from '../../profesi/services/profesiService';
-import { jeniskelaminService } from '../../jeniskelamin/services/jeniskelaminService';
+import { unitService } from '../../unit/services/unitService';
 
 export function usePegawai() {
     const items = ref([]);
@@ -13,9 +12,8 @@ export function usePegawai() {
     const isDeleting = ref(false);
     const searchQuery = ref('');
 
-    const agamaOptions = ref([]);
     const profesiOptions = ref([]);
-    const jeniskelaminOptions = ref([]);
+    const unitOptions = ref([]);
 
     // State Paginasi
     const currentPage = ref(1);
@@ -29,11 +27,7 @@ export function usePegawai() {
     const form = ref({
         nip: '',
         nama: '',
-        tempat: '',
-        tanggal: '',
-        jeniskelamin_id: null,
-        alamat: '',
-        agama_id: null,
+        unit_id: null,
         profesi_id: null,
         kontak: '',
         image: null
@@ -41,23 +35,14 @@ export function usePegawai() {
     const errors = ref({
         nama: '',
         nip: '',
-        tempat: '',
-        tanggal: '',
-        jeniskelamin_id: null,
-        alamat: '',
-        agama_id: null,
+        unit_id: null,
         profesi_id: null,
         kontak: '',
         image: null
     });
     const createEmptyForm = () => ({
         nip: '',
-        nama: '',
-        tempat: '',
-        tanggal: '',
-        jeniskelamin_id: null,
-        alamat: '',
-        agama_id: null,
+        unit_id: null,
         profesi_id: null,
         kontak: '',
         image: null
@@ -84,12 +69,12 @@ export function usePegawai() {
         }
     };
 
-    const fetchAgamaOptions = async () => {
+    const fetchUnitOptions = async () => {
         try {
-            const response = await agamaService.getAgama();
-            agamaOptions.value = response.data || response;
+            const response = await unitService.getUnit();
+            unitOptions.value = response.data || response;
         } catch (error) {
-            console.error('Gagal mengambil data agama:', error);
+            console.error('Gagal mengambil data unit:', error);
         }
     };
 
@@ -99,15 +84,6 @@ export function usePegawai() {
             profesiOptions.value = response.data || response;
         } catch (error) {
             console.error('Gagal mengambil data profesi:', error);
-        }
-    };
-
-    const fetchJenisKelaminOptions = async () => {
-        try {
-            const response = await jeniskelaminService.getJenisKelamin();
-            jeniskelaminOptions.value = response.data || response;
-        } catch (error) {
-            console.error('Gagal mengambil data jenis kelamin:', error);
         }
     };
 
@@ -172,9 +148,8 @@ export function usePegawai() {
         clearErrors();
 
         await Promise.all([
-            fetchAgamaOptions(),
+            fetchUnitOptions(),
             fetchProfesiOptions(),
-            fetchJenisKelaminOptions()
         ]);
 
         isModalOpen.value = true;
@@ -187,11 +162,7 @@ export function usePegawai() {
         form.value = {
             nip: item.nip ?? '',
             nama: item.nama ?? '',
-            tempat: item.tempat ?? '',
-            tanggal: item.tanggal ?? '',
-            jeniskelamin_id: item.jeniskelamin_id ?? null,
-            alamat: item.alamat ?? '',
-            agama_id: item.agama_id ?? null,
+            unit_id: item.unit_id ?? null,
             profesi_id: item.profesi_id ?? null,
             kontak: item.kontak ?? '',
             image: null
@@ -205,9 +176,8 @@ export function usePegawai() {
         clearErrors();
 
         await Promise.all([
-            fetchAgamaOptions(),
+            fetchUnitOptions(),
             fetchProfesiOptions(),
-            fetchJenisKelaminOptions()
         ]);
 
         isModalOpen.value = true;
@@ -241,43 +211,13 @@ export function usePegawai() {
             }
         }
 
-        // Tempat
-        if (!field || field === 'tempat') {
-            if (!form.value.tempat?.trim()) {
-                errors.value.tempat = 'Tempat lahir wajib diisi.';
+        // Unit
+        if (!field || field === 'unit_id') {
+            if (!form.value.unit_id) {
+                errors.value.unit_id = 'Unit wajib dipilih.';
                 isValid = false;
             } else {
-                errors.value.tempat = '';
-            }
-        }
-
-        // Tanggal
-        if (!field || field === 'tanggal') {
-            if (!form.value.tanggal) {
-                errors.value.tanggal = 'Tanggal lahir wajib diisi.';
-                isValid = false;
-            } else {
-                errors.value.tanggal = '';
-            }
-        }
-
-        // Jenis Kelamin
-        if (!field || field === 'jeniskelamin_id') {
-            if (!form.value.jeniskelamin_id) {
-                errors.value.jeniskelamin_id = 'Jenis kelamin wajib dipilih.';
-                isValid = false;
-            } else {
-                errors.value.jeniskelamin_id = '';
-            }
-        }
-
-        // Agama
-        if (!field || field === 'agama_id') {
-            if (!form.value.agama_id) {
-                errors.value.agama_id = 'Agama wajib dipilih.';
-                isValid = false;
-            } else {
-                errors.value.agama_id = '';
+                errors.value.unit_id = '';
             }
         }
 
@@ -298,11 +238,7 @@ export function usePegawai() {
         errors.value = {
             nip: '',
             nama: '',
-            tempat: '',
-            tanggal: '',
-            jeniskelamin_id: '',
-            alamat: '',
-            agama_id: '',
+            unit_id: '',
             profesi_id: '',
             kontak: '',
             image: ''
@@ -327,19 +263,9 @@ export function usePegawai() {
 
             payload.append('nip', form.value.nip);
             payload.append('nama', form.value.nama);
-            payload.append('tempat', form.value.tempat);
-            payload.append('tanggal', form.value.tanggal);
             payload.append(
-                'jeniskelamin_id',
-                form.value.jeniskelamin_id
-            );
-            payload.append(
-                'alamat',
-                form.value.alamat ?? ''
-            );
-            payload.append(
-                'agama_id',
-                form.value.agama_id
+                'unit_id',
+                form.value.unit_id
             );
             payload.append(
                 'profesi_id',
@@ -460,12 +386,10 @@ export function usePegawai() {
         closeDeleteModal,
         confirmDelete,
 
-        agamaOptions,
         profesiOptions,
-        jeniskelaminOptions,
-        fetchAgamaOptions,
+        unitOptions,
         fetchProfesiOptions,
-        fetchJenisKelaminOptions,
+        fetchUnitOptions,
         imagePreview,
         handleImageChange,
     };

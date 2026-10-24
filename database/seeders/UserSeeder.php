@@ -26,10 +26,10 @@ class UserSeeder extends Seeder
 
         DB::table('users')->updateOrInsert(
             [
-                'username' => 'itrsuwh',
+                'pegawai_id' => $pegawai->id,
             ],
             [
-                'pegawai_id' => $pegawai->id,
+                'username' => 'itrsuwh',
                 'email' => 'itrsuwh@gmail.com',
                 'password' => Hash::make('123'),
                 'email_verified_at' => now(),

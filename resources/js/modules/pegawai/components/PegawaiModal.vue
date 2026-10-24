@@ -23,8 +23,7 @@
                     </p>
                 </div>
 
-                <button type="button" @click="$emit('close')" :disabled="isSubmitting"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg text-blue-950/50 hover:bg-gray-100 hover:text-blue-950 transition cursor-pointer disabled:opacity-50">
+                <button @click="$emit('close')":disabled="isSubmitting" class="text-blue-950/40 hover:text-blue-950 transition">
                     <X :size="18" />
                 </button>
             </div>
@@ -46,36 +45,13 @@
                     </div>
                 </div>
 
-                <!-- Tempat & Tanggal Lahir -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Tempat -->
+                    <!-- Unit -->
                     <div class="space-y-1.5">
-                        <BaseInput v-model="form.tempat" label="Tempat Lahir" type="text"
-                            placeholder="Masukkan Tempat Lahir" :error="errors.tempat" required
-                            @blur="$emit('validate-pegawai', 'tempat')" />
-                    </div>
-
-                    <!-- Tanggal -->
-                    <div class="space-y-1.5">
-                        <DatePicker v-model="form.tanggal" label="Tanggal Lahir" placeholder="Pilih tanggal lahir..."
-                            :error="errors.tanggal" required />
-                    </div>
-                </div>
-
-                <!-- Jenis Kelamin -->
-                <div class="space-y-1.5">
-                    <BaseRadioGroup v-model="form.jeniskelamin_id" label="Jenis Kelamin" :options="jeniskelaminOptions"
-                        label-key="jeniskelamin" value-key="id" :error="errors.jeniskelamin_id" required
-                        @change="$emit('validate-pegawai', 'jeniskelamin_id')" />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Agama -->
-                    <div class="space-y-1.5">
-                        <SearchableDropdown v-model="form.agama_id" label="Agama" :options="agamaOptions"
-                            label-key="agama" value-key="id" placeholder="Pilih agama..." dropdown-title="Pilih agama"
-                            empty-text="Data agama tidak ditemukan." :error="errors.agama_id" required
-                            @blur="$emit('validate-pegawai', 'agama_id')" />
+                        <SearchableDropdown v-model="form.unit_id" label="Unit" :options="unitOptions"
+                            label-key="unit" value-key="id" placeholder="Pilih unit..." dropdown-title="Pilih unit"
+                            empty-text="Data unit tidak ditemukan." :error="errors.unit_id" required
+                            @blur="$emit('validate-pegawai', 'unit_id')" />
                     </div>
 
                     <!-- Profesi -->
@@ -85,11 +61,6 @@
                             dropdown-title="Pilih profesi" empty-text="Data profesi tidak ditemukan."
                             :error="errors.profesi_id" required @blur="$emit('validate-pegawai', 'profesi_id')" />
                     </div>
-                </div>
-
-                <!-- Alamat -->
-                <div class="space-y-1.5">
-                    <BaseTextarea v-model="form.alamat" label="Alamat" placeholder="Masukkan alamat" :rows="5" />
                 </div>
 
                 <!-- Kontak -->
@@ -163,17 +134,12 @@ const props = defineProps({
         default: false,
     },
 
-    agamaOptions: {
+    unitOptions: {
         type: Array,
         default: () => [],
     },
 
     profesiOptions: {
-        type: Array,
-        default: () => [],
-    },
-
-    jeniskelaminOptions: {
         type: Array,
         default: () => [],
     },

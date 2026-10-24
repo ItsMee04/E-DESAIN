@@ -12,7 +12,7 @@ class PegawaiService
 {
     public function getPegawaiAktif()
     {
-        return Pegawai::with(['jeniskelamin', 'agama', 'profesi'])->where('status', 1)->get();
+        return Pegawai::with(['unit', 'profesi'])->where('status', 1)->get();
     }
 
     public function createPegawai(array $data, ?UploadedFile $imageFile = null)
@@ -30,11 +30,7 @@ class PegawaiService
             $pegawai = Pegawai::create([
                 'nip'                   => $data['nip'],
                 'nama'                  => strtoupper($data['nama']),
-                'tempat'                => strtoupper($data['tempat']),
-                'tanggal'               => strtoupper($data['tanggal']),
-                'jeniskelamin_id'       => $data['jeniskelamin_id'],
-                'alamat'                => strtoupper($data['alamat']),
-                'agama_id'              => $data['agama_id'],
+                'unit_id'               => $data['unit_id'],
                 'profesi_id'            => $data['profesi_id'],
                 'kontak'                => strtoupper($data['kontak']),
                 'image'                 => $imageName,
@@ -78,11 +74,7 @@ class PegawaiService
             $pegawai->update([
                 'nip'                   => $data['nip'],
                 'nama'                  => strtoupper($data['nama']),
-                'tempat'                => strtoupper($data['tempat']),
-                'tanggal'               => strtoupper($data['tanggal']),
-                'jeniskelamin_id'       => $data['jeniskelamin_id'],
-                'alamat'                => strtoupper($data['alamat']),
-                'agama_id'              => $data['agama_id'],
+                'unit_id'               => $data['unit_id'],
                 'profesi_id'            => $data['profesi_id'],
                 'kontak'                => strtoupper($data['kontak']),
                 'image'                 => $imageName, // Tetap yang lama atau ganti yang baru

@@ -29,7 +29,7 @@
                 </div>
 
                 <div>
-                    <BaseInput v-model="form.password" label="Password" type="text" placeholder="Contoh: ********""
+                    <BaseInput v-model="form.password" label="Password" type="password" placeholder="Contoh: ********""
                         :error="errors.password" required @blur="$emit('validate-pengguna', 'password')" />
                 </div>
 

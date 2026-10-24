@@ -100,7 +100,7 @@
                 <!-- Keperluan -->
                 <div>
                     <BaseTextarea v-model="form.keperluan" label="Keperluan" placeholder="Jelaskan keperluan desain..."
-                        :rows="5" required @blur="$emit('validate-pengajuan','keperluan')" />
+                        :rows="5" required @blur="$emit('validate-pengajuan','keperluan')" :error="errors.keperluan" />
                 </div>
 
                 <!-- Footer -->

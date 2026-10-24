@@ -14,11 +14,7 @@ class Pegawai extends Model
     protected $fillable = [
         'nip',
         'nama',
-        'tempat',
-        'tanggal',
-        'jeniskelamin_id',
-        'alamat',
-        'agama_id',
+        'unit_id',
         'profesi_id',
         'kontak',
         'image',
@@ -26,23 +22,13 @@ class Pegawai extends Model
     ];
 
     /**
-     * Get the jeniskelamin that owns the Pegawai
+     * Get the unit that owns the Pegawai
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function jeniskelamin(): BelongsTo
+    public function unit(): BelongsTo
     {
-        return $this->belongsTo(JenisKelamin::class, 'jeniskelamin_id', 'id');
-    }
-
-    /**
-     * Get the agama that owns the Pegawai
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function agama(): BelongsTo
-    {
-        return $this->belongsTo(Agama::class, 'agama_id', 'id');
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 
     /**

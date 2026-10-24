@@ -49,24 +49,36 @@ class PengajuanService
     }
 
     /**
-     * Store pengajuan.
+     * Menyimpan pengajuan desain baru.
      */
     public function storePengajuan(array $data)
     {
         return DB::transaction(function () use ($data) {
             $user = Auth::user();
 
+            // Pastikan pengguna login dan terhubung dengan data pegawai.
+            if (!$user || !$user->pegawai_id) {
+                throw new \Exception(
+                    'Pengguna tidak terhubung dengan data pegawai.'
+                );
+            }
+
+            // Ambil status awal pengajuan.
             $statusDiajukan = StatusPengajuan::where('key', 'diajukan')
                 ->firstOrFail();
 
-            $statusMenungguValidasi = StatusPengajuan::where('key', 'menunggu_validasi')
-                ->firstOrFail();
+            // Ambil status menunggu konfirmasi IT.
+            $statusMenungguIT = StatusPengajuan::where(
+                'key',
+                'menunggu_verifikasi_it'
+            )->firstOrFail();
 
+            // Simpan data utama pengajuan.
             $pengajuan = Pengajuan::create([
                 'nomor' => $this->generateNomor(),
                 'pegawai_id' => $user->pegawai_id,
                 'unit_id' => $data['unit_id'],
-                'statuspengajuan_id' => $statusMenungguValidasi->id,
+                'statuspengajuan_id' => $statusMenungguIT->id,
                 'nama_desain' => $data['nama_desain'],
                 'ukuran' => $data['ukuran'],
                 'jumlah' => $data['jumlah'],
@@ -74,6 +86,7 @@ class PengajuanService
                 'user_id' => $user->id,
             ]);
 
+            // Simpan jenis media yang dipilih.
             foreach ($data['jenis_media'] as $jenisMediaId) {
                 PengajuanJenisMedia::create([
                     'pengajuan_id' => $pengajuan->id,
@@ -81,6 +94,7 @@ class PengajuanService
                 ]);
             }
 
+            // Catat riwayat ketika pengajuan dibuat.
             PengajuanHistory::create([
                 'pengajuan_id' => $pengajuan->id,
                 'statuspengajuan_id' => $statusDiajukan->id,
@@ -88,28 +102,31 @@ class PengajuanService
                 'catatan' => 'Pengajuan desain berhasil dibuat.',
             ]);
 
+            // Catat riwayat bahwa pengajuan menunggu konfirmasi IT.
             PengajuanHistory::create([
                 'pengajuan_id' => $pengajuan->id,
-                'statuspengajuan_id' => $statusMenungguValidasi->id,
+                'statuspengajuan_id' => $statusMenungguIT->id,
                 'user_id' => $user->id,
-                'catatan' => 'Pengajuan menunggu proses validasi.',
+                'catatan' => 'Pengajuan menunggu konfirmasi Tim IT.',
             ]);
 
+            // Buat catatan validasi awal untuk Tim IT.
             PengajuanValidasi::create([
                 'pengajuan_id' => $pengajuan->id,
                 'user_id' => null,
-                'jenis' => 'validasi',
+                'jenis' => 'it',
                 'status' => 'pending',
                 'catatan' => null,
                 'validated_at' => null,
             ]);
 
+            // Kembalikan data pengajuan beserta relasinya.
             return $pengajuan->load([
                 'pegawai',
                 'unit',
                 'statuspengajuan',
                 'user',
-                'pengajuanjenismedia.jenisMedia',
+                'pengajuanjenismedia.jenismedia',
                 'pengajuanhistory.statusPengajuan',
                 'pengajuanhistory.user',
                 'pengajuanvalidasi',

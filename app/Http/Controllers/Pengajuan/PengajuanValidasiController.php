@@ -21,7 +21,7 @@ class PengajuanValidasiController extends Controller
      */
     public function getPengajuanValidasi()
     {
-        $data = $this->pengajuanValidasiService->getPengajuanValidasi();
+        $data = $this->pengajuanValidasiService->getPengajuanValidasiPKRS();
 
         if ($data->isEmpty()) {
             return response()->json([

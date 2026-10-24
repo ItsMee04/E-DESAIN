@@ -39,9 +39,7 @@
                         <th class="px-4 py-3 rounded-l-xl w-14 text-center">No.</th>
                         <th class="px-4 py-3">NIP</th>
                         <th class="px-4 py-3">Nama</th>
-                        <th class="px-4 py-3">Tempat, Tanggal Lahir</th>
-                        <th class="px-4 py-3">Jenis Kelamin</th>
-                        <th class="px-4 py-3">Alamat</th>
+                        <th class="px-4 py-3">Unit</th>
                         <th class="px-4 py-3">Profesi</th>
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3 rounded-r-xl text-right">Aksi</th>
@@ -51,7 +49,7 @@
                 <!-- State 1: Memuat Data (Loading) -->
                 <tbody v-if="isLoading" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="8" class="text-center py-6">
+                        <td colspan="7" class="text-center py-6">
                             <div class="flex flex-col items-center justify-center gap-2">
                                 <div
                                     class="w-6 h-6 border-2 border-[#B20600] border-t-transparent rounded-full animate-spin">
@@ -65,7 +63,7 @@
                 <!-- State 2: Tidak Ada Data -->
                 <tbody v-else-if="paginatedItems.length === 0" class="divide-y divide-gray-100">
                     <tr>
-                        <td colspan="8" class="text-center py-6 text-xs text-blue-950/50">
+                        <td colspan="7" class="text-center py-6 text-xs text-blue-950/50">
                             Tidak ada data pegawai yang ditemukan.
                         </td>
                     </tr>
@@ -80,10 +78,7 @@
                         </td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.nip }}</td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.nama }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.tempat }}, {{ item.tanggal }}</td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.jeniskelamin?.jeniskelamin ?? 'N/A' }}
-                        </td>
-                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.alamat }}</td>
+                        <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.unit?.unit ?? 'N/A' }}</td>
                         <td class="px-4 py-3.5 font-medium text-blue-950">{{ item.profesi?.profesi ?? 'N/A' }}</td>
                         <td class="px-4 py-3.5">
                             <span :class="[

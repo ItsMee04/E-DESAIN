@@ -8,8 +8,8 @@
 
         <!-- Modal Form (Tambah / Edit) -->
         <PegawaiModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
-            :is-submitting="isSubmitting" :agama-options="agamaOptions" :profesi-options="profesiOptions"
-            :jeniskelamin-options="jeniskelaminOptions" :image-preview="imagePreview" @close="closeModal"
+            :is-submitting="isSubmitting" :unit-options="unitOptions" :profesi-options="profesiOptions"
+            :image-preview="imagePreview" @close="closeModal"
             @save="saveForm" @validate-pegawai="validatePegawai" @image-change="handleImageChange" />
 
         <!-- Reusable Confirm Delete Modal -->
@@ -46,7 +46,6 @@ const {
     openEditModal,
     closeModal,
     saveForm,
-    fetchData,
     refreshData,
     isDeleteModalOpen,
     selectedDeleteItem,
@@ -54,9 +53,8 @@ const {
     closeDeleteModal,
     confirmDelete,
 
-    agamaOptions,
+    unitOptions,
     profesiOptions,
-    jeniskelaminOptions,
     imagePreview,
     handleImageChange
 } = usePegawai();

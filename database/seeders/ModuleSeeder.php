@@ -82,26 +82,6 @@ class ModuleSeeder extends Seeder
 
         Module::create([
             'parent_id' => $master->id,
-            'name' => 'Jenis Kelamin',
-            'key' => 'jeniskelamin',
-            'route' => '/master/jeniskelamin',
-            'icon' => null,
-            'sort_order' => 2,
-            'status' => 1,
-        ]);
-
-        Module::create([
-            'parent_id' => $master->id,
-            'name' => 'Agama',
-            'key' => 'agama',
-            'route' => '/master/agama',
-            'icon' => null,
-            'sort_order' => 3,
-            'status' => 1,
-        ]);
-
-        Module::create([
-            'parent_id' => $master->id,
             'name' => 'Jenis Media',
             'key' => 'jenismedia',
             'route' => '/master/jenismedia',

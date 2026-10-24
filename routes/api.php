@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Authentication\AuthenticationController;
-use App\Http\Controllers\Master\AgamaController;
-use App\Http\Controllers\Master\JenisKelaminController;
 use App\Http\Controllers\Master\JenisMediaController;
 use App\Http\Controllers\Master\ModuleController;
 use App\Http\Controllers\Master\PegawaiController;
@@ -34,20 +32,6 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/store', [ProfesiController::class, 'storeProfesi']);
             Route::post('/update', [ProfesiController::class, 'updateProfesi']);
             Route::delete('/delete', [ProfesiController::class, 'deleteProfesi']);
-        });
-
-        Route::prefix('agama')->group(function () {
-            Route::get('/', [AgamaController::class, 'getAgama']);
-            Route::post('/store', [AgamaController::class, 'storeAgama']);
-            Route::post('/update', [AgamaController::class, 'updateAgama']);
-            Route::delete('/delete', [AgamaController::class, 'deleteAgama']);
-        });
-
-        Route::prefix('jeniskelamin')->group(function () {
-            Route::get('/', [JenisKelaminController::class, 'getJenisKelamin']);
-            Route::post('/store', [JenisKelaminController::class, 'storeJenisKelamin']);
-            Route::post('/update', [JenisKelaminController::class, 'updateJenisKelamin']);
-            Route::delete('/delete', [JenisKelaminController::class, 'deleteJenisKelamin']);
         });
 
         Route::prefix('jenismedia')->group(function () {

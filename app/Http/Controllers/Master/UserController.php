@@ -106,7 +106,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validasi gagal',
+                'message' => 'Password harus terdiri dari setidaknya 6 karakter.',
                 'errors' => $validator->errors()
             ], 422);
         }

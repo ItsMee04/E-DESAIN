@@ -150,9 +150,9 @@ class ModuleSeeder extends Seeder
 
         Module::create([
             'parent_id' => $formdesain->id,
-            'name' => 'Validasi Permintaan',
-            'key' => 'validasipermintaan',
-            'route' => '/pengajuan/validasi',
+            'name' => 'Konfirmasi IT',
+            'key' => 'validasipermintaanit',
+            'route' => '/pengajuan/validasi/it',
             'icon' => null,
             'sort_order' => 3,
             'status' => 1,
@@ -160,9 +160,9 @@ class ModuleSeeder extends Seeder
 
         Module::create([
             'parent_id' => $formdesain->id,
-            'name' => 'Validasi Permintaan IT',
-            'key' => 'validasipermintaanit',
-            'route' => '/pengajuan/validasi/it',
+            'name' => 'ACC PKRS',
+            'key' => 'validasipermintaanpkrs',
+            'route' => '/pengajuan/validasi/pkrs',
             'icon' => null,
             'sort_order' => 4,
             'status' => 1,

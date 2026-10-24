@@ -84,7 +84,7 @@ const routes = [
             },
 
             {
-                path: "/pengajuan/validasi",
+                path: "/pengajuan/validasi/pkrs",
                 name: "validasi",
                 component: ValidasiPengajuan,
             },

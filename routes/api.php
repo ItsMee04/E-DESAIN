@@ -103,6 +103,8 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/validasi/{id}', [PengajuanValidasiController::class, 'validasiPengajuan']);
             Route::get('/it', [PengajuanValidasiController::class, 'getPengajuanValidasiIT']);
             Route::post('/validasi/it/{id}', [PengajuanValidasiController::class, 'validasiPengajuanIT']);
+            Route::patch('/siap-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSiapDiambil']);
+            Route::patch('/selesai-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSelesaiDiambil']);
         });
     });
 

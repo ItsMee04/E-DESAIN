@@ -102,4 +102,36 @@ class PengajuanValidasiController extends Controller
             'data' => $data
         ], 201);
     }
+
+    /**
+     * Konfirmasi desain siap diambil.
+     */
+    public function konfirmasiSiapDiambil(int $id)
+    {
+        $data = $this->pengajuanValidasiService
+            ->konfirmasiSiapDiambil($id);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Pengajuan berhasil diubah menjadi siap diambil',
+            'data' => $data,
+        ], 200);
+    }
+
+    /**
+     * Konfirmasi desain sudah diambil oleh pegawai.
+     */
+    public function konfirmasiSelesaiDiambil(int $id)
+    {
+        $data = $this->pengajuanValidasiService
+            ->konfirmasiSelesaiDiambil($id);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Pengajuan berhasil diselesaikan',
+            'data' => $data,
+        ], 200);
+    }
 }

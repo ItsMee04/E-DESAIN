@@ -133,17 +133,33 @@
                                     <Eye :size="16" />
                                 </button>
 
+                                <!-- Tombol Siap Diambil -->
+                                <button v-if="item.statuspengajuan?.key === 'diproses'"
+                                    @click="$emit('open-ready', item)"
+                                    class="p-1.5 text-orange-600 bg-orange-50 hover:bg-orange-100 hover:text-orange-700 rounded-lg border border-orange-200/60 transition cursor-pointer"
+                                    title="Konfirmasi Siap Diambil">
+                                    <PackageCheck :size="16" />
+                                </button>
+
+                                <!-- Tombol Selesai Diambil -->
+                                <button v-if="item.statuspengajuan?.key === 'siap_diambil'"
+                                    @click="$emit('open-complete', item)"
+                                    class="p-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 rounded-lg border border-emerald-200/60 transition cursor-pointer"
+                                    title="Konfirmasi Selesai Diambil">
+                                    <CheckCircle2 :size="16" />
+                                </button>
+
                                 <!-- Tombol Edit -->
-                                <button v-if="item.statuspengajuan?.key !== 'diproses'"
-                                    @click="$emit('open-edit', item)"
+                                <button v-if="!['diproses', 'siap_diambil', 'selesai', 'ditolak', 'dibatalkan']
+                                    .includes(item.statuspengajuan?.key)" @click="$emit('open-edit', item)"
                                     class="p-1.5 text-amber-600 bg-amber-50 hover:bg-amber-100 hover:text-amber-700 rounded-lg border border-amber-200/60 transition cursor-pointer"
                                     title="Edit Data">
                                     <Pencil :size="16" />
                                 </button>
 
                                 <!-- Tombol Hapus -->
-                                <button v-if="item.statuspengajuan?.key !== 'diproses'"
-                                    @click="$emit('open-delete', item)"
+                                <button v-if="!['diproses', 'siap_diambil', 'selesai', 'ditolak', 'dibatalkan']
+                                    .includes(item.statuspengajuan?.key)" @click="$emit('open-delete', item)"
                                     class="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-200/60 transition cursor-pointer"
                                     title="Hapus Data">
                                     <Trash2 :size="16" />
@@ -221,7 +237,9 @@ import {
     Pencil,
     Trash2,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    PackageCheck,
+    CheckCircle2,
 } from "lucide-vue-next";
 
 const props = defineProps({
@@ -251,6 +269,8 @@ defineEmits([
     "open-detail",
     "open-edit",
     "open-delete",
+    "open-ready",
+    "open-complete",
     "change-page",
     "refresh",
 ]);
@@ -258,10 +278,10 @@ defineEmits([
 const getStatusClass = (key) => {
     const statusClasses = {
         diajukan: "bg-blue-50 text-blue-700 border-blue-200",
-        menunggu_validasi: "bg-amber-50 text-amber-700 border-amber-200",
-        menunggu_validasi_it: "bg-amber-50 text-amber-700 border-amber-200",
+        menunggu_verifikasi_it: "bg-amber-50 text-amber-700 border-amber-200",
+        menunggu_acc_pkrs: "bg-amber-50 text-amber-700 border-amber-200",
         diproses: "bg-indigo-50 text-indigo-700 border-indigo-200",
-        revisi: "bg-orange-50 text-orange-700 border-orange-200",
+        siap_diambil: "bg-orange-50 text-orange-700 border-orange-200",
         selesai: "bg-emerald-50 text-emerald-700 border-emerald-200",
         ditolak: "bg-rose-50 text-rose-700 border-rose-200",
         dibatalkan: "bg-gray-50 text-gray-700 border-gray-200",

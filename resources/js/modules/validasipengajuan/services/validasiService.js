@@ -55,4 +55,27 @@ export const pengajuanValidasiService = {
         }
     },
 
+    async konfirmasiSiapDiambil(id, payload) {
+        try {
+            const response = await api.patch(
+                `/pengajuan/validasi/siap-diambil/${id}`,
+                payload
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async konfirmasiSelesaiDiambil(id) {
+        try {
+            const response = await api.patch(
+                `/pengajuan/validasi/selesai-diambil/${id}`
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };

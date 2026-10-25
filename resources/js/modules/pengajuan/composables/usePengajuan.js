@@ -5,6 +5,7 @@ import { pengajuanService } from "../services/pengajuanService"
 import { unitService } from "../../unit/services/unitService";
 import { jenismediaService } from "../../jenismedia/services/jenismediaService";
 import { statuspengajuanService } from "../../statuspengajuan/services/statuspengajuanService";
+import { pengajuanValidasiService } from "../../validasipengajuan/services/validasiService";
 
 import { useToast } from "../../../utilities/toast/useToast";
 
@@ -65,6 +66,7 @@ export function usePengajuan() {
     const isLoading = ref(false);
     const isSubmitting = ref(false);
     const isDeleting = ref(false);
+    const isProcessingStatus = ref(false);
     const searchQuery = ref("");
     const statusFilter = ref("");
 
@@ -112,6 +114,15 @@ export function usePengajuan() {
     */
     const isDeleteModalOpen = ref(false);
     const selectedDeleteItem = ref(null);
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS PENGAJUAN - MODAL KONFIRMASI
+    |--------------------------------------------------------------------------
+    */
+    const isStatusModalOpen = ref(false);
+    const statusActionType = ref("ready");
+    const selectedStatusItem = ref(null);
 
     /*
     |--------------------------------------------------------------------------
@@ -336,6 +347,123 @@ export function usePengajuan() {
     const closeDetailModal = () => {
         isDetailModalOpen.value = false;
         selectedDetailItem.value = null;
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPEN STATUS MODAL
+    |--------------------------------------------------------------------------
+    */
+    const openStatusModal = (item, type) => {
+        // Pastikan status sesuai dengan tindakan yang dipilih.
+        const expectedStatus = {
+            ready: "diproses",
+            complete: "siap_diambil",
+        };
+
+        if (!expectedStatus[type]) {
+            return;
+        }
+
+        if (item.statuspengajuan?.key !== expectedStatus[type]) {
+            toast.error("Status pengajuan sudah berubah. Silakan refresh data.");
+            return;
+        }
+
+        selectedStatusItem.value = item;
+        statusActionType.value = type;
+        isStatusModalOpen.value = true;
+    };
+
+    /**
+ *--------------------------------------------------------------------------
+ * CONFIRM STATUS PENGAJUAN
+ *--------------------------------------------------------------------------
+ */
+    const confirmStatus = async () => {
+        if (!selectedStatusItem.value || isProcessingStatus.value) {
+            return;
+        }
+
+        const item = selectedStatusItem.value;
+
+        const statusConfig = {
+            ready: {
+                current: "diproses",
+                successMessage: "Pengajuan berhasil diubah menjadi Siap Diambil",
+                action: () =>
+                    pengajuanValidasiService.konfirmasiSiapDiambil(item.id),
+            },
+            complete: {
+                current: "siap_diambil",
+                successMessage: "Pengajuan berhasil diselesaikan",
+                action: () =>
+                    pengajuanValidasiService.konfirmasiSelesaiDiambil(item.id),
+            },
+        };
+
+        const config = statusConfig[statusActionType.value];
+
+        if (!config) {
+            toast.error("Jenis tindakan status tidak valid");
+            return;
+        }
+
+        // Cegah perubahan jika status awal tidak sesuai.
+        if (item.statuspengajuan?.key !== config.current) {
+            toast.error("Status pengajuan tidak sesuai. Silakan refresh data.");
+            return;
+        }
+
+        isProcessingStatus.value = true;
+
+        try {
+            const response = await config.action();
+
+            if (!response?.success) {
+                throw new Error(
+                    response?.message || "Gagal memperbarui status pengajuan"
+                );
+            }
+
+            isStatusModalOpen.value = false;
+            selectedStatusItem.value = null;
+            statusActionType.value = "ready";
+
+            await getPengajuan();
+
+            toast.success(response.message || config.successMessage);
+
+            // Sesuaikan halaman jika jumlah data berubah.
+            if (currentPage.value > totalPages.value) {
+                currentPage.value = totalPages.value;
+            }
+        } catch (error) {
+            console.error("Gagal memperbarui status pengajuan:", error);
+
+            toast.error(
+                error.response?.data?.message ||
+                error.message ||
+                "Gagal memperbarui status pengajuan"
+            );
+        } finally {
+            isProcessingStatus.value = false;
+        }
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | CLOSE STATUS MODAL
+    |--------------------------------------------------------------------------
+    */
+    const closeStatusModal = () => {
+        if (isProcessingStatus.value) {
+            return;
+        }
+
+        isStatusModalOpen.value = false;
+        selectedStatusItem.value = null;
+        statusActionType.value = "ready";
     };
 
     /*
@@ -588,6 +716,16 @@ export function usePengajuan() {
         setPage,
         refreshData,
 
-        validatePengajuan
+        validatePengajuan,
+        // Modal Status
+        isStatusModalOpen,
+        statusActionType,
+        selectedStatusItem,
+        isProcessingStatus,
+
+        // Aksi Modal Status
+        openStatusModal,
+        closeStatusModal,
+        confirmStatus,
     };
 }

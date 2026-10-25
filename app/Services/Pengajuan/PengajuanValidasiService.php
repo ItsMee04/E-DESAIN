@@ -228,6 +228,115 @@ class PengajuanValidasiService
         });
     }
 
+        /**
+     * Mengubah status pengajuan menjadi siap diambil.
+     */
+    public function konfirmasiSiapDiambil(int $id)
+    {
+        return DB::transaction(function () use ($id) {
+            $user = Auth::user();
+
+            // Ambil pengajuan dan kunci selama transaksi.
+            $pengajuan = Pengajuan::where('status', 1)
+                ->lockForUpdate()
+                ->findOrFail($id);
+
+            // Pastikan pengajuan sedang diproses.
+            $statusDiproses = StatusPengajuan::where(
+                'key',
+                'diproses'
+            )->firstOrFail();
+
+            if ($pengajuan->statuspengajuan_id !== $statusDiproses->id) {
+                throw new \Exception(
+                    'Pengajuan tidak berada pada tahap pengerjaan.'
+                );
+            }
+
+            // Ambil status siap diambil.
+            $statusSiapDiambil = StatusPengajuan::where(
+                'key',
+                'siap_diambil'
+            )->firstOrFail();
+
+            // Perbarui status aktif pengajuan.
+            $pengajuan->update([
+                'statuspengajuan_id' => $statusSiapDiambil->id,
+            ]);
+
+            // Catat perubahan status ke history.
+            PengajuanHistory::create([
+                'pengajuan_id' => $pengajuan->id,
+                'statuspengajuan_id' => $statusSiapDiambil->id,
+                'user_id' => $user->id,
+                'catatan' => 'Desain telah selesai dikerjakan oleh Tim IT dan siap diambil.',
+            ]);
+
+            return $pengajuan->fresh([
+                'pegawai',
+                'unit',
+                'statuspengajuan',
+                'pengajuanjenismedia.jenismedia',
+                'pengajuanhistory.statusPengajuan',
+                'pengajuanhistory.user',
+            ]);
+        });
+    }
+
+    /**
+     * Mengubah status pengajuan menjadi selesai setelah diambil.
+     */
+    public function konfirmasiSelesaiDiambil(int $id)
+    {
+        return DB::transaction(function () use ($id) {
+            $user = Auth::user();
+
+            // Ambil pengajuan dan kunci selama transaksi.
+            $pengajuan = Pengajuan::where('status', 1)
+                ->lockForUpdate()
+                ->findOrFail($id);
+
+            // Pastikan pengajuan sedang menunggu pengambilan.
+            $statusSiapDiambil = StatusPengajuan::where(
+                'key',
+                'siap_diambil'
+            )->firstOrFail();
+
+            if ($pengajuan->statuspengajuan_id !== $statusSiapDiambil->id) {
+                throw new \Exception(
+                    'Pengajuan belum berada pada tahap siap diambil.'
+                );
+            }
+
+            // Ambil status selesai.
+            $statusSelesai = StatusPengajuan::where(
+                'key',
+                'selesai'
+            )->firstOrFail();
+
+            // Perbarui status aktif pengajuan.
+            $pengajuan->update([
+                'statuspengajuan_id' => $statusSelesai->id,
+            ]);
+
+            // Catat perubahan status ke history.
+            PengajuanHistory::create([
+                'pengajuan_id' => $pengajuan->id,
+                'statuspengajuan_id' => $statusSelesai->id,
+                'user_id' => $user->id,
+                'catatan' => 'Desain telah diserahkan oleh Tim IT dan diterima oleh pegawai.',
+            ]);
+
+            return $pengajuan->fresh([
+                'pegawai',
+                'unit',
+                'statuspengajuan',
+                'pengajuanjenismedia.jenismedia',
+                'pengajuanhistory.statusPengajuan',
+                'pengajuanhistory.user',
+            ]);
+        });
+    }
 
     public function getDetailPengajuanValidasi(int $id)
     {

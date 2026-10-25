@@ -17,7 +17,9 @@
             :paginated-items="paginatedItems" :filtered-items="filteredItems" :is-loading="isLoading"
             :current-page="currentPage" :total-pages="totalPages" :items-per-page="itemsPerPage" :statuses="statuses"
             @open-add="openAddModal" @open-detail="openDetailModal" @open-edit="openEditModal"
-            @open-delete="openDeleteModal" @change-page="setPage" @refresh="refreshData" />
+            @open-delete="openDeleteModal" @open-ready="(item) => openStatusModal(item, 'ready')"
+            @open-complete="(item) => openStatusModal(item, 'complete')" @change-page="setPage"
+            @refresh="refreshData" />
 
         <!-- Modal Pengajuan -->
         <PengajuanModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
@@ -31,6 +33,11 @@
         <ConfirmDeleteModal :is-open="isDeleteModalOpen" :item-name="selectedDeleteItem?.nomor ?? ''"
             :is-deleting="isDeleting" @close="closeDeleteModal" @confirm="deleteData" />
 
+        <!-- Confirm Status Pengajuan -->
+        <ConfirmModalStatus :is-open="isStatusModalOpen" :type="statusActionType"
+            :item-name="selectedStatusItem?.nomor ?? ''" :is-processing="isProcessingStatus" @close="closeStatusModal"
+            @confirm="confirmStatus" />
+
     </div>
 </template>
 
@@ -39,6 +46,8 @@ import PengajuanTable from '../components/PengajuanTable.vue';
 import PengajuanModal from '../components/PengajuanModal.vue';
 import PengajuanDetailModal from '../components/PengajuanModalDetail.vue';
 import ConfirmDeleteModal from '../../../utilities/common/ConfirmModalDelete.vue';
+import ConfirmModalStatus from "../../../utilities/common/ConfirmModalStatus.vue";
+
 
 import { usePengajuan } from '../composables/usePengajuan';
 
@@ -99,6 +108,16 @@ const {
     refreshData,
 
     // Validation
-    validatePengajuan
+    validatePengajuan,
+    // Modal Status
+    isStatusModalOpen,
+    statusActionType,
+    selectedStatusItem,
+    isProcessingStatus,
+
+    // Aksi Modal Status
+    openStatusModal,
+    closeStatusModal,
+    confirmStatus,
 } = usePengajuan();
 </script>

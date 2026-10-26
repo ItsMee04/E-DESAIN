@@ -19,16 +19,6 @@
                 </div>
 
                 <div>
-                    <BaseInput v-model="form.email" label="Email" type="text" placeholder="Contoh: john.doe@example.com"
-                        :error="errors.email" required @blur="$emit('validate-pengguna', 'email')" />
-                </div>
-
-                <div>
-                    <BaseInput v-model="form.username" label="Username" type="text" placeholder="Contoh: JohnDoe"
-                        :error="errors.username" required @blur="$emit('validate-pengguna', 'username')" />
-                </div>
-
-                <div>
                     <BaseInput v-model="form.password" label="Password" type="password" placeholder="Contoh: ********""
                         :error="errors.password" required @blur="$emit('validate-pengguna', 'password')" />
                 </div>

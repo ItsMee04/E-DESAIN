@@ -54,34 +54,19 @@ class UserController extends Controller
         }
 
         // 2. Tentukan status kelengkapan akun saat ini
-        $hasEmail = !empty($user->email);
-        $hasUsername = !empty($user->username);
         $hasPassword = !empty($user->password);
 
         // 3. Susun aturan validasi dinamis berdasarkan kondisi akun
         $rules = [];
 
-        if (!$hasEmail || !$hasUsername || !$hasPassword) {
+        if (!$hasPassword) {
 
             // Kondisi Awal:
-            // Akun belum lengkap -> Email, Username, Password wajib diisi
-            $rules['email'] = 'required|email|unique:users,email,' . $user->id;
-
-            $rules['username'] = 'required|string|max:100|unique:users,username,' . $user->id;
-
             $rules['password'] = 'required|string|min:6';
         } else {
 
             // Kondisi Lanjutan:
             // Akun sudah lengkap -> Email, Username, Password opsional untuk diubah
-
-            if ($request->filled('email') && $request->email !== $user->email) {
-                $rules['email'] = 'required|email|unique:users,email,' . $user->id;
-            }
-
-            if ($request->filled('username') && $request->username !== $user->username) {
-                $rules['username'] = 'required|string|max:100|unique:users,username,' . $user->id;
-            }
 
             if ($request->filled('password')) {
 
@@ -113,14 +98,6 @@ class UserController extends Controller
 
         // 5. Mapping data yang aman untuk dikirim ke Service
         $payload = [];
-
-        if ($request->has('email')) {
-            $payload['email'] = $request->email;
-        }
-
-        if ($request->has('username')) {
-            $payload['username'] = $request->username;
-        }
 
         if ($request->filled('password')) {
             $payload['password'] = $request->password;

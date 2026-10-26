@@ -11,10 +11,13 @@ class PermissionSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+
     public function run(): void
     {
         $user = DB::table('users')
-            ->where('username', 'itrsuwh')
+            ->join('pegawai', 'users.pegawai_id', '=', 'pegawai.id')
+            ->where('pegawai.nip', 'IT-RSUWH-001')
+            ->select('users.id')
             ->first();
 
         if (!$user) {

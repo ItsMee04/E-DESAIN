@@ -38,13 +38,13 @@
             </div>
             <!-- Form Login -->
             <form class="space-y-6" @submit.prevent="handleLogin">
-                <!-- Username -->
+                <!-- NIP -->
                 <div class="space-y-1.5">
                     <label
-                        for="username"
+                        for="nip"
                         class="block text-sm font-medium text-blue-950"
                     >
-                        Username
+                        NIP
                     </label>
                     <div class="relative">
                         <div
@@ -53,17 +53,17 @@
                             <Mail :size="20" />
                         </div>
                         <input
-                            id="username"
-                            v-model="form.username"
+                            id="nip"
+                            v-model="form.nip"
                             type="text"
-                            autocomplete="username"
-                            placeholder="Masukkan username"
+                            autocomplete="nip"
+                            placeholder="Masukkan NIP"
                             :disabled="isLoading"
                             class="w-full pl-12 pr-4 py-3.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#B20600] focus:border-[#B20600] transition-all text-blue-950 placeholder-blue-950/40 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
                         />
                     </div>
-                    <p v-if="errors.username" class="text-xs text-red-600 mt-1">
-                        {{ errors.username }}
+                    <p v-if="errors.nip" class="text-xs text-red-600 mt-1">
+                        {{ errors.nip }}
                     </p>
                 </div>
                 <!-- Password -->
@@ -172,20 +172,20 @@ import { useToast } from "../../../utilities/toast/useToast";
 import { useAuthentication } from "../composables/useAuthentication";
 const router = useRouter();
 const { login, isLoading } = useAuthentication();
-const form = reactive({ username: "", password: "" });
+const form = reactive({ nip: "", password: "" });
 const rememberMe = ref(false);
-const errors = reactive({ username: "", password: "", general: "" });
+const errors = reactive({ nip: "", password: "", general: "" });
 const { toast } = useToast();
 const clearErrors = () => {
-    errors.username = "";
+    errors.nip = "";
     errors.password = "";
     errors.general = "";
 };
 const validateForm = () => {
     clearErrors();
     let isValid = true;
-    if (!form.username.trim()) {
-        errors.username = "Username wajib diisi.";
+    if (!form.nip.trim()) {
+        errors.nip = "NIP wajib diisi.";
         isValid = false;
     }
     if (!form.password) {
@@ -200,7 +200,7 @@ const handleLogin = async () => {
     }
     try {
         const response = await login({
-            username: form.username,
+            nip: form.nip,
             password: form.password,
         });
         if (response?.success) {
@@ -212,13 +212,13 @@ const handleLogin = async () => {
         if (error.response?.status === 401) {
             toast.error(
                 error.response?.data?.message ||
-                    "Username atau kata sandi salah.",
+                    "NIP atau kata sandi salah.",
             );
             return;
         }
         if (error.response?.status === 422) {
             const validationErrors = error.response?.data?.errors || {};
-            errors.username = validationErrors.username?.[0] || "";
+            errors.nip = validationErrors.nip?.[0] || "";
             errors.password = validationErrors.password?.[0] || "";
             return;
         }

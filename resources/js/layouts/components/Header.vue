@@ -78,7 +78,7 @@
                     class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-50 transition cursor-pointer">
                     <div
                         class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs">
-                        {{ user?.username?.substring(0, 2).toUpperCase() || 'US' }}
+                        {{ user?.pegawai?.nama?.substring(0, 2).toUpperCase() || 'US' }}
                     </div>
                     <ChevronDown :size="16" class="text-blue-950/50 transition-transform duration-200"
                         :class="{ 'rotate-180': isProfileOpen }" />
@@ -89,10 +89,10 @@
                     class="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 z-50 transition-all">
                     <div class="px-3 py-2 border-b border-gray-100 mb-1">
                         <p class="text-xs font-bold text-blue-950">
-                            {{ user?.username || '-' }}
+                            {{ user?.pegawai?.nama || '-' }}
                         </p>
                         <p class="text-[11px] text-blue-950/50 truncate">
-                            {{ user?.email || '-' }}
+                            {{ user?.pegawai?.nip || '-' }}
                         </p>
                     </div>
 

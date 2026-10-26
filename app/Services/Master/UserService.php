@@ -19,8 +19,6 @@ class UserService
     public function createUser(array $data): User
     {
         $data = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
 
@@ -40,14 +38,6 @@ class UserService
 
             // Siapkan data yang akan diupdate
             $updateData = [];
-
-            if (isset($data['email'])) {
-                $updateData['email'] = $data['email'];
-            }
-
-            if (isset($data['username'])) {
-                $updateData['username'] = $data['username'];
-            }
 
             if (!empty($data['password'])) {
                 $updateData['password'] = Hash::make($data['password']);

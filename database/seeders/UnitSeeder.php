@@ -30,6 +30,7 @@ class UnitSeeder extends Seeder
             'IBS',
             'ICU',
             'IGD',
+            'IT',
             'KAMAR BERSALIN',
             'KESLING',
             'KEUANGAN',

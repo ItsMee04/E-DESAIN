@@ -1,6 +1,5 @@
-```vue
 <template>
-    <div class="min-h-screen bg-gray-50 flex font-sans antialiased text-blue-950">
+    <div class="h-screen overflow-hidden bg-gray-50 flex font-sans antialiased text-blue-950">
 
         <!-- Sidebar -->
         <Sidebar :is-open="isSidebarOpen" @close-sidebar="isSidebarOpen = false" />
@@ -12,13 +11,13 @@
         </Transition>
 
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex-1 flex flex-col min-w-0 min-h-0">
 
-            <!-- Header -->
+            <!-- Header: tetap di atas -->
             <Header @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
 
-            <!-- Content -->
-            <main class="flex-1 min-w-0 overflow-x-hidden overflow-y-auto">
+            <!-- Hanya bagian content yang scroll -->
+            <main class="flex-1 min-h-0 min-w-0 overflow-x-hidden overflow-y-auto">
                 <div class="w-full px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6">
                     <router-view />
                 </div>

@@ -20,14 +20,10 @@ export function usePengguna() {
     const selectedId = ref(null);
     const form = ref({
         pegawai: '',
-        username: '',
-        email: '',
         password: '',
     });
     const errors = ref({
         pegawai: '',
-        username: '',
-        email: '',
         password: ''
     });
 
@@ -66,7 +62,6 @@ export function usePengguna() {
         const q = searchQuery.value.toLowerCase();
         return items.value.filter(
             (item) =>
-                (item.username && item.username.toLowerCase().includes(q)) ||
                 (item.pegawai.nama && item.pegawai?.nama.toLowerCase().includes(q))
         );
     });
@@ -92,7 +87,7 @@ export function usePengguna() {
     const openAddModal = () => {
         isEditing.value = false;
         selectedId.value = null;
-        form.value = { username: '', email: '', password: '', pegawai: '' };
+        form.value = { password: '', pegawai: '' };
         clearErrors();
         isModalOpen.value = true;
     };
@@ -101,8 +96,6 @@ export function usePengguna() {
         isEditing.value = true;
         selectedId.value = item.id;
         form.value = {
-            username: item.username,
-            email: item.email,
             password: item.password,
             pegawai: item.pegawai?.nama
         };
@@ -116,26 +109,6 @@ export function usePengguna() {
 
     const validatePengguna = (field = null) => {
         let isValid = true;
-
-        // Nama
-        if (!field || field === 'email') {
-            if (!form.value.email?.trim()) {
-                errors.value.email = 'Email wajib diisi.';
-                isValid = false;
-            } else {
-                errors.value.email = '';
-            }
-        }
-
-        // Tempat
-        if (!field || field === 'username') {
-            if (!form.value.username?.trim()) {
-                errors.value.username = 'Username wajib diisi.';
-                isValid = false;
-            } else {
-                errors.value.username = '';
-            }
-        }
 
         // Tanggal
         if (!field || field === 'password') {
@@ -152,8 +125,6 @@ export function usePengguna() {
 
     const clearErrors = () => {
         errors.value = {
-            username: '',
-            email: '',
             password: '',
             pegawai: ''
         };

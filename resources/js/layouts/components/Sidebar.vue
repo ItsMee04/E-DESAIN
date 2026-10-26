@@ -110,14 +110,14 @@
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div
                         class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-                        {{ user?.username?.substring(0, 2).toUpperCase() || 'US' }}
+                        {{ user?.pegawai?.nama?.substring(0, 2).toUpperCase() || 'US' }}
                     </div>
                     <div v-show="!isCollapsed" class="flex flex-col min-w-0">
                         <span class="text-xs font-bold text-blue-950 truncate">
-                            {{ user?.username || '-' }}
+                            {{ user?.pegawai?.nama || '-' }}
                         </span>
                         <span class="text-[10px] text-blue-950/50 truncate">
-                            {{ user?.email || '-' }}
+                            {{ user?.pegawai?.nip || '-' }}
                         </span>
                     </div>
                 </div>

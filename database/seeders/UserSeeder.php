@@ -29,8 +29,6 @@ class UserSeeder extends Seeder
                 'pegawai_id' => $pegawai->id,
             ],
             [
-                'username' => 'itrsuwh',
-                'email' => 'itrsuwh@gmail.com',
                 'password' => Hash::make('123'),
                 'email_verified_at' => now(),
                 'status' => 1,

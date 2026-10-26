@@ -20,12 +20,12 @@ class AuthenticationController extends Controller
     {
         try {
             $request->validate([
-                'username' => 'required|string',
+                'nip' => 'required|string',
                 'password' => 'required|string',
             ]);
 
             $data = $this->authService->login([
-                'username' => $request->username,
+                'nip' => $request->nip,
                 'password' => $request->password,
             ]);
 

@@ -10,9 +10,13 @@ class AuthenticationService
     /**
      * Proses login pengguna.
      */
+
     public function login(array $data): ?array
     {
-        $user = User::where('username', $data['username'])
+        $user = User::with('pegawai')
+            ->whereHas('pegawai', function ($query) use ($data) {
+                $query->where('nip', $data['nip']);
+            })
             ->first();
 
         // User tidak ditemukan
@@ -26,20 +30,19 @@ class AuthenticationService
         }
 
         // Password tidak sesuai
-        if (!Hash::check($data['password'], $user->password)) {
+        if (!$user->password || !Hash::check($data['password'], $user->password)) {
             return null;
         }
 
         // Buat token Sanctum
-        $token = $user->createToken(
-            'e-desain-token'
-        )->plainTextToken;
+        $token = $user->createToken('e-desain-token')->plainTextToken;
 
         return [
             'user' => $user,
             'token' => $token,
         ];
     }
+
 
     /**
      * Logout pengguna dari token yang sedang digunakan.

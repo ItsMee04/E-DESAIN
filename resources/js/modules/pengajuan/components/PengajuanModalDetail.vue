@@ -99,7 +99,7 @@
                             <div v-if="item?.pengajuanjenismedia?.length" class="flex flex-wrap gap-1.5 mt-1.5">
                                 <span v-for="media in item.pengajuanjenismedia" :key="media.id"
                                     class="inline-flex items-center px-2 py-1 rounded-md bg-[#B20600]/5 text-[#B20600] text-[11px] font-medium">
-                                    {{ media.jenismedia?.jenismedia ?? "-" }}
+                                    {{ media.jenis_media?.jenismedia ?? "-" }}
                                 </span>
                             </div>
 

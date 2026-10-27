@@ -10,6 +10,7 @@ export function useDashboard() {
         total_pengajuan: 0,
         total_pengajuan_aktif: 0,
         total_pengajuan_selesai: 0,
+        total_pengajuan_dibatalkan: 0,
     });
 
     const isLoading = ref(false);
@@ -26,6 +27,7 @@ export function useDashboard() {
                 total_pengajuan: 0,
                 total_pengajuan_aktif: 0,
                 total_pengajuan_selesai: 0,
+                total_pengajuan_dibatalkan: 0,
             };
         } catch (error) {
             console.error('Gagal mengambil data dashboard:', error);

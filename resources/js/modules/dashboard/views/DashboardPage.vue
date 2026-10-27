@@ -60,7 +60,7 @@ const stats = computed(() => [
     },
     {
         title: 'Ditolak / Dibatalkan',
-        value: 0,
+        value: dashboard.value.total_pengajuan_dibatalkan,
         description: 'Pengajuan berakhir',
         icon: CircleX,
     },

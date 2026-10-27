@@ -26,4 +26,11 @@ class DashboarService
 
         return $totalpengajuan;
     }
+
+    public function getTotalPengajuanDibatalkan()
+    {
+        $totalpengajuan = Pengajuan::where('status', 0)->count();
+
+        return $totalpengajuan;
+    }
 }

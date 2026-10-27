@@ -317,6 +317,7 @@ class PengajuanValidasiService
             // Perbarui status aktif pengajuan.
             $pengajuan->update([
                 'statuspengajuan_id' => $statusSelesai->id,
+                'status'             => 2,
             ]);
 
             // Catat perubahan status ke history.

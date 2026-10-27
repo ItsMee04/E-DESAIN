@@ -1,53 +1,35 @@
 <template>
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 backdrop-blur-xs p-4">
-        <div
-            class="bg-white rounded-2xl border border-gray-100 shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-            <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+    <BaseModal :is-open="isOpen" title="Detail Pengajuan Desain" description="Informasi lengkap pengajuan desain"
+        @close="$emit('close')">
+        <!-- Modal Body -->
+        <div class="p-6 space-y-5">
+            <!-- Nomor & Status -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h2 class="text-lg font-bold text-blue-950">
-                        Detail Pengajuan Desain
-                    </h2>
+                    <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
+                        Nomor Pengajuan
+                    </p>
 
-                    <p class="text-xs text-blue-950/60 mt-0.5">
-                        Informasi lengkap pengajuan desain
+                    <p class="text-sm font-semibold text-blue-950 mt-1">
+                        {{ item?.nomor ?? "-" }}
                     </p>
                 </div>
 
-                <button type="button" @click="$emit('close')"
-                    class="p-2 rounded-lg text-blue-950/50 hover:bg-gray-100 hover:text-blue-950 transition cursor-pointer"
-                    title="Tutup">
-                    <X :size="18" />
-                </button>
+                <div>
+                    <span v-if="item?.statuspengajuan"
+                        class="inline-flex items-center px-2.5 py-1 rounded-lg border text-[11px] font-semibold"
+                        :class="getStatusClass(item.statuspengajuan.key)">
+                        {{ item.statuspengajuan.name }}
+                    </span>
+
+                    <span v-else class="text-xs text-blue-950/40">
+                        -
+                    </span>
+                </div>
             </div>
 
-            <!-- Body -->
-            <div class="p-6 space-y-5 overflow-y-auto flex-1 min-h-0">
-                <!-- Nomor & Status -->
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div>
-                        <p class="text-[11px] font-medium text-blue-950/40 uppercase tracking-wide">
-                            Nomor Pengajuan
-                        </p>
-
-                        <p class="text-sm font-semibold text-blue-950 mt-1">
-                            {{ item?.nomor ?? "-" }}
-                        </p>
-                    </div>
-
-                    <div>
-                        <span v-if="item?.statuspengajuan"
-                            class="inline-flex items-center px-2.5 py-1 rounded-lg border text-[11px] font-semibold"
-                            :class="getStatusClass(item.statuspengajuan.key)">
-                            {{ item.statuspengajuan.name }}
-                        </span>
-
-                        <span v-else class="text-xs text-blue-950/40">
-                            -
-                        </span>
-                    </div>
-                </div>
-
+            <!-- Informasi Pengajuan -->
+            <div class="space-y-5 overflow-y-auto flex-1 min-h-0">
                 <!-- Informasi Pengajuan -->
                 <div class="rounded-xl border border-gray-100 overflow-hidden">
                     <div class="px-4 py-3 bg-gray-50 border-b border-gray-100">
@@ -199,20 +181,24 @@
                     </p>
                 </div>
             </div>
+            <!-- Pertahankan kondisi v-else sesuai struktur kode lama -->
+        </div>
 
-            <!-- Footer -->
-            <div class="flex items-center justify-end gap-2.5 p-6 pt-4 border-t border-gray-100 shrink-0">
+        <!-- Modal Footer -->
+        <template #footer>
+            <div class="flex items-center justify-end">
                 <button type="button" @click="$emit('close')"
-                    class="px-4 py-2.5 text-xs font-semibold text-blue-950 bg-gray-100 hover:bg-gray-200 rounded-xl transition cursor-pointer">
+                    class="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-blue-950/70 hover:bg-gray-50 transition cursor-pointer">
                     Tutup
                 </button>
             </div>
-        </div>
-    </div>
+        </template>
+    </BaseModal>
 </template>
 
+
 <script setup>
-import { X } from "lucide-vue-next";
+import BaseModal from "../../../utilities/common/BaseModal.vue";
 
 defineProps({
     isOpen: {

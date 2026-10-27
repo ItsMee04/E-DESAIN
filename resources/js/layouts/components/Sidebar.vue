@@ -20,7 +20,7 @@
                 class="w-9 h-9 object-contain shrink-0" />
 
             <div v-show="!isCollapsed" class="flex flex-col truncate transition-opacity duration-200">
-                <span class="text-[10px] font-semibold uppercase tracking-widest text-[#B20600]">RSU Wiradadi</span>
+                <span class="text-[10px] font-semibold uppercase tracking-widest text-[#B20600]">RSU Wiradadi Husada</span>
                 <h1 class="text-xl font-extrabold tracking-tight text-blue-950">E-Desain</h1>
             </div>
         </div>
@@ -108,8 +108,13 @@
                 isCollapsed ? 'justify-center' : 'justify-between'
             ]">
                 <div class="flex items-center gap-2.5 min-w-0">
-                    <div
-                        class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
+                    <!-- Jika foto tersedia -->
+                    <img v-if="user?.pegawai?.image" :src="`/storage/pegawai/image/${user.pegawai.image}`"
+                        :alt="user?.pegawai?.nama || 'Foto profil'" class="w-8 h-8 rounded-lg object-cover" />
+
+                    <!-- Jika foto tidak tersedia -->
+                    <div v-else
+                        class="w-8 h-8 rounded-lg bg-[#B20600] text-white font-bold flex items-center justify-center text-xs">
                         {{ user?.pegawai?.nama?.substring(0, 2).toUpperCase() || 'US' }}
                     </div>
                     <div v-show="!isCollapsed" class="flex flex-col min-w-0">

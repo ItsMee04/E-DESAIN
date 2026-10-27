@@ -64,7 +64,7 @@
                             {{ successText }}
                         </p>
 
-                        <button type="button" class="mt-2 text-[11px] font-medium text-[#B20600] hover:underline"
+                        <button type="button" class="mt-2 text-[11px] font-medium text-[#B20600] hover:underline cursor-pointer"
                             @click="openFilePicker">
                             {{ changeText }}
                         </button>

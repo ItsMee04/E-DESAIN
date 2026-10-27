@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Authentication\AuthenticationController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Master\JenisMediaController;
 use App\Http\Controllers\Master\ModuleController;
 use App\Http\Controllers\Master\PegawaiController;
@@ -25,6 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Data user yang sedang login
     Route::get('/me', [AuthenticationController::class, 'me']);
+
+    Route::prefix('dashboard')->group(function (){
+        Route::get('datadashboard', [DashboardController::class, 'getDataDashboard']);
+    });
 
     Route::prefix('master')->group(function () {
         Route::prefix('profesi')->group(function () {

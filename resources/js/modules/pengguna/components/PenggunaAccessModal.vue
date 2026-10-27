@@ -1,215 +1,171 @@
 <template>
-    <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/40 backdrop-blur-xs p-4">
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xl w-full max-w-md overflow-hidden">
-            <!-- HEADER -->
-            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <div>
-                    <h2 class="text-lg font-semibold text-blue-950">
-                        Hak Akses Pengguna
-                    </h2>
-
-                    <p v-if="user" class="text-sm text-gray-500 mt-0.5">
-                        {{ user.username || user.email }}
-                    </p>
-                </div>
-
-                <button type="button" @click="closeModal"
-                    class="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
-                    :disabled="isSubmitting">
-                    <X :size="20" />
-                </button>
+    <BaseModal :is-open="isOpen" title="Hak Akses Pengguna"
+        :description="user ? (user?.pegawai?.nama || user?.pegawai?.nip) : 'Atur hak akses pengguna'"
+        :is-submitting="isSubmitting" @close="closeModal">
+        <!-- Modal Body -->
+        <div class="p-6">
+            <!-- Loading -->
+            <div v-if="isModuleLoading" class="flex items-center justify-center py-10">
+                <svg class="animate-spin h-6 w-6 text-[#B20600]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                </svg>
             </div>
 
-            <!-- BODY -->
-            <div class="p-6">
-                <!-- LOADING -->
-                <div v-if="isModuleLoading" class="flex items-center justify-center py-10">
-                    <svg class="animate-spin h-6 w-6 text-[#B20600]" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+            <!-- Daftar Hak Akses -->
+            <div v-else class="space-y-1">
+                <!-- DASHBOARD -->
+                <div v-if="dashboardModule" class="flex items-center gap-3 py-2">
+                    <input v-model="permissions.dashboard" type="checkbox"
+                        class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                    </svg>
+                    <span class="text-sm text-gray-700">
+                        {{ dashboardModule.name }}
+                    </span>
                 </div>
 
-                <!-- MODULE -->
-                <div v-else class="space-y-1">
-                    <!-- ========================= -->
-                    <!-- DASHBOARD -->
-                    <!-- ========================= -->
+                <!-- MASTER DATA -->
+                <div v-if="masterModule" class="mt-2">
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center gap-2">
+                            <button type="button" @click="toggleModule('master')"
+                                class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
+                                <ChevronDown v-if="expandedModules.master" :size="17" />
+                                <ChevronRight v-else :size="17" />
+                            </button>
 
-                    <div v-if="dashboardModule" class="flex items-center gap-3 py-2">
-                        <input type="checkbox" v-model="permissions.dashboard"
-                            class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+                            <input ref="masterCheckbox" type="checkbox" :checked="isMasterChecked"
+                                @change="toggleMaster"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                        <span class="text-sm text-gray-700">
-                            {{ dashboardModule.name }}
-                        </span>
-                    </div>
-
-                    <!-- ========================= -->
-                    <!-- MASTER DATA -->
-                    <!-- ========================= -->
-
-                    <div v-if="masterModule" class="mt-2">
-                        <!-- PARENT -->
-                        <div class="flex items-center justify-between py-2">
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="toggleModule('master')"
-                                    class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
-                                    <ChevronDown v-if="expandedModules.master" :size="17" />
-
-                                    <ChevronRight v-else :size="17" />
-                                </button>
-
-                                <input ref="masterCheckbox" type="checkbox" :checked="isMasterChecked"
-                                    @change="toggleMaster"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
-
-                                <span class="text-sm font-medium text-gray-700">
-                                    {{ masterModule.name }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- CHILDREN -->
-                        <div v-if="expandedModules.master" class="ml-6 border-l border-gray-100 pl-4">
-                            <label v-for="item in masterModule.children" :key="item.id"
-                                class="flex items-center gap-3 py-1.5 cursor-pointer">
-                                <input v-model="permissions.masterChildren" type="checkbox" :value="item.id"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
-
-                                <span class="text-sm text-gray-600">
-                                    {{ item.name }}
-                                </span>
-                            </label>
+                            <span class="text-sm font-medium text-gray-700">
+                                {{ masterModule.name }}
+                            </span>
                         </div>
                     </div>
 
-                    <!-- ========================= -->
-                    <!-- MANAGEMENT USER -->
-                    <!-- ========================= -->
+                    <div v-if="expandedModules.master" class="ml-6 border-l border-gray-100 pl-4">
+                        <label v-for="item in masterModule.children" :key="item.id"
+                            class="flex items-center gap-3 py-1.5 cursor-pointer">
+                            <input v-model="permissions.masterChildren" type="checkbox" :value="item.id"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                    <div v-if="managementModule" class="mt-2">
-                        <!-- PARENT -->
-                        <div class="flex items-center justify-between py-2">
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="toggleModule('management')"
-                                    class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
-                                    <ChevronDown v-if="expandedModules.management" :size="17" />
+                            <span class="text-sm text-gray-600">
+                                {{ item.name }}
+                            </span>
+                        </label>
+                    </div>
+                </div>
 
-                                    <ChevronRight v-else :size="17" />
-                                </button>
+                <!-- MANAGEMENT USER -->
+                <div v-if="managementModule" class="mt-2">
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center gap-2">
+                            <button type="button" @click="toggleModule('management')"
+                                class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
+                                <ChevronDown v-if="expandedModules.management" :size="17" />
+                                <ChevronRight v-else :size="17" />
+                            </button>
 
-                                <input ref="managementCheckbox" type="checkbox" :checked="isManagementChecked"
-                                    @change="toggleManagement"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+                            <input ref="managementCheckbox" type="checkbox" :checked="isManagementChecked"
+                                @change="toggleManagement"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                                <span class="text-sm font-medium text-gray-700">
-                                    {{ managementModule.name }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- CHILDREN -->
-                        <div v-if="expandedModules.management" class="ml-6 border-l border-gray-100 pl-4">
-                            <label v-for="item in managementModule.children" :key="item.id"
-                                class="flex items-center gap-3 py-1.5 cursor-pointer">
-                                <input v-model="permissions.managementChildren" type="checkbox" :value="item.id"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
-
-                                <span class="text-sm text-gray-600">
-                                    {{ item.name }}
-                                </span>
-                            </label>
+                            <span class="text-sm font-medium text-gray-700">
+                                {{ managementModule.name }}
+                            </span>
                         </div>
                     </div>
 
-                    <!-- ========================= -->
-                    <!-- PENGAJUAN -->
-                    <!-- ========================= -->
+                    <div v-if="expandedModules.management" class="ml-6 border-l border-gray-100 pl-4">
+                        <label v-for="item in managementModule.children" :key="item.id"
+                            class="flex items-center gap-3 py-1.5 cursor-pointer">
+                            <input v-model="permissions.managementChildren" type="checkbox" :value="item.id"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                    <div v-if="pengajuanModule" class="mt-2">
-                        <!-- PARENT -->
-                        <div class="flex items-center justify-between py-2">
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="toggleModule('pengajuan')"
-                                    class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
-                                    <ChevronDown v-if="expandedModules.pengajuan" :size="17" />
+                            <span class="text-sm text-gray-600">
+                                {{ item.name }}
+                            </span>
+                        </label>
+                    </div>
+                </div>
 
-                                    <ChevronRight v-else :size="17" />
-                                </button>
+                <!-- PENGAJUAN -->
+                <div v-if="pengajuanModule" class="mt-2">
+                    <div class="flex items-center justify-between py-2">
+                        <div class="flex items-center gap-2">
+                            <button type="button" @click="toggleModule('pengajuan')"
+                                class="p-0.5 text-gray-500 hover:text-blue-950 transition cursor-pointer">
+                                <ChevronDown v-if="expandedModules.pengajuan" :size="17" />
+                                <ChevronRight v-else :size="17" />
+                            </button>
 
-                                <input ref="pengajuanCheckbox" type="checkbox" :checked="isPengajuanChecked"
-                                    @change="togglePengajuan"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+                            <input ref="pengajuanCheckbox" type="checkbox" :checked="isPengajuanChecked"
+                                @change="togglePengajuan"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                                <span class="text-sm font-medium text-gray-700">
-                                    {{ pengajuanModule.name }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- CHILDREN -->
-                        <div v-if="expandedModules.pengajuan" class="ml-6 border-l border-gray-100 pl-4">
-                            <label v-for="item in pengajuanModule.children" :key="item.id"
-                                class="flex items-center gap-3 py-1.5 cursor-pointer">
-                                <input v-model="permissions.pengajuanChildren" type="checkbox" :value="item.id"
-                                    class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
-
-                                <span class="text-sm text-gray-600">
-                                    {{ item.name }}
-                                </span>
-                            </label>
+                            <span class="text-sm font-medium text-gray-700">
+                                {{ pengajuanModule.name }}
+                            </span>
                         </div>
                     </div>
 
+                    <div v-if="expandedModules.pengajuan" class="ml-6 border-l border-gray-100 pl-4">
+                        <label v-for="item in pengajuanModule.children" :key="item.id"
+                            class="flex items-center gap-3 py-1.5 cursor-pointer">
+                            <input v-model="permissions.pengajuanChildren" type="checkbox" :value="item.id"
+                                class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
 
-                    <!-- ========================= -->
-                    <!-- MODULE LAIN -->
-                    <!-- ========================= -->
-
-                    <div v-for="module in otherModules" :key="module.id" class="flex items-center gap-3 py-2">
-                        <input type="checkbox" v-model="permissions.other" :value="module.id"
-                            class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
-
-                        <span class="text-sm text-gray-700">
-                            {{ module.name }}
-                        </span>
+                            <span class="text-sm text-gray-600">
+                                {{ item.name }}
+                            </span>
+                        </label>
                     </div>
+                </div>
+
+                <!-- MODUL LAIN -->
+                <div v-for="module in otherModules" :key="module.id" class="flex items-center gap-3 py-2">
+                    <input v-model="permissions.other" type="checkbox" :value="module.id"
+                        class="w-4 h-4 rounded border-gray-300 text-[#B20600] accent-[#B20600] focus:ring-[#B20600] cursor-pointer" />
+
+                    <span class="text-sm text-gray-700">
+                        {{ module.name }}
+                    </span>
                 </div>
             </div>
+        </div>
 
-            <!-- FOOTER -->
-            <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+        <!-- Modal Footer -->
+        <template #footer>
+            <div class="flex items-center justify-end gap-3">
                 <button type="button" @click="closeModal" :disabled="isSubmitting"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    class="px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-semibold text-blue-950/70 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
                     Batal
                 </button>
 
                 <button type="button" @click="savePermission" :disabled="isSubmitting || isModuleLoading"
-                    class="px-4 py-2 text-sm font-medium text-white bg-[#B20600] hover:bg-[#8E0500] rounded-lg transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                    <svg v-if="isSubmitting" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                    class="px-4 py-2.5 rounded-xl bg-[#B20600] hover:bg-[#8E0500] text-white text-xs font-semibold transition shadow-sm disabled:opacity-70 disabled:cursor-not-allowed">
+                    <span class="flex items-center gap-2">
+                        <svg v-if="isSubmitting" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                        </svg>
 
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                    </svg>
-
-                    <span>
-                        {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
+                        <span>
+                            {{ isSubmitting ? "Menyimpan..." : "Simpan" }}
+                        </span>
                     </span>
                 </button>
             </div>
-        </div>
-    </div>
+        </template>
+    </BaseModal>
 </template>
 
 <script setup>
+import BaseModal from "../../../utilities/common/BaseModal.vue";
 import { reactive, ref, computed, watch, nextTick } from "vue";
-
-import { X, ChevronRight, ChevronDown } from "lucide-vue-next";
-
+import { ChevronRight, ChevronDown } from "lucide-vue-next";
 import { useModule } from "../composables/useModule.js";
 
 // =====================================================

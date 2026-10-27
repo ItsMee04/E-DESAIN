@@ -19,15 +19,17 @@ class DashboardController extends Controller
     {
         $totalpengajuan = $this->dashboardService->getTotalPengajuan();
         $totalpengajuanaktif = $this->dashboardService->getTotalPengajuanAktif();
+        $totalpengajuanselesai = $this->dashboardService->getTotalPengajuanSelesai();
 
         // Gabungkan kedua variabel ke dalam array data
         $data = [
             'total_pengajuan' => $totalpengajuan,
             'total_pengajuan_aktif' => $totalpengajuanaktif,
+            'total_pengajuan_selesai' => $totalpengajuanselesai,
         ];
 
         // Cek jika kedua nilai totalnya adalah 0 (atau sesuaikan logika kosong Anda)
-        if ($totalpengajuan === 0 && $totalpengajuanaktif === 0) {
+        if ($totalpengajuan === 0 && $totalpengajuanaktif === 0 && $totalpengajuanselesai === 0) {
             return response()->json([
                 'status' => 404,
                 'success' => false,

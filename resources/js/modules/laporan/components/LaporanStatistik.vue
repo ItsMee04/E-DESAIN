@@ -6,7 +6,7 @@ import {
     CircleX,
 } from 'lucide-vue-next'
 
-defineProps({
+const props = defineProps({
     totalPengajuan: {
         type: Number,
         default: 0,

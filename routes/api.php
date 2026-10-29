@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Authentication\AuthenticationController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Laporan\LaporanController;
 use App\Http\Controllers\Master\JenisMediaController;
 use App\Http\Controllers\Master\ModuleController;
 use App\Http\Controllers\Master\PegawaiController;
@@ -27,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Data user yang sedang login
     Route::get('/me', [AuthenticationController::class, 'me']);
 
-    Route::prefix('dashboard')->group(function (){
+    Route::prefix('dashboard')->group(function () {
         Route::get('datadashboard', [DashboardController::class, 'getDataDashboard']);
         Route::get('pengajuanterbaru', [DashboardController::class, 'getPengajuanTerbaru']);
         Route::get('statistikbulanan', [DashboardController::class, 'getStatistikBulanan']);
@@ -114,6 +115,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::patch('/siap-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSiapDiambil']);
             Route::patch('/selesai-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSelesaiDiambil']);
         });
+    });
+
+    Route::prefix('laporan')->group(function () {
+        Route::get('/', [LaporanController::class, 'index']);
+        Route::get('/export-excel', [LaporanController::class, 'exportExcel',]);
+        Route::get('/export-pdf', [LaporanController::class, 'exportPdf',]);
     });
 
     // Logout

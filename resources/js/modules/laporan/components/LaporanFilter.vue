@@ -42,13 +42,15 @@
             <!-- Input Filter -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Tanggal Mulai -->
+
+                <!-- Tanggal Mulai -->
                 <div class="space-y-1.5 min-w-0">
                     <label class="text-xs font-semibold text-blue-950">
                         Dari Tanggal
                     </label>
 
-                    <DatePicker v-model="tanggalMulai" placeholder="Pilih tanggal mulai"
-                        :max-date="tanggalAkhir || undefined" />
+                    <DatePicker ref="tanggalMulaiRef" v-model="tanggalMulai" placeholder="Pilih tanggal mulai"
+                        :max-date="tanggalAkhir || undefined" :error="errors.tanggalMulai" />
                 </div>
 
                 <!-- Tanggal Akhir -->
@@ -57,9 +59,10 @@
                         Sampai Tanggal
                     </label>
 
-                    <DatePicker v-model="tanggalAkhir" placeholder="Pilih tanggal akhir"
-                        :min-date="tanggalMulai || undefined" />
+                    <DatePicker ref="tanggalAkhirRef" v-model="tanggalAkhir" placeholder="Pilih tanggal akhir"
+                        :min-date="tanggalMulai || undefined" :error="errors.tanggalAkhir" />
                 </div>
+
 
                 <!-- Status -->
                 <div class="space-y-1.5 min-w-0">
@@ -67,7 +70,7 @@
                         Status Pengajuan
                     </label>
 
-                    <SearchableDropdown v-model="statusFilter" :options="props.statuses" label-key="name" value-key="id"
+                    <SearchableDropdown v-model="statusFilter" :options="statuses" label-key="name" value-key="id"
                         placeholder="Semua Status" dropdown-title="Pilih status" :allow-all="true"
                         all-label="Semua Status" empty-text="Data status tidak ditemukan." />
                 </div>
@@ -104,6 +107,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import {
     FileText,
     Filter,
@@ -114,13 +118,10 @@ import {
 
 import DatePicker from '../../../utilities/common/DatePicker.vue'
 import SearchableDropdown from '../../../utilities/common/SearchableDropdown.vue'
+
 import { useLaporanFilter } from '../composables/useLaporan.js'
 
-const props = defineProps({
-    statuses: {
-        type: Array,
-        default: () => [],
-    },
+defineProps({
     isLoading: {
         type: Boolean,
         default: false,
@@ -129,11 +130,20 @@ const props = defineProps({
 
 const emit = defineEmits(['apply', 'reset'])
 
+const tanggalMulaiRef = ref(null)
+const tanggalAkhirRef = ref(null)
+
 const {
+    statuses,
     tanggalMulai,
     tanggalAkhir,
     statusFilter,
+    errors,
     terapkanFilter,
     resetFilter,
-} = useLaporanFilter(emit)
+} = useLaporanFilter(
+    emit,
+    tanggalMulaiRef,
+    tanggalAkhirRef
+)
 </script>

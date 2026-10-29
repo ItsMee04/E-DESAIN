@@ -271,7 +271,7 @@ const formatJumlah = (jumlah) => {
                         </td>
 
                         <td class="px-5 py-4 text-xs text-blue-950/70 whitespace-nowrap">
-                            {{ formatTanggal(item.created_at) }}
+                            {{ item.tanggal }}
                         </td>
 
                         <td class="px-5 py-4 text-xs text-blue-950">
@@ -286,15 +286,13 @@ const formatJumlah = (jumlah) => {
                             {{ item.nama_desain || '-' }}
                         </td>
 
-                        <td class="px-5 py-4 text-xs text-blue-950/70">
-                            <div v-if="item.pengajuanjenismedia?.length" class="flex flex-wrap gap-1.5 max-w-48">
-                                <span v-for="media in item.pengajuanjenismedia" :key="media.id" class="inline-flex px-2 py-1 rounded-md
-                                           bg-gray-100 text-gray-600 text-[10px]">
-                                    {{ media.jenismedia?.name || media.jenismedia?.nama || '-' }}
-                                </span>
-                            </div>
-
-                            <span v-else>-</span>
+                        <td class="px-5 py-4 text-xs font-medium text-blue-950">
+                            {{
+                                item.pengajuanjenismedia
+                                    ?.map(media => media.jenismedia?.jenismedia)
+                                    .filter(Boolean)
+                                    .join(', ') || '-'
+                            }}
                         </td>
 
                         <td class="px-5 py-4 text-xs text-blue-950/70">

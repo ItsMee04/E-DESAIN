@@ -69,16 +69,14 @@ const props = defineProps({
 
 const monthlyChartData = computed(() => ({
     labels: props.monthlyData.map((item) => item.bulan),
-    datasets: [
-        {
-            label: 'Jumlah Pengajuan',
-            data: props.monthlyData.map((item) => item.total),
-            backgroundColor: '#B20600',
-            hoverBackgroundColor: '#8D0500',
-            borderRadius: 6,
-            maxBarThickness: 36,
-        },
-    ],
+    datasets: [{
+        label: 'Jumlah Pengajuan',
+        data: props.monthlyData.map((item) => item.total),
+        backgroundColor: '#B20600',
+        hoverBackgroundColor: '#8D0500',
+        borderRadius: 6,
+        maxBarThickness: 36,
+    }],
 }));
 
 const statusChartData = computed(() => ({

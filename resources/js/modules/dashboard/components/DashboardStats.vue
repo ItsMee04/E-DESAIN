@@ -16,8 +16,11 @@
                 </p>
             </div>
 
-            <div class="w-12 h-12 rounded-xl bg-[#B20600]/10 flex items-center justify-center text-[#B20600] shrink-0">
-                <component :is="stat.icon" :size="24" />
+            <div :class="[
+                'w-12 h-12 rounded-xl flex items-center justify-center',
+                colorClasses[stat.color] || colorClasses.gray,
+            ]">
+                <component :is="stat.icon" :size="22" />
             </div>
         </div>
     </div>
@@ -30,6 +33,13 @@ import {
     CheckCircle2,
     CircleX,
 } from 'lucide-vue-next';
+
+const colorClasses = {
+    red: 'bg-red-50 text-[#B20600]',
+    amber: 'bg-amber-50 text-amber-600',
+    emerald: 'bg-emerald-50 text-emerald-600',
+    gray: 'bg-gray-100 text-gray-600',
+};
 
 defineProps({
     stats: {

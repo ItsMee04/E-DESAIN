@@ -25,6 +25,7 @@ class Pengajuan extends Model
         'jumlah',
         'keperluan',
         'user_id',
+        'tanggal',
         'status'
     ];
 

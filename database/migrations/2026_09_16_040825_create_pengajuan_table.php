@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('keperluan')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->integer('status')->unsigned()->default(1);
+            $table->date('tanggal');
             $table->timestamps();
 
             $table->foreign('pegawai_id')->references('id')->on('pegawai')->onDelete('restrict');

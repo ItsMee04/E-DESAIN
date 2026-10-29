@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('dashboard')->group(function (){
         Route::get('datadashboard', [DashboardController::class, 'getDataDashboard']);
+        Route::get('pengajuanterbaru', [DashboardController::class, 'getPengajuanTerbaru']);
+        Route::get('statistikbulanan', [DashboardController::class, 'getStatistikBulanan']);
+        Route::get('statistikstatus', [DashboardController::class, 'getStatistikStatus']);
     });
 
     Route::prefix('master')->group(function () {

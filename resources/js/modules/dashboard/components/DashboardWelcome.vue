@@ -1,4 +1,3 @@
-```vue
 <template>
     <div
         class="p-6 lg:p-8 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -43,4 +42,3 @@ const userName = computed(() => {
     }
 });
 </script>
-```

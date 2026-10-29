@@ -47,4 +47,40 @@ class DashboardController extends Controller
             'data' => $data
         ], 201);
     }
+
+    public function getPengajuanTerbaru()
+    {
+        $pengajuanTerbaru = $this->dashboardService->getPengajuanTerbaru();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Data pengajuan terbaru berhasil ditemukan',
+            'data' => $pengajuanTerbaru
+        ], 201);
+    }
+
+    public function getStatistikBulanan()
+    {
+        $statistikBulanan = $this->dashboardService->getStatistikBulanan();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Data statistik bulanan berhasil ditemukan',
+            'data' => $statistikBulanan
+        ], 201);
+    }
+
+    public function getStatistikStatus()
+    {
+        $statistikStatus = $this->dashboardService->getStatistikStatus();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Data statistik status berhasil ditemukan',
+            'data' => $statistikStatus
+        ], 201);
+    }
 }

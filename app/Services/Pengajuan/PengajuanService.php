@@ -26,7 +26,6 @@ class PengajuanService
             'pengajuanhistory.statusPengajuan',
             'pengajuanhistory.user.pegawai',
         ])
-            ->where('status', 1)
             ->latest()
             ->get();
     }
@@ -84,6 +83,7 @@ class PengajuanService
                 'jumlah' => $data['jumlah'],
                 'keperluan' => $data['keperluan'],
                 'user_id' => $user->id,
+                'tanggal'   => now(),
             ]);
 
             // Simpan jenis media yang dipilih.

@@ -1,8 +1,10 @@
 <template>
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+
         <!-- Section Header & Top Actions -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
+            <!-- Judul -->
+            <div class="shrink-0">
                 <h3 class="text-lg font-bold text-blue-950">
                     Data Pengajuan Desain
                 </h3>
@@ -11,38 +13,42 @@
                 </p>
             </div>
 
-            <div class="flex items-center gap-2.5">
+            <!-- Search, Filter, dan Actions -->
+            <div
+                class="grid grid-cols-1 min-[400px]:grid-cols-[minmax(0,1fr)_auto] sm:flex sm:items-center gap-2.5 min-w-0">
                 <!-- Search Box -->
-                <div class="relative w-full sm:w-64">
+                <div class="relative min-w-0 sm:w-64">
                     <input v-model="searchQuery" type="text" placeholder="Cari pengajuan..."
                         class="w-full text-xs bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 pl-9 text-blue-950 placeholder:text-blue-950/40 focus:outline-none focus:border-[#B20600] focus:bg-white transition" />
-
                     <Search class="absolute left-3 top-2.5 text-blue-950/40" :size="15" />
                 </div>
 
                 <!-- Filter Status -->
-                <div class="w-40">
+                <div class="min-w-0 sm:w-40">
                     <SearchableDropdown v-model="statusFilter" :options="statuses" label-key="name" value-key="id"
                         placeholder="Semua Status" dropdown-title="Pilih status" :allow-all="true"
                         all-label="Semua Status" empty-text="Data status tidak ditemukan." />
                 </div>
 
-                <!-- Tombol Refresh Data -->
-                <button @click="$emit('refresh')" :disabled="isLoading"
-                    class="flex items-center justify-center p-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-blue-950/70 hover:text-blue-950 rounded-xl transition cursor-pointer disabled:opacity-50 shrink-0"
-                    title="Refresh Data">
-                    <RotateCw :size="16" :class="{ 'animate-spin text-[#B20600]': isLoading }" />
-                </button>
+                <!-- Tombol Refresh dan Tambah -->
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <!-- Refresh -->
+                    <button @click="$emit('refresh')" :disabled="isLoading"
+                        class="flex items-center justify-center p-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-blue-950/70 hover:text-blue-950 rounded-xl transition cursor-pointer disabled:opacity-50 shrink-0"
+                        title="Refresh Data">
+                        <RotateCw :size="16" :class="{ 'animate-spin text-[#B20600]': isLoading }" />
+                    </button>
 
-                <!-- Tombol Tambah Pengajuan -->
-                <button @click="$emit('open-add')"
-                    class="flex items-center justify-center gap-2 bg-[#B20600] hover:bg-[#8E0500] text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer shrink-0 shadow-sm">
-                    <Plus :size="16" />
-
-                    <span>Tambah Pengajuan</span>
-                </button>
+                    <!-- Tambah Pengajuan -->
+                    <button @click="$emit('open-add')"
+                        class="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-[#B20600] hover:bg-[#8E0500] text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer shadow-sm whitespace-nowrap">
+                        <Plus :size="16" />
+                        <span>Tambah Pengajuan</span>
+                    </button>
+                </div>
             </div>
         </div>
+
 
         <!-- Table Container -->
         <div class="overflow-x-auto">

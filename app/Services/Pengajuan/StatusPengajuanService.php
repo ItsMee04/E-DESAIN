@@ -16,8 +16,8 @@ class StatusPengajuanService
     public function createStatusPengajuan(array $data): StatusPengajuan
     {
         $data = StatusPengajuan::create([
-            'name' => strtoupper($data['name']),
-            'key' => strtoupper($data['key']),
+            'name' => $data['name'],
+            'key' => $data['key'],
             'description' => $data['description'],
             'sort_order' => $data['sort_order'] ?? 0
         ]);
@@ -35,8 +35,8 @@ class StatusPengajuanService
         }
 
         $statusPengajuan->update([
-            'name' => strtoupper($data['name']),
-            'key' => strtoupper($data['key']),
+            'name' => $data['name'],
+            'key' => $data['key'],
             'description' => $data['description'],
             'sort_order' => $data['sort_order'] ?? 0,
         ]);

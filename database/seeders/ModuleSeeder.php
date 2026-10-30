@@ -58,6 +58,16 @@ class ModuleSeeder extends Seeder
             'status' => 1,
         ]);
 
+        Module::create([
+            'parent_id' => null,
+            'name' => 'Laporan',
+            'key' => 'laporan',
+            'route' => '/laporan',
+            'icon' => 'Books',
+            'sort_order' => 5,
+            'status' => 1,
+        ]);
+
         // =========================
         // AMBIL PARENT
         // =========================

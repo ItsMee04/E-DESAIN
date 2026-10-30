@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\ProfesiController;
 use App\Http\Controllers\Master\UnitController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Master\UserPermission;
+use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\Pengajuan\PengajuanController;
 use App\Http\Controllers\Pengajuan\PengajuanValidasiController;
 use App\Http\Controllers\Pengajuan\StatusPengajuanController;
@@ -121,6 +122,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [LaporanController::class, 'index']);
         Route::get('/export-excel', [LaporanController::class, 'exportExcel',]);
         Route::get('/export-pdf', [LaporanController::class, 'exportPdf',]);
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::post('/read-all', [NotificationController::class, 'markAllAsRead']);
     });
 
     // Logout

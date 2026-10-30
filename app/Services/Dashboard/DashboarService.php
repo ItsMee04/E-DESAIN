@@ -75,7 +75,7 @@ class DashboarService
         return DB::table('statuspengajuan as sp')
             ->leftJoin('pengajuan as p', function ($join) {
                 $join->on('p.statuspengajuan_id', '=', 'sp.id')
-                    ->where('p.status', 1);
+                    ->whereIn('p.status', [1, 2]);
             })
             ->select('sp.name as label')
             ->selectRaw('COUNT(p.id) as total')

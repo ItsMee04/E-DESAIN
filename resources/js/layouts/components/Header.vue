@@ -35,8 +35,11 @@
                 <button @click="toggleNotification"
                     class="relative p-2.5 text-blue-950/70 hover:bg-gray-50 rounded-xl transition cursor-pointer">
                     <Bell :size="20" />
-                    <span v-if="hasUnread"
-                        class="absolute top-2 right-2 w-2 h-2 bg-[#B20600] rounded-full ring-2 ring-white"></span>
+                    <span v-if="unreadCount > 0" class="absolute -top-1 -right-1 min-w-5 h-5 px-1
+           flex items-center justify-center bg-[#B20600]
+           text-white text-[10px] font-bold rounded-full ring-2 ring-white">
+                        {{ unreadCount > 99 ? '99+' : unreadCount }}
+                    </span>
                 </button>
 
                 <!-- Notification Popover -->
@@ -46,26 +49,43 @@
                         <h3 class="text-sm font-bold text-blue-950">
                             Notifikasi
                         </h3>
-                        <button @click="markAllAsRead"
-                            class="text-[11px] text-[#B20600] font-semibold hover:underline cursor-pointer">
-                            Tandai Dibaca
+                        <button v-if="unreadCount > 0" @click="markAllAsRead" :disabled="isProcessing"
+                            class="text-[11px] text-[#B20600] font-semibold hover:underline cursor-pointer disabled:opacity-50">
+                            {{ isProcessing ? 'Memproses...' : 'Tandai Dibaca' }}
                         </button>
                     </div>
 
                     <div class="max-h-72 overflow-y-auto divide-y divide-gray-50">
-                        <div v-for="notif in notifications" :key="notif.id"
-                            class="p-3.5 hover:bg-gray-50 transition cursor-pointer flex gap-3">
-                            <div class="w-2 h-2 rounded-full bg-[#B20600] mt-1.5 shrink-0" v-if="!notif.read"></div>
-                            <div :class="{ 'pl-3.5': notif.read }" class="flex-1">
+
+                        <div v-if="isLoading" class="p-5 text-center text-xs text-gray-400">
+                            Memuat notifikasi...
+                        </div>
+
+                        <div v-else-if="notifications.length === 0" class="p-5 text-center text-xs text-gray-400">
+                            Belum ada notifikasi.
+                        </div>
+
+                        <div v-else v-for="notif in notifications" :key="notif.id"
+                            @click="handleNotificationClick(notif)"
+                            class="p-3.5 hover:bg-gray-50 transition cursor-pointer flex gap-3"
+                            :class="{ 'bg-red-50/40': !notif.is_read }">
+                            <div v-if="!notif.is_read" class="w-2 h-2 rounded-full bg-[#B20600] mt-1.5 shrink-0"></div>
+
+                            <div :class="{ 'pl-3.5': notif.is_read }" class="flex-1">
                                 <p class="text-xs font-semibold text-blue-950">
                                     {{ notif.title }}
                                 </p>
+
                                 <p class="text-xs text-blue-950/60 mt-0.5">
                                     {{ notif.message }}
                                 </p>
-                                <span class="text-[10px] text-blue-950/40 mt-1 block">{{ notif.time }}</span>
+
+                                <span class="text-[10px] text-blue-950/40 mt-1 block">
+                                    {{ new Date(notif.created_at).toLocaleString('id-ID') }}
+                                </span>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -129,6 +149,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from 'vue-router';
 import { authenticationService } from '../../modules/authentication/services/authenticationService';
+import { useNotification } from '../composables/useNotifications';
 import {
     Menu,
     Bell,
@@ -139,6 +160,17 @@ import {
     Clock,
     MapPin,
 } from "lucide-vue-next";
+
+const {
+    notifications,
+    unreadCount,
+    isLoading,
+    isProcessing,
+    fetchNotificationData,
+    fetchNotifications,
+    markAsRead,
+    markAllAsRead,
+} = useNotification();
 
 defineEmits(["toggle-sidebar"]);
 
@@ -176,36 +208,28 @@ const user = ref(null);
 const router = useRouter();
 
 const hasUnread = ref(true);
-const notifications = ref([
-    {
-        id: 1,
-        title: "Desain Baru Diunggah",
-        message: "Desain Banner Pamflet 17 Agustus telah ditambahkan",
-        time: "10 menit lalu",
-        read: false,
-    },
-    {
-        id: 2,
-        title: "Revisi Selesai",
-        message: "Template Resep Dokter V2 disetujui",
-        time: "1 jam lalu",
-        read: false,
-    },
-]);
 
-const toggleNotification = () => {
+const toggleNotification = async () => {
     isNotificationOpen.value = !isNotificationOpen.value;
-    if (isNotificationOpen.value) isProfileOpen.value = false;
+
+    if (isNotificationOpen.value) {
+        isProfileOpen.value = false;
+
+        await fetchNotificationData();
+    }
+};
+
+const handleNotificationClick = async (notif) => {
+    try {
+        await markAsRead(notif.id);
+    } catch (error) {
+        console.error('Gagal membaca notifikasi:', error);
+    }
 };
 
 const toggleProfile = () => {
     isProfileOpen.value = !isProfileOpen.value;
     if (isProfileOpen.value) isNotificationOpen.value = false;
-};
-
-const markAllAsRead = () => {
-    notifications.value.forEach((n) => (n.read = true));
-    hasUnread.value = false;
 };
 
 const handleLogout = async () => {
@@ -248,6 +272,7 @@ const getUserData = () => {
 
 onMounted(() => {
     getUserData();
+    fetchNotificationData();
 
     updateDateTime();
     timer = setInterval(updateDateTime, 1000);

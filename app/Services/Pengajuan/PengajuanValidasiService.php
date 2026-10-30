@@ -6,11 +6,18 @@ use App\Models\Pengajuan\Pengajuan;
 use App\Models\Pengajuan\PengajuanHistory;
 use App\Models\Pengajuan\PengajuanValidasi;
 use App\Models\Pengajuan\StatusPengajuan;
+use App\Services\Notification\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengajuanValidasiService
 {
+    protected NotificationService $notificationService;
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     /**
      * Mengambil data pengajuan yang menunggu validasi.
      */
@@ -105,6 +112,21 @@ class PengajuanValidasiService
                         ? 'Pengajuan disetujui oleh Tim IT dan menunggu ACC PKRS.'
                         : 'Pengajuan ditolak oleh Tim IT.'
                     ),
+            ]);
+
+            // Buat notifikasi.
+            $this->notificationService->createNotification([
+                'pengajuan_id' => $pengajuan->id,
+                'title' => $keputusan === 'approved'
+                    ? 'Verifikasi IT Disetujui'
+                    : 'Pengajuan Ditolak IT',
+                'message' => $keputusan === 'approved'
+                    ? "Pengajuan {$pengajuan->nomor} telah diverifikasi oleh Tim IT dan menunggu persetujuan PKRS."
+                    : "Pengajuan {$pengajuan->nomor} ditolak oleh Tim IT."
+                    . ($catatan ? " Catatan: {$catatan}" : ''),
+                'type' => $keputusan === 'approved'
+                    ? 'verifikasi_it_disetujui'
+                    : 'verifikasi_it_ditolak',
             ]);
 
             return $pengajuan->fresh([
@@ -215,6 +237,21 @@ class PengajuanValidasiService
                     ),
             ]);
 
+            // Buat notifikasi.
+            $this->notificationService->createNotification([
+                'pengajuan_id' => $pengajuan->id,
+                'title' => $keputusan === 'approved'
+                    ? 'Pengajuan Disetujui PKRS'
+                    : 'Pengajuan Ditolak PKRS',
+                'message' => $keputusan === 'approved'
+                    ? "Pengajuan {$pengajuan->nomor} telah disetujui PKRS dan masuk tahap pengerjaan."
+                    : "Pengajuan {$pengajuan->nomor} ditolak oleh PKRS."
+                    . ($catatan ? " Catatan: {$catatan}" : ''),
+                'type' => $keputusan === 'approved'
+                    ? 'pengajuan_disetujui_pkrs'
+                    : 'pengajuan_ditolak_pkrs',
+            ]);
+
             // Kembalikan data terbaru beserta relasinya.
             return $pengajuan->fresh([
                 'pegawai',
@@ -228,7 +265,7 @@ class PengajuanValidasiService
         });
     }
 
-        /**
+    /**
      * Mengubah status pengajuan menjadi siap diambil.
      */
     public function konfirmasiSiapDiambil(int $id)
@@ -270,6 +307,14 @@ class PengajuanValidasiService
                 'statuspengajuan_id' => $statusSiapDiambil->id,
                 'user_id' => $user->id,
                 'catatan' => 'Desain telah selesai dikerjakan oleh Tim IT dan siap diambil.',
+            ]);
+
+            // Buat notifikasi.
+            $this->notificationService->createNotification([
+                'pengajuan_id' => $pengajuan->id,
+                'title' => 'Desain Siap Diambil',
+                'message' => "Pengajuan {$pengajuan->nomor} telah selesai dikerjakan oleh Tim IT dan siap diambil.",
+                'type' => 'pengajuan_siap_diambil',
             ]);
 
             return $pengajuan->fresh([
@@ -326,6 +371,14 @@ class PengajuanValidasiService
                 'statuspengajuan_id' => $statusSelesai->id,
                 'user_id' => $user->id,
                 'catatan' => 'Desain telah diserahkan oleh Tim IT dan diterima oleh pegawai.',
+            ]);
+
+            // Buat notifikasi.
+            $this->notificationService->createNotification([
+                'pengajuan_id' => $pengajuan->id,
+                'title' => 'Pengajuan Selesai',
+                'message' => "Pengajuan {$pengajuan->nomor} telah diserahkan oleh Tim IT dan diterima oleh pegawai.",
+                'type' => 'pengajuan_selesai',
             ]);
 
             return $pengajuan->fresh([

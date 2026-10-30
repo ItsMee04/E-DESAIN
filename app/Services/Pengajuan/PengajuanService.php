@@ -7,11 +7,17 @@ use App\Models\Pengajuan\PengajuanHistory;
 use App\Models\Pengajuan\PengajuanJenisMedia;
 use App\Models\Pengajuan\PengajuanValidasi;
 use App\Models\Pengajuan\StatusPengajuan;
+use App\Services\Notification\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengajuanService
 {
+    protected NotificationService $notificationService;
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     /**
      * Get all pengajuan.
      */
@@ -46,6 +52,7 @@ class PengajuanService
             'pengajuanhistory.user',
         ])->findOrFail($id);
     }
+
 
     /**
      * Menyimpan pengajuan desain baru.
@@ -83,7 +90,7 @@ class PengajuanService
                 'jumlah' => $data['jumlah'],
                 'keperluan' => $data['keperluan'],
                 'user_id' => $user->id,
-                'tanggal'   => now(),
+                'tanggal' => now(),
             ]);
 
             // Simpan jenis media yang dipilih.
@@ -120,6 +127,14 @@ class PengajuanService
                 'validated_at' => null,
             ]);
 
+            // Buat log notifikasi global.
+            $this->notificationService->createNotification([
+                'pengajuan_id' => $pengajuan->id,
+                'title' => 'Pengajuan desain baru',
+                'message' => "Pengajuan {$pengajuan->nomor} telah dibuat dan menunggu verifikasi Tim IT.",
+                'type' => 'pengajuan_dibuat',
+            ]);
+
             // Kembalikan data pengajuan beserta relasinya.
             return $pengajuan->load([
                 'pegawai',
@@ -133,6 +148,7 @@ class PengajuanService
             ]);
         });
     }
+
 
     /**
      * Update pengajuan.

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ProfesiSeeder::class,
+            RoleSeeder::class,
             JenisMediaSeeder::class,
             UnitSeeder::class,
             PegawaiSeeder::class,

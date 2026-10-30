@@ -5318,6 +5318,14 @@ class PegawaiSeeder extends Seeder
             ],
         ];
 
+        // Ambil role default
+        $roleUserId = DB::table('role')
+            ->where('key', 'user')
+            ->value('id');
+
+        if (!$roleUserId) {
+            throw new \Exception('Role user belum tersedia.');
+        }
 
         foreach ($pegawais as $pegawai) {
             DB::table('pegawai')->updateOrInsert(
@@ -5332,12 +5340,13 @@ class PegawaiSeeder extends Seeder
                 ->where('nip', $pegawai['nip'])
                 ->first();
 
-            User::updateOrCreate(
-                ['pegawai_id' => $pegawaiData->id],
-                [
-                    'status' => 1,
-                ]
-            );
+            $user = User::firstOrNew([
+                'pegawai_id' => $pegawaiData->id,
+            ]);
+
+            $user->role_id ??= $roleUserId;
+            $user->status = 1;
+            $user->save();
         }
     }
 }

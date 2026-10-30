@@ -13,7 +13,7 @@ class AuthenticationService
 
     public function login(array $data): ?array
     {
-        $user = User::with('pegawai')
+        $user = User::with(['pegawai','role'])
             ->whereHas('pegawai', function ($query) use ($data) {
                 $query->where('nip', $data['nip']);
             })
@@ -67,6 +67,6 @@ class AuthenticationService
      */
     public function getAuthenticatedUser(User $user): User
     {
-        return $user->load('pegawai');
+        return $user->load(['pegawai', 'role']);
     }
 }

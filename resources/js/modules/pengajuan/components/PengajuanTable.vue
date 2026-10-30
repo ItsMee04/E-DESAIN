@@ -140,7 +140,7 @@
                                 </button>
 
                                 <!-- Tombol Siap Diambil -->
-                                <button v-if="item.statuspengajuan?.key === 'diproses'"
+                                <button v-if="isAdmin && item.statuspengajuan?.key === 'diproses'"
                                     @click="$emit('open-ready', item)"
                                     class="p-1.5 text-orange-600 bg-orange-50 hover:bg-orange-100 hover:text-orange-700 rounded-lg border border-orange-200/60 transition cursor-pointer"
                                     title="Konfirmasi Siap Diambil">
@@ -148,7 +148,7 @@
                                 </button>
 
                                 <!-- Tombol Selesai Diambil -->
-                                <button v-if="item.statuspengajuan?.key === 'siap_diambil'"
+                                <button v-if="isAdmin && item.statuspengajuan?.key === 'siap_diambil'"
                                     @click="$emit('open-complete', item)"
                                     class="p-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-700 rounded-lg border border-emerald-200/60 transition cursor-pointer"
                                     title="Konfirmasi Selesai Diambil">
@@ -167,7 +167,7 @@
                                 <button v-if="!['diproses', 'siap_diambil', 'selesai', 'ditolak', 'dibatalkan']
                                     .includes(item.statuspengajuan?.key)" @click="$emit('open-delete', item)"
                                     class="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 hover:text-rose-700 rounded-lg border border-rose-200/60 transition cursor-pointer"
-                                    title="Hapus Data">
+                                    title="Batalkan Data">
                                     <Trash2 :size="16" />
                                 </button>
 
@@ -265,10 +265,15 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    role: {
+        type: String,
+        default: "user",
+    },
 });
 
 const searchQuery = defineModel("searchQuery");
 const statusFilter = defineModel("statusFilter");
+const isAdmin = computed(() => props.role === "admin");
 
 defineEmits([
     "open-add",

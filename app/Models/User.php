@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Master\Pegawai;
+use App\Models\Master\Role;
 use App\Models\Master\UserPermission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'pegawai_id',
+        'role_id',
         'username',
         'email',
         'password',
@@ -64,5 +66,15 @@ class User extends Authenticatable
     public function permissions()
     {
         return $this->hasMany(UserPermission::class);
+    }
+
+    /**
+     * Get the role that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 }

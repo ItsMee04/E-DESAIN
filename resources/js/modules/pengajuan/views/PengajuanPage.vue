@@ -18,8 +18,8 @@
             :current-page="currentPage" :total-pages="totalPages" :items-per-page="itemsPerPage" :statuses="statuses"
             @open-add="openAddModal" @open-detail="openDetailModal" @open-edit="openEditModal"
             @open-delete="openDeleteModal" @open-ready="(item) => openStatusModal(item, 'ready')"
-            @open-complete="(item) => openStatusModal(item, 'complete')" @change-page="setPage"
-            @refresh="refreshData" />
+            @open-complete="(item) => openStatusModal(item, 'complete')" @change-page="setPage" @refresh="refreshData"
+            :role="user?.role?.key" />
 
         <!-- Modal Pengajuan -->
         <PengajuanModal :is-open="isModalOpen" :is-editing="isEditing" :form="form" :errors="errors"
@@ -47,9 +47,29 @@ import PengajuanModal from '../components/PengajuanModal.vue';
 import PengajuanDetailModal from '../components/PengajuanModalDetail.vue';
 import ConfirmDeleteModal from '../../../utilities/common/ConfirmModalDelete.vue';
 import ConfirmModalStatus from "../../../utilities/common/ConfirmModalStatus.vue";
+import { ref, onMounted } from 'vue';
 
 
 import { usePengajuan } from '../composables/usePengajuan';
+
+const user = ref(null);
+
+const getUserData = () => {
+    try {
+        const storedUser = localStorage.getItem('user');
+
+        if (storedUser) {
+            user.value = JSON.parse(storedUser);
+        }
+    } catch (error) {
+        console.error('Gagal mengambil data user:', error);
+        user.value = null;
+    }
+};
+
+onMounted(() => {
+    getUserData();
+});
 
 const {
     // Data

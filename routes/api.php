@@ -92,29 +92,74 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('pengajuan')->group(function () {
-        Route::prefix('statuspengajuan')->group(function () {
-            Route::get('/', [StatusPengajuanController::class, 'getStatusPengajuan']);
-            Route::post('/store', [StatusPengajuanController::class, 'storeStatusPengajuan']);
-            Route::post('/update', [StatusPengajuanController::class, 'updateStatusPengajuan']);
-            Route::delete('/delete', [StatusPengajuanController::class, 'deleteStatusPengajuan']);
-        });
 
+        // Status pengajuan: hanya admin
+        Route::middleware('role:admin,user,pkrs')
+            ->prefix('statuspengajuan')
+            ->group(function () {
+                Route::get('/', [StatusPengajuanController::class, 'getStatusPengajuan']);
+                Route::post('/store', [StatusPengajuanController::class, 'storeStatusPengajuan']);
+                Route::post('/update', [StatusPengajuanController::class, 'updateStatusPengajuan']);
+                Route::delete('/delete', [StatusPengajuanController::class, 'deleteStatusPengajuan']);
+            });
+
+        // Pengajuan desain
         Route::prefix('pengajuan')->group(function () {
-            Route::get('/', [PengajuanController::class, 'getPengajuan']);
-            Route::get('/detail', [PengajuanController::class, 'getPengajuanById']);
-            Route::post('/store', [PengajuanController::class, 'storePengajuan']);
-            Route::post('/update', [PengajuanController::class, 'updatePengajuan']);
-            Route::delete('/delete', [PengajuanController::class, 'deletePengajuan']);
+
+            // Admin, user, dan PKRS
+            Route::middleware('role:admin,user,pkrs')->group(function () {
+                Route::get('/', [PengajuanController::class, 'getPengajuan']);
+                Route::get('/detail', [PengajuanController::class, 'getPengajuanById']);
+            });
+
+            // Admin dan user
+            Route::middleware('role:admin,user')->group(function () {
+                Route::post('/store', [PengajuanController::class, 'storePengajuan']);
+                Route::post('/update', [PengajuanController::class, 'updatePengajuan']);
+                Route::delete('/delete', [PengajuanController::class, 'deletePengajuan']);
+            });
         });
 
+        // Validasi pengajuan
         Route::prefix('validasi')->group(function () {
-            Route::get('/', [PengajuanValidasiController::class, 'getPengajuanValidasi']);
-            Route::get('/detail/{id}', [PengajuanValidasiController::class, 'getDetailPengajuanValidasi']);
-            Route::post('/validasi/{id}', [PengajuanValidasiController::class, 'validasiPengajuan']);
-            Route::get('/it', [PengajuanValidasiController::class, 'getPengajuanValidasiIT']);
-            Route::post('/validasi/it/{id}', [PengajuanValidasiController::class, 'validasiPengajuanIT']);
-            Route::patch('/siap-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSiapDiambil']);
-            Route::patch('/selesai-diambil/{id}', [PengajuanValidasiController::class, 'konfirmasiSelesaiDiambil']);
+
+            // Khusus PKRS
+            Route::middleware('role:admin,pkrs')->group(function () {
+                Route::get('/', [PengajuanValidasiController::class, 'getPengajuanValidasi']);
+
+                Route::post('/validasi/{id}', [
+                    PengajuanValidasiController::class,
+                    'validasiPengajuan'
+                ]);
+            });
+
+            // Khusus admin / IT
+            Route::middleware('role:admin')->group(function () {
+                Route::get('/it', [PengajuanValidasiController::class, 'getPengajuanValidasiIT']);
+
+                Route::post('/validasi/it/{id}', [
+                    PengajuanValidasiController::class,
+                    'validasiPengajuanIT'
+                ]);
+
+                Route::patch('/siap-diambil/{id}', [
+                    PengajuanValidasiController::class,
+                    'konfirmasiSiapDiambil'
+                ]);
+
+                Route::patch('/selesai-diambil/{id}', [
+                    PengajuanValidasiController::class,
+                    'konfirmasiSelesaiDiambil'
+                ]);
+            });
+
+            // Detail validasi
+            Route::middleware('role:admin,pkrs')->group(function () {
+                Route::get('/detail/{id}', [
+                    PengajuanValidasiController::class,
+                    'getDetailPengajuanValidasi'
+                ]);
+            });
         });
     });
 

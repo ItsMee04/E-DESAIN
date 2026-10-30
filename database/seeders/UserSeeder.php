@@ -13,7 +13,25 @@ class UserSeeder extends Seeder
         DB::transaction(function () {
 
             // =========================================
-            // 1. AKUN KHUSUS IT RSUWH
+            // 1. AMBIL DATA ROLE
+            // =========================================
+
+            $roleAdmin = DB::table('role')
+                ->where('key', 'admin')
+                ->first();
+
+            $roleUser = DB::table('role')
+                ->where('key', 'user')
+                ->first();
+
+            if (!$roleAdmin || !$roleUser) {
+                throw new \Exception(
+                    'Data role admin atau user belum tersedia.'
+                );
+            }
+
+            // =========================================
+            // 2. AKUN KHUSUS IT RSUWH
             // =========================================
 
             $pegawaiIT = DB::table('pegawai')
@@ -36,18 +54,43 @@ class UserSeeder extends Seeder
                 );
             }
 
+            // Tetapkan role administrator
+            $updateIT = [
+                'role_id' => $roleAdmin->id,
+                'updated_at' => now(),
+            ];
+
+            // Password khusus IT
             if (empty($userIT->password)) {
-                DB::table('users')
-                    ->where('id', $userIT->id)
-                    ->update([
-                        'password' => Hash::make('123'),
-                        'updated_at' => now(),
-                    ]);
+                $updateIT['password'] = Hash::make('123');
             }
 
+            DB::table('users')
+                ->where('id', $userIT->id)
+                ->update($updateIT);
 
             // =========================================
-            // 2. PASSWORD DEFAULT SELURUH PEGAWAI
+            // 3. ROLE DEFAULT SELURUH PEGAWAI
+            // =========================================
+
+            DB::table('users')
+                ->join(
+                    'pegawai',
+                    'users.pegawai_id',
+                    '=',
+                    'pegawai.id'
+                )
+                ->where('pegawai.status', 1)
+                ->where('users.status', 1)
+                ->whereNull('users.role_id')
+                ->where('pegawai.id', '!=', $pegawaiIT->id)
+                ->update([
+                    'users.role_id' => $roleUser->id,
+                    'users.updated_at' => now(),
+                ]);
+
+            // =========================================
+            // 4. PASSWORD DEFAULT SELURUH PEGAWAI
             // =========================================
 
             $users = DB::table('users')

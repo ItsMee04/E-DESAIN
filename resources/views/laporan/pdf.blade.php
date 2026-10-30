@@ -209,8 +209,7 @@
 
                     <td>
                         @forelse ($item->pengajuanjenismedia as $media)
-                            {{ $media->jenismedia->nama ?? ($media->jenismedia->name ?? '-') }}
-                            @if (!$loop->last)
+                            {{ $media->jenismedia->jenismedia ?? '-' }}@if (!$loop->last)
                                 ,
                             @endif
                         @empty

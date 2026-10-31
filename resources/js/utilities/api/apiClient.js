@@ -1,3 +1,4 @@
+
 import axios from "axios";
 
 const apiClient = axios.create({
@@ -8,42 +9,50 @@ const apiClient = axios.create({
     },
 });
 
-// ─── INTERCEPTOR REQUEST (PENGIRIMAN DATA) ───
-apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+// Mencegah event sesi berakhir dikirim berkali-kali
+let isSessionExpired = false;
 
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
+// INTERCEPTOR REQUEST
+apiClient.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem("token");
 
-    if (config.data instanceof FormData) {
-        delete config.headers['Content-Type'];
-    }
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
 
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+        if (config.data instanceof FormData) {
+            delete config.headers["Content-Type"];
+        }
 
-// ─── 🌟 INTERCEPTOR RESPONSE (JARING PENGAMAN RESPONS GLOBAL) ───
-apiClient.interceptors.response.use(
-    (response) => {
-        return response;
+        return config;
     },
+    (error) => Promise.reject(error)
+);
+
+// INTERCEPTOR RESPONSE
+apiClient.interceptors.response.use(
+    (response) => response,
+
     (error) => {
-        // Jika server membalas dengan status 401 (Token hangus / DB di-migrate fresh)
-        if (error.response && error.response.status === 401) {
-            console.warn('Sesi tidak valid / Database ter-migrate. Membersihkan local storage...');
+        if (error.response?.status === 401) {
+            const requestUrl = error.config?.url?.split("?")[0] ?? "";
 
-            // Bersihkan sisa sampah token di browser seketika
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            // Jangan anggap kesalahan login sebagai token expired
+            const isLoginRequest = /(^|\/)login\/?$/.test(requestUrl);
 
-            // Lempar keras ke halaman login agar semua state Vue di-reset total
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
+            if (!isLoginRequest && !isSessionExpired) {
+                isSessionExpired = true;
+
+                console.warn("Sesi login telah berakhir.");
+
+                // Kirim event untuk menampilkan modal di App.vue
+                window.dispatchEvent(
+                    new Event("session-expired")
+                );
             }
         }
+
         return Promise.reject(error);
     }
 );

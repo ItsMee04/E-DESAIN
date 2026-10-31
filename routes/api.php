@@ -24,7 +24,7 @@ Route::middleware('guest')->group(function () {
     ]);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'refresh.token'])->group(function () {
 
     // Data user yang sedang login
     Route::get('/me', [AuthenticationController::class, 'me']);
